@@ -2,14 +2,18 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public class CosechadorAsignado {
-    private Date desde;
-    private Date hasta;
+    private LocalDate desde;
+    private LocalDate hasta;
     private double metaKilos;
+    private Cosechador cosechador;
+    private Cuadrilla cuadrilla;
 
-    public CosechadorAsignado(Date fIni, Date fFin, double meta, Cuadrilla cuad, Cosechador cos) {
+    public CosechadorAsignado(LocalDate fIni, LocalDate fFin, double meta, Cuadrilla cuad, Cosechador cos) {
         this.desde = fIni;
         this.hasta = fFin;
         this.metaKilos = meta;
+        this.cosechador = cos;
+        this.cuadrilla = cuad;
     }
 
     public LocalDate getDesde() {
@@ -17,14 +21,15 @@ public class CosechadorAsignado {
     }
 
     public void setDesde(LocalDate desde) {
-
+        this.desde = desde;
     }
 
     public LocalDate getHasta() {
+        return hasta;
     }
 
     public void setHasta(LocalDate hasta) {
-
+        this.hasta = hasta;
     }
 
     public double getMetaKilos() {

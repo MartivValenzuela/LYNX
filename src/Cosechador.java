@@ -3,13 +3,13 @@ import java.util.Date;
 
 public class Cosechador extends Persona {
     private Date fechaNacimiento;
-    private int nrCuadrillas;
-    private Cuadrilla[] cuadrillas;
+    private int nrAsignaciones;
+    private CosechadorAsignado[] asignaciones;
 
-    public Cosechador(Rut rut, String nom, String email, String dir, int maxCuadrillas) {
+    public Cosechador(Rut rut, String nom, String email, String dir, int maxAsignaciones) {
         super(rut, nom, email, dir);
-        this.cuadrillas = new Cuadrilla[maxCuadrillas];
-        this.nrCuadrillas = 0;
+        this.asignaciones = new CosechadorAsignado[maxAsignaciones];
+        this.nrAsignaciones = 0;
     }
 
     public Date getFechaNacimiento() {
@@ -20,14 +20,14 @@ public class Cosechador extends Persona {
         this.fechaNacimiento = fNac;
     }
     public void addCuadrilla (CosechadorAsignado cosAs){
-        if(nrCuadrillas < cuadrillas.length){
-            cuadrillas[nrCuadrillas++] = cosAs;
+        if(nrAsignaciones < asignaciones.length){
+            asignaciones[nrAsignaciones++] = cosAs;
         }
     }
     public Cuadrilla[] getCuadrillas(){
-        Cuadrilla[] resultado = new Cuadrilla[nrCuadrillas];
-        for (int i = 0; i < nrCuadrillas; i++){
-            resultado[i] = cuadrillas[i];
+        Cuadrilla[] resultado = new Cuadrilla[nrAsignaciones];
+        for (int i = 0; i < nrAsignaciones; i++){
+            resultado[i] = asignaciones[i].getCuadrilla();
         }
         return resultado;
     }
