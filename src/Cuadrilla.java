@@ -3,7 +3,7 @@ import java.util.Date;
 public class Cuadrilla {
     private int id;
     private String nombre;
-    private int maximoCosechadores;
+    private static int maximoCosechadores;
 
     public Cuadrilla(int id, String nom, Supervisor sup, PlanCosecha plan) {
         this.id = id;
@@ -35,11 +35,11 @@ public class Cuadrilla {
     public Cosechador[] getCosechadores(){
 
     }
-    public int getMaximoCosechadores(){
+    public static int getMaximoCosechadores(){
 
     }
 
-    public void setMaximoCosechadores(int max) {
+    public static void setMaximoCosechadores(int max) {
         this.maximoCosechadores = max;
     }
 }
