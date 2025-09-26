@@ -9,7 +9,7 @@ public class Cosechador extends Persona {
     public Cosechador(Rut rut, String nom, String email, String dir, int maxAsignaciones) {
         super(rut, nom, email, dir);
         this.asignaciones = new CosechadorAsignado[maxAsignaciones];
-        this.nrAsignaciones = 0;
+        this.nrAsignaciones =
     }
 
     public Date getFechaNacimiento() {
