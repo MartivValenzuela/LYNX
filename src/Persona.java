@@ -2,17 +2,19 @@ public class Persona {
     private Rut rut;
     private String nombre;
     private String email;
-    private String dirrecion;
+    private String direction;
+
 
     public Persona(Rut rut, String nom, String email, String dir) {
         this.rut = rut;
         this.nombre = nom;
         this.email = email;
-        this.dirrecion = dir;
+        this.direction = dir;
     }
 
+
     public Rut getRut() {
-        return rut;
+        return this.rut;
     }
 
     public String getNombre() {
@@ -23,16 +25,16 @@ public class Persona {
         return email;
     }
 
+    public String getDirection() {
+        return direction;
+    }
+
+    // no validé nada por ahora
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getDirrecion() {
-        return dirrecion;
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
-
-    public void setDirrecion(String dirrecion) {
-        this.dirrecion = dirrecion;
-    }
-
 }
