@@ -18,6 +18,6 @@ public class Supervisor extends Persona {
     }
     public Cuadrilla getCuadrilla() {
         return null;
-        p
+
     }
 }

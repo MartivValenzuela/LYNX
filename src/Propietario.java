@@ -16,6 +16,6 @@ public class Propietario extends Persona {
     }
     public Huerto[] getHuertos() {
         return new Huerto[0];
-        p
+
     }
 }
