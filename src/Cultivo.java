@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 public class Cultivo {
     private int id;
     private String especie;
@@ -31,9 +32,9 @@ public class Cultivo {
         this.rendimiento = rendimiento;
     }
     public boolean addCuertel (Cuertel cuertel){
-
+        cuertel.add();
     }
     public Cuartel[] getCuerteles(){
-
+        return cuerteles.toArray(new Cuartel[]);
     }
 }

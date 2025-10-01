@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 public class Cuartel {
     private int id;
     private float superficie;
@@ -23,7 +24,7 @@ public class Cuartel {
     }
 
     public float getRendimientoEsperado () {
-        return ;
+        return rendimientoEsperado;
     }
     public EstadoFonologico getEstado() {
         return estado;
@@ -33,12 +34,12 @@ public class Cuartel {
         this.estado = estado;
     }
     public Cultivo getCultivo(){
-
+        return cultivo;
     }
     public Huerto getHuerto(){
-
+        return huerto;
     }
     public PlanCosecha[] getPlanesCosecha(){
-
+        return planesCosecha.toArray(new PlanCosecha[]);
     }
 }
