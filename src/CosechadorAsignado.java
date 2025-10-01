@@ -1,5 +1,4 @@
 import java.time.LocalDate;
-import java.util.Date;
 
 public class CosechadorAsignado {
     private LocalDate desde;
@@ -14,6 +13,8 @@ public class CosechadorAsignado {
         this.metaKilos = meta;
         this.cosechador = cos;
         this.cuadrilla = cuad;
+
+        cos.addCuadrilla(this);
     }
 
     public LocalDate getDesde() {
