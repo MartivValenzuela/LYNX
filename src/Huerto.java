@@ -30,4 +30,21 @@ public class Huerto {
         this.ubicacion = ubicacion;
     }
 
+    public Persona getPropietario(){
+        return propietario;
+    }
+
+    public void setPropietario(Persona propietario){
+
+    }
+    public boolean addCuartel(int id, float sup,Cultivo cul){
+
+    }
+    public Cuartel getCuartel(int id){
+        return cuartel;
+    }
+    public Cuartel[] getCuarteles(){
+        return cuarteles;
+    }
+
 }
