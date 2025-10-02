@@ -14,7 +14,10 @@ public class CosechadorAsignado {
         this.cosechador = cos;
         this.cuadrilla = cuad;
 
-        cos.addCuadrilla(this);
+
+        if (cos != null){
+            cos.addCuadrilla(this);
+        }
     }
 
     public LocalDate getDesde() {

@@ -1,14 +1,13 @@
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Cosechador extends Persona {
     private Date fechaNacimiento;
-    private int nrAsignaciones;
-    private CosechadorAsignado[] asignaciones;
+    private ArrayList<CosechadorAsignado> asignaciones;
 
     public Cosechador(Rut rut, String nom, String email, String dir, int maxAsignaciones) {
         super(rut, nom, email, dir);
-        this.asignaciones = new CosechadorAsignado[maxAsignaciones];
-        this.nrAsignaciones = 0;
+        this.asignaciones = new ArrayList<>();
     }
 
     public Date getFechaNacimiento() {
@@ -19,14 +18,14 @@ public class Cosechador extends Persona {
         this.fechaNacimiento = fNac;
     }
     public void addCuadrilla (CosechadorAsignado cosAs){
-        if(nrAsignaciones < asignaciones.length){
-            asignaciones[nrAsignaciones++] = cosAs;
+        if(cosAs!=null && !asignaciones.contains(cosAs)){
+            asignaciones.add(cosAs);
         }
     }
     public Cuadrilla[] getCuadrillas(){
-        Cuadrilla[] resultado = new Cuadrilla[nrAsignaciones];
-        for (int i = 0; i < nrAsignaciones; i++){
-            resultado[i] = asignaciones[i].getCuadrilla();
+        Cuadrilla[] resultado = new Cuadrilla[asignaciones.size()];
+        for (int i = 0; i < asignaciones.size(); i++){
+            resultado[i] = asignaciones.get(i).getCuadrilla();
         }
         return resultado;
     }
