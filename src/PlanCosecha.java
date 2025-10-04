@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.Date;
 
 public class PlanCosecha {
@@ -9,6 +10,7 @@ public class PlanCosecha {
     private double metaKilos;
     private double precioBaseKilo;
     private EstadoPlan estado;
+    private Cuartel cuartel;
 
     public PlanCosecha(int id, String nom, Date ini, Date finEst, double meta, double precio, Cuartel cuartel) {
         this.id = id;
@@ -18,6 +20,9 @@ public class PlanCosecha {
         this.metaKilos = meta;
         this.precioBaseKilo = precio;
         this.cuartel = cuartel;
+        if(cuartel != null){
+            cuartel.plan = this;
+        }
     }
 
     public int getId() {
@@ -32,15 +37,15 @@ public class PlanCosecha {
         this.nombre = nombre;
     }
 
-    public Date getInicio() {
+    public LocalDate getInicio() {
         return inicio;
     }
 
-    public Date getFinEstimado() {
+    public LocalDate getFinEstimado() {
         return finEstimado;
     }
 
-    public Date getFinReal() {
+    public LocalDate getFinReal() {
         return finReal;
     }
     public void setFinReal(Date finReal) {
@@ -72,10 +77,10 @@ public class PlanCosecha {
     public Cuartel getCuartel(){
         return cuartel;
     }
-    public boolean addCuadrilla (int idCuad, Date fini, Date fFin, double meta, Cosechador cos){
+    public boolean addCuadrilla (int idCuad, String nomCuad, Supervisor supervisor){
 
     }
-    public boolean addCosechadorToCuadrilla(int idCuad, Date fIni, Date fFin, double meta, Cosechador cos){
+    public boolean addCosechadorToCuadrilla(int idCuad, LocalDate fIni, LocalDate fFin, double meta, Cosechador cos){
 
     }
     public Cuadrilla[] getCuadrillas(){
