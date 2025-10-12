@@ -13,7 +13,7 @@ public class ControlProduccion {
     public boolean createSupervisor (Rut rut, String nombre, String email, String dirrecion, String profesion){
 
     }
-    public boolean createCosechador (Rut rut, String nombre, String email, String dirrecion, Date fechaNacimiento){
+    public boolean createCosechador (Rut rut, String nombre, String email, String dirrecion, LocalDate fechaNacimiento){
 
     }
     public boolean createCultivo (int id,String especie, String variedad,float Rendimiento){
@@ -25,7 +25,7 @@ public class ControlProduccion {
     public boolean addCuartelToHuerto (String nombreHuerto, int idCuartel, float superficie, int idCultivo){
 
     }
-    public boolean createPlanCosecha (int idPlan, String nom, Date inicio, Date finEstim, double meta, float precioBase, String nomHuerto, int idCuartel){
+    public boolean createPlanCosecha (int idPlan, String nom, LocalDate inicio, LocalDate finEstim, double meta, float precioBase, String nomHuerto, int idCuartel){
 
     }
     public boolean addCuadrillaToPlan (int idPlan, int idCuad, String nomCuad, Rut rutSup){

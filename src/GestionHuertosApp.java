@@ -1,8 +1,12 @@
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class GestionHuertosApp {
     private Scanner tcld = new Scanner(System.in);
+    private DateTimeFormatter F = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private ControlProduccion control = new ControlProduccion();
 
     public static void main(String[] args) {
         new GestionHuertosApp().menu();
@@ -74,39 +78,77 @@ public class GestionHuertosApp {
     }
 
     private void creaPlanDeCosecha(){
-        System.out.println("Creando un plan de cosecha");
-        System.out.println("Id del plan: " + );
-        System.out.println("Nombre del plan: " + );
-        System.out.println("Fecha de inicio (dd/mm/aaaa): " + );
-        System.out.println("Fecha de termino (dd/mm/aaaa): " + );
-        System.out.println("Meta (kilos): " + );
-        System.out.println("Precio base por kilos: " + );
-        System.out.println("Nombre Huerto: " + );
-        System.out.println("Id cuartel: " + );
-        System.out.println("\nPlan de cosecha creado exitosamente\n");
+        System.out.println("Creando un plan de cosecha....");
+        System.out.println("Id del plan: ");
+        int id = Integer.parseInt(tcld.nextLine().trim());
+        System.out.println("Nombre del plan: ");
+        String nombre = tcld.nextLine().trim();
+        System.out.println("Fecha de inicio (dd/mm/aaaa): ");
+        LocalDate inicio = LocalDate.parse(tcld.nextLine().trim(), F);
+        System.out.println("Fecha de termino (dd/mm/aaaa): ");
+        LocalDate termino = LocalDate.parse(tcld.nextLine().trim(), F);
+        System.out.println("Meta (kilos): ");
+        double metas = Double.parseDouble(tcld.nextLine().trim());
+        System.out.println("Precio base por kilos: ");
+        float precioBase = Float.parseFloat(tcld.nextLine().trim());
+        System.out.println("Nombre Huerto: ");
+        String nombreHuerto = tcld.nextLine().trim();
+        System.out.println("Id cuartel: ");
+        int cuartel = Integer.parseInt(tcld.nextLine().trim());
+
+        boolean okPlan = control.createPlanCosecha(id, nombre, inicio, termino, metas, precioBase, nombreHuerto, cuartel);
+        if(!okPlan){
+            System.out.println("No se pudo crear el plan de cosecha(id duplicado, fechas invalidas, o huerto/cuartel inexistentes)");
+        }
+
+        System.out.println("Plan de cosecha creado exitosamente");
 
         System.out.println("Agregando cuadrillas al plan de cosecha");
-        System.out.println("Nro. de cuadrillas: " + );
+        System.out.println("Nro. de cuadrillas: ");
+        int nroCuadrillas = Integer.parseInt(tcld.nextLine().trim());
+        for (int i = 0; i < nroCuadrillas; i++) {
+            System.out.println("------Cuadrilla #" +(i+1));
+            System.out.println("Id cuadrilla: ");
+            int idCuadrilla = Integer.parseInt(tcld.nextLine().trim());
+            System.out.println("Nombre cuadrilla: ");
+            String nombreCuadrilla = tcld.nextLine().trim();
+            System.out.println("Rut supervisor: ");
+            Rut rutSupervisor = new Rut(tcld.nextLine().trim());
 
-        for (int i = 0; i < ; i++) {
-            System.out.println("Id cuadrilla: " + );
-            System.out.println("Nombre cuadrilla: " + );
-            System.out.println("Rut supervisor: " + );
-            System.out.println("Cuadrilla agragada correctamente al plan de cosecha");
+            boolean okCuad = control.addCuadrillaToPlan(id, idCuadrilla, nombreCuadrilla, rutSupervisor);
+            if(okCuad){
+                System.out.println("Cuadrilla agragada correctamente al plan de cosecha");
+            } else {
+                System.out.println("No se pudo crear/asociar (id cuadrilla duplicado en el plan, supervisor inexistente o ya asignado).");
+            }
         }
     }
 
     private void asignaCosechadoresAPlan(){
         System.out.println("Asignando cosechadores a un plan de cosecha...");
-        System.out.println("Id del plan: " + ) ;
-        System.out.println("Id cuadrilla: " + );
-        System.out.println("Nro. cosechadores a asignar: " + );
-        for (int i = 0; i < ; i++) {
-            System.out.println("Fecha de inicio asignación (dd/mm/aaaa)" + );
-            System.out.println("Fecha de termino asignación (dd/mm/aaaa)" + );
-            System.out.println("Meta (Kilos): " + );
-            System.out.println("Rut cosechador: " + );
-            System.out.println("Cosechador asignado exitosamente a una cuadrilla del plan de cosecha");
+        System.out.println("Id del plan: ");
+        int id = Integer.parseInt(tcld.nextLine().trim());
+        System.out.println("Id cuadrilla: ");
+        int idCuadrilla = Integer.parseInt(tcld.nextLine().trim());
+        System.out.println("Nro. cosechadores a asignar: ");
+        int nroCosechadores = Integer.parseInt(tcld.nextLine().trim());
+
+        for (int i = 0; i < nroCosechadores; i++) {
+            System.out.println("Fecha de inicio asignación (dd/mm/aaaa)");
+            LocalDate inicio = LocalDate.parse(tcld.nextLine().trim(), F);
+            System.out.println("Fecha de termino asignación (dd/mm/aaaa)");
+            LocalDate termino = LocalDate.parse(tcld.nextLine().trim(), F);
+            System.out.println("Meta (Kilos): ");
+            double metas = Double.parseDouble(tcld.nextLine().trim());
+            System.out.println("Rut cosechador: ");
+            Rut rutCosechador = new Rut(tcld.nextLine().trim());
+
+            boolean ok = control.addCosechadorToCuadrilla(id, idCuadrilla, inicio, termino, metas, rutCosechador);
+            if(ok){
+                System.out.println("Cosechador asignado exitosamente a una cuadrilla del plan de cosecha");
+            } else {
+                System.out.println("No se pudo asignar (plan/cuadrilla/cosechador inexistente o fechas fuera del rango del plan o inválidas).");
+            }
         }
 
     }
@@ -136,19 +178,19 @@ public class GestionHuertosApp {
         System.out.println("-----------------------");
         for (int i = 0; i < ; i++) {
             System.out.println("Rut        Nombre        Dirección        email        Dirección comercial        Nro. huertos");
-            System.out.println( +  "    " + + "    " + + "    " + + "    " + + "    " + );
+            System.out.println(   "    " +  "    " +  "    " +  "    " +  "    " );
         }
         System.out.println("LISTADO DE SUPERVISORES");
         System.out.println("-----------------------");
         for (int i = 0; i < ; i++) {
             System.out.println("Rut        Nombre        Dirección        email        Profesión        Nombre cuadrilla");
-            System.out.println( +  "    " + + "    " + + "    " + + "    " + + "    " + );
+            System.out.println( "    " + "    " +  "    " +  "    " +  "    ");
         }
         System.out.println("LISTADO DE COSECHADORES");
         System.out.println("-----------------------");
         for (int i = 0; i < ; i++) {
             System.out.println("Rut        Nombre        Dirección        email        Fecha nacimiento        Nro. caudrillas");
-            System.out.println( +  "    " + + "    " + + "    " + + "    " + + "    " + );
+            System.out.println( "    " +  "    " + "    " + "    " + "    " + );
         }
     }
 
@@ -165,12 +207,36 @@ public class GestionHuertosApp {
     private void creaPersona(){
         System.out.println("Creando una persona...");
         System.out.println("Rol persona (1=Propietario, 2=Supervisor, 3=Cosechador)");
-        System.out.println("Rut: " + );
-        System.out.println("Nombre: " + );
-        System.out.println("Email: " +);
-        System.out.println("Dirección: " + );
-        System.out.println("Fecha Nacimiento (dd/mm/aaaa): " +);
-        System.out.println("\nCosechador creado exitosamente");
+        String rol = tcld.nextLine().trim();
+        System.out.println("Rut: ");
+        Rut rut = new Rut(tcld.nextLine().trim());
+        System.out.println("Nombre: ");
+        String nombre = tcld.nextLine().trim();
+        System.out.println("Email: ");
+        String email = tcld.nextLine().trim();
+        System.out.println("Dirección: ");
+        String direccion = tcld.nextLine().trim();
 
+        boolean ok;
+        if(rol.equals("1")){
+            System.out.println("Direccion Particular: ");
+            String direccionParticular = tcld.nextLine().trim();
+            System.out.println("Direccion Comercial: ");
+            String direccionComercial = tcld.nextLine().trim();
+            ok = control.createPropietario(rut, nombre, email, direccionParticular, direccionComercial);
+        } else if(rol.equals("2")){
+            System.out.println("Profesion: ");
+            String profesion = tcld.nextLine().trim();
+            ok = control.createSupervisor(rut, nombre, email, direccion, profesion);
+        } else {
+            System.out.println("Fecha Nacimiento (dd/mm/aaaa): ");
+            LocalDate fechaNacimiento = LocalDate.parse(tcld.nextLine().trim(), F);
+            ok = control.createCosechador(rut, nombre, email, direccion, fechaNacimiento);
+        }
+        if(ok){
+            System.out.println("Persona creada exitosamente");
+        } else {
+            System.out.println("Error al crear persona.");
+        }
     }
 }
