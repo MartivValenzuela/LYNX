@@ -80,7 +80,8 @@ public class GestionHuertosApp {
     private void creaPlanDeCosecha(){
         System.out.println("Creando un plan de cosecha....");
         System.out.println("Id del plan: ");
-        int id = Integer.parseInt(tcld.nextLine().trim());
+        int id = tcld.nextInt();
+        tcld.nextLine();
         System.out.println("Nombre del plan: ");
         String nombre = tcld.nextLine().trim();
         System.out.println("Fecha de inicio (dd/mm/aaaa): ");
@@ -88,13 +89,16 @@ public class GestionHuertosApp {
         System.out.println("Fecha de termino (dd/mm/aaaa): ");
         LocalDate termino = LocalDate.parse(tcld.nextLine().trim(), F);
         System.out.println("Meta (kilos): ");
-        double metas = Double.parseDouble(tcld.nextLine().trim());
+        double metas = tcld.nextDouble();
+        tcld.nextLine();
         System.out.println("Precio base por kilos: ");
-        float precioBase = Float.parseFloat(tcld.nextLine().trim());
+        float precioBase = tcld.nextFloat();
+        tcld.nextLine();
         System.out.println("Nombre Huerto: ");
         String nombreHuerto = tcld.nextLine().trim();
         System.out.println("Id cuartel: ");
-        int cuartel = Integer.parseInt(tcld.nextLine().trim());
+        int cuartel = tcld.nextInt();
+        tcld.nextLine();
 
         boolean okPlan = control.createPlanCosecha(id, nombre, inicio, termino, metas, precioBase, nombreHuerto, cuartel);
         if(!okPlan){
@@ -105,11 +109,13 @@ public class GestionHuertosApp {
 
         System.out.println("Agregando cuadrillas al plan de cosecha");
         System.out.println("Nro. de cuadrillas: ");
-        int nroCuadrillas = Integer.parseInt(tcld.nextLine().trim());
+        int nroCuadrillas = tcld.nextInt();
+        tcld.nextLine();
         for (int i = 0; i < nroCuadrillas; i++) {
             System.out.println("------Cuadrilla #" +(i+1));
             System.out.println("Id cuadrilla: ");
-            int idCuadrilla = Integer.parseInt(tcld.nextLine().trim());
+            int idCuadrilla = tcld.nextInt();
+            tcld.nextLine();
             System.out.println("Nombre cuadrilla: ");
             String nombreCuadrilla = tcld.nextLine().trim();
             System.out.println("Rut supervisor: ");
@@ -127,11 +133,14 @@ public class GestionHuertosApp {
     private void asignaCosechadoresAPlan(){
         System.out.println("Asignando cosechadores a un plan de cosecha...");
         System.out.println("Id del plan: ");
-        int id = Integer.parseInt(tcld.nextLine().trim());
+        int id = tcld.nextInt();
+        tcld.nextLine();
         System.out.println("Id cuadrilla: ");
-        int idCuadrilla = Integer.parseInt(tcld.nextLine().trim());
+        int idCuadrilla = tcld.nextInt();
+        tcld.nextLine();
         System.out.println("Nro. cosechadores a asignar: ");
-        int nroCosechadores = Integer.parseInt(tcld.nextLine().trim());
+        int nroCosechadores = tcld.nextInt();
+        tcld.nextLine();
 
         for (int i = 0; i < nroCosechadores; i++) {
             System.out.println("Fecha de inicio asignación (dd/mm/aaaa)");
@@ -139,7 +148,8 @@ public class GestionHuertosApp {
             System.out.println("Fecha de termino asignación (dd/mm/aaaa)");
             LocalDate termino = LocalDate.parse(tcld.nextLine().trim(), F);
             System.out.println("Meta (Kilos): ");
-            double metas = Double.parseDouble(tcld.nextLine().trim());
+            double metas = tcld.nextDouble();
+            tcld.nextLine();
             System.out.println("Rut cosechador: ");
             Rut rutCosechador = new Rut(tcld.nextLine().trim());
 
