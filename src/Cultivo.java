@@ -4,12 +4,14 @@ public class Cultivo {
     private String especie;
     private String variedad;
     private float rendimiento;
+    private ArrayList<Cuartel> cuarteles;
 
     public Cultivo(int id, String esp, String var, float rend) {
         this.id = id;
         this.especie = esp;
         this.variedad = var;
         this.rendimiento = rend;
+        this.cuarteles = new ArrayList<>();
     }
 
     public int getId() {
@@ -31,10 +33,16 @@ public class Cultivo {
     public void setRendimiento(float rendimiento) {
         this.rendimiento = rendimiento;
     }
-    public boolean addCuertel (Cuertel cuertel){
-        cuertel.add();
+    public boolean addCuartel (Cuartel cuertel){
+        if (cuertel == null) {
+            cuerteles.add(cuartel);
+            return true;
+        }else{
+            return false;
+        }
+
     }
     public Cuartel[] getCuerteles(){
-        return cuerteles.toArray(new Cuartel[]);
+        return cuarteles.toArray(new Cuartel[0]);
     }
 }
