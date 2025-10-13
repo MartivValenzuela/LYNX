@@ -59,7 +59,7 @@ public class ControlProduccion {
         }else{
             for (int i = 0; i < cultivos.size(); i++) {
                 Cultivo c = cultivos.get(i);
-
+                System.out.println(c.getId() + "    " + c.getEspecie() + "    " + c.getVariedad() + "    " + c.getRendimiento() + "    " + c.get);
             }
         }
     }
@@ -68,8 +68,8 @@ public class ControlProduccion {
             System.out.println("no hay huertos listados");
         }else{
             for (int i = 0; i < huertos.size(); i++) {
-                Huerto c = huertos.get(i);
-
+                Huerto h = huertos.get(i);
+                System.out.println(h.getNombre() + "    " + h.getSuperficie() + "    " + h.getUbicacion() + "    " + h.get + "    " + h.get + "    " + h.get);
             }
         }
     }
