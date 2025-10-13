@@ -12,32 +12,36 @@ public class GestionHuertosApp {
         new GestionHuertosApp().menu();
     }
     private void menu(){
-        System.out.println("*** Sistema de Gestión de Huertos***");
-        System.out.println("\n MENÚ DE OPCIONES");
-        System.out.println("1. Crear Persona");
-        System.out.println("2. Crear Cultivo");
-        System.out.println("3. Crear Huerto");
-        System.out.println("4. Crear Plan de Cosecha");
-        System.out.println("5. Asignar Cosechadores a Plan");
-        System.out.println("6. Listar Cultivos");
-        System.out.println("7. Listar Huertos");
-        System.out.println("8. Listar Personas");
-        System.out.println("9. Listar Planes de Cosecha");
-        System.out.println("10. Salir");
-        int opcion = tcld.nextInt();
-        switch (opcion){
-            case 1-> creaPersona();
-            case 2->creaCultivo();
-            case 3->creaHuerto();
-            case 4->creaPlanDeCosecha();
-            case 5->asignaCosechadoresAPlan();
-            case 6->listaCultivos();
-            case 7->listaHuertos();
-            case 8->listaPersonas();
-            case 9->listaPlanesCosecha();
-            case 10->System.out.println("Saliendo del programa");
-            default -> System.out.println("Opcion no valido");
-
+        while(true){
+            System.out.println("\n *** Sistema de Gestión de Huertos***");
+            System.out.println("\n MENÚ DE OPCIONES");
+            System.out.println("1. Crear Persona");
+            System.out.println("2. Crear Cultivo");
+            System.out.println("3. Crear Huerto");
+            System.out.println("4. Crear Plan de Cosecha");
+            System.out.println("5. Asignar Cosechadores a Plan");
+            System.out.println("6. Listar Cultivos");
+            System.out.println("7. Listar Huertos");
+            System.out.println("8. Listar Personas");
+            System.out.println("9. Listar Planes de Cosecha");
+            System.out.println("10. Salir");
+            int opcion = tcld.nextInt();
+            tcld.nextLine();
+            if(opcion == 10){
+                System.out.println("Saliendo del programa");
+                break;
+            }
+            switch (opcion){
+                case 1-> creaPersona();
+                case 2->creaCultivo();
+                case 3->creaHuerto();
+                case 4->creaPlanDeCosecha();
+                case 5->asignaCosechadoresAPlan();
+                case 6->listaCultivos();
+                case 7->listaHuertos();
+                case 8->listaPersonas();
+                case 9->listaPlanesCosecha();
+            }
         }
     }
     private void creaCultivo(){
@@ -63,14 +67,14 @@ public class GestionHuertosApp {
     private void creaHuerto(){
         System.out.println("Creando un huerto...");
         System.out.println("Nombre: ");
-        String nombre = tcld.next().trim();
+        String nombre = tcld.nextLine().trim();
         System.out.println("Superficie: ");
         float superficie = tcld.nextFloat();
         tcld.nextLine();
         System.out.println("Ubicacion: ");
-        String ubicacion = tcld.next().trim();
+        String ubicacion = tcld.nextLine().trim();
         System.out.println("Rut propietario: ");
-        Rut rut = new Rut(tcld.nextLine());
+        Rut rut = new Rut(tcld.nextLine().trim());
 
         boolean ok = control.createHuerto(nombre, superficie, ubicacion, rut);
         if(!ok){
@@ -89,6 +93,7 @@ public class GestionHuertosApp {
             tcld.nextLine();
             System.out.println("Superficie cuartel: ");
             float superficieCuartel = tcld.nextFloat();
+            tcld.nextLine();
             System.out.println("Id cultivo del cuartel: ");
             int idCultivo = tcld.nextInt();
             tcld.nextLine();
@@ -189,12 +194,17 @@ public class GestionHuertosApp {
     }
 
     private void listaCultivos(){
+        String [] v = control.listCultivos();
+
         System.out.println("LISTADO DE CULTIVOS");
         System.out.println("-------------------");
-
-        for (int i = 0; i < ; i++) {
-            System.out.println("Id        Especie        Variedad       Rendimiento        Nro. cuarteles");
-            System.out.println(  + "    " + + "    " + + "    " + );
+        if(v.length == 0){
+            System.out.println("No existen cultivos registrados");
+            return;
+        }
+        System.out.println("Id        Especie        Variedad       Rendimiento        Nro. cuarteles");
+        for (String s : v) {
+            System.out.println(s);
         }
     }
 

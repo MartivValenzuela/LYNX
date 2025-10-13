@@ -44,13 +44,16 @@ public class Huerto {
     public void setPropietario(Propietario propietario){
         this.propietario = propietario;
     }
-    public boolean addCuartel(int id, float sup,Cultivo cul){
-        if (id == 0) {
-            cuarteles.add(cuartel);
+    public boolean addCuartel(int id, float sup,Cultivo cul) {
+        if(cul == null){
             return false;
-        }else {
-            return true;
         }
+        if(getCuartelById(id) != null){
+            return false;
+        }
+        Cuartel c = new Cuartel(id, sup, cul, this);
+        cuarteles.add(c);
+        return true;
     }
     public Cuartel getCuartel(int id){
         return cuartel;

@@ -1,6 +1,6 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Objects;
 
 public class ControlProduccion {
     private ArrayList<Cosechador>  cosechadores;
@@ -9,6 +9,15 @@ public class ControlProduccion {
     private ArrayList<Cultivo> cultivos;
     private ArrayList<Huerto> huertos;
     private ArrayList<Propietario> propietarios;
+
+    public ControlProduccion() {
+        propietarios = new ArrayList<>();
+        supervisores = new ArrayList<>();
+        cultivos = new ArrayList<>();
+        cosechadores = new ArrayList<>();
+        planes = new ArrayList<>();
+        huertos = new ArrayList<>();
+    }
 
     public boolean createPropietario (Rut rut, String nombre, String email, String dirParticular, String dirComercial) {
         for(Propietario p:propietarios){
@@ -23,7 +32,7 @@ public class ControlProduccion {
 
     public boolean createSupervisor (Rut rut, String nombre, String email, String direccion, String profesion){
         for (Supervisor supervisor : supervisores) {
-            if (supervisor.getRut().equals(rut)) {
+            if (Objects.equals(supervisor.getRut(), rut)) {
                 return false;
             }
         }
@@ -55,12 +64,13 @@ public class ControlProduccion {
         if(findHuertoByName(nombre) != null){
             return false;
         }
-        Propietario prop = find
-        for (Huerto huerto : huertos){
-            if (huerto.getNombre().equals(nombre)) {
-                return false;
-            }
+        Propietario prop = findPropietarioByRut(rutPropietario);
+        if(prop == null){
+            return false;
         }
+        Huerto h = new Huerto(nombre, superficie, ubicacion, prop);
+        huertos.add(h);
+        return true;
     }
     public boolean addCuartelToHuerto (String nombreHuerto, int idCuartel, float superficie, int idCultivo){
         Huerto h = findHuertoByName(nombreHuerto);

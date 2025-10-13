@@ -40,6 +40,9 @@ public class Cuadrilla {
     }
 
     private Cosechador findCosechadorByRut(Cosechador cos) {
+        if(cos == null && cos.getRut() == null){
+            return null;
+        }
         for(CosechadorAsignado ca : asignaciones) {
             if(ca.getCosechador().getRut().equals(cos.getRut())) {
                 return ca.getCosechador();

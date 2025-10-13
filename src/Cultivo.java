@@ -34,13 +34,11 @@ public class Cultivo {
         this.rendimiento = rendimiento;
     }
     public boolean addCuartel (Cuartel cuertel){
-        if (cuertel == null) {
-            cuerteles.add(cuartel);
-            return true;
-        }else{
-            return false;
+        if (cuertel == null || cuarteles.contains(cuertel)) {
+           return false;
         }
-
+        cuarteles.add(cuertel);
+        return true;
     }
     public Cuartel[] getCuerteles(){
         return cuarteles.toArray(new Cuartel[0]);

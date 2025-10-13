@@ -12,7 +12,7 @@ public class PlanCosecha {
     private double precioBaseKilo;
     private EstadoPlan estado;
     private Cuartel cuartel;
-    private List<Cuadrilla> cuadrillas = new ArrayList<>();
+    private List<Cuadrilla> cuadrillas;
 
     public PlanCosecha(int id, String nom, LocalDate ini, LocalDate finEst, double meta, double precio, Cuartel cuartel) {
         this.id = id;
@@ -22,8 +22,9 @@ public class PlanCosecha {
         this.metaKilos = meta;
         this.precioBaseKilo = precio;
         this.cuartel = cuartel;
+        this.cuadrillas = new ArrayList<>();
         if(cuartel != null){
-            cuartel.plan = this;
+            cuartel.addPlanCosecha(this);
         }
     }
 

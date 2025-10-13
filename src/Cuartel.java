@@ -3,7 +3,7 @@ public class Cuartel {
     private int id;
     private float superficie;
     private EstadoFonologico estado;
-    private ArrayList<Cuartel>cuarteles;
+    private ArrayList<PlanCosecha> planCosechas;
     private Cultivo cultivo;
     private Huerto huerto;
 
@@ -12,7 +12,7 @@ public class Cuartel {
         this.superficie = superficie;
         this.cultivo = cultivo;
         this.huerto = huerto;
-        this.cuarteles = new ArrayList<>();
+        this.planCosechas = new ArrayList<>();
     }
 
     public int getId() {
@@ -28,7 +28,10 @@ public class Cuartel {
     }
 
     public float getRendimientoEsperado () {
-        return rendimientoEsperado;
+        if(cultivo == null){
+            return 0;
+        }
+        return cultivo.getRendimiento() * superficie;
     }
     public EstadoFonologico getEstado() {
         return estado;
@@ -44,10 +47,16 @@ public class Cuartel {
         return huerto;
     }
     public PlanCosecha[] getPlanesCosecha(){
-        PlanCosecha[] resultado = new PlanCosecha[cuarteles.size()];
-        for (int i = 0; i < cuarteles.size(); i++) {
-            resultado[i] =cuarteles.get(i).getPlanCosecha();
+        PlanCosecha[] resultado = new PlanCosecha[planCosechas.size()];
+        for (int i = 0; i < planCosechas.size(); i++) {
+            resultado[i] = planCosechas.get(i);
         }
         return resultado;
+    }
+
+    public void addPlanCosecha(PlanCosecha planCosecha){
+        if(planCosechas != null &&  !planCosechas.contains(planCosecha)){
+            planCosechas.add(planCosecha);
+        }
     }
 }
