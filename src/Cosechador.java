@@ -1,20 +1,20 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Cosechador extends Persona {
-    private Date fechaNacimiento;
+    private LocalDate fechaNacimiento;
     private ArrayList<CosechadorAsignado> asignaciones;
 
-    public Cosechador(Rut rut, String nom, String email, String dir, int maxAsignaciones) {
+    public Cosechador(Rut rut, String nom, String email, String dir) {
         super(rut, nom, email, dir);
         this.asignaciones = new ArrayList<>();
     }
 
-    public Date getFechaNacimiento() {
+    public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(Date fNac) {
+    public void setFechaNacimiento(LocalDate fNac) {
         this.fechaNacimiento = fNac;
     }
     public void addCuadrilla (CosechadorAsignado cosAs){

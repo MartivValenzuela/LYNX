@@ -6,27 +6,92 @@ public class ControlProduccion {
     private ArrayList<Cosechador>  cosechadores;
     private ArrayList<PlanCosecha> planes;
     private ArrayList<Supervisor>  supervisores;
+    private ArrayList<Cultivo> cultivos;
+    private ArrayList<Huerto> huertos;
+    private ArrayList<Propietario> propietarios;
 
     public boolean createPropietario (Rut rut, String nombre, String email, String dirParticular, String dirComercial) {
+        for(Propietario p:propietarios){
+            if(p.getRut().equals(rut)){
+                return false;
+            }
+        }
+        Propietario nuevoPropetario = new Propietario(rut , nombre, email, dirParticular, dirComercial);
+        propietarios.add(nuevoPropetario);
+        return true;
     }
 
-    public boolean createSupervisor (Rut rut, String nombre, String email, String dirrecion, String profesion){
-
+    public boolean createSupervisor (Rut rut, String nombre, String email, String direccion, String profesion){
+        for (Supervisor supervisor : supervisores) {
+            if (supervisor.getRut().equals(rut)) {
+                return false;
+            }
+        }
+        Supervisor nuevoSupervisor = new Supervisor(rut, nombre, email, direccion, profesion);
+        supervisores.add(nuevoSupervisor);
+        return true;
     }
-    public boolean createCosechador (Rut rut, String nombre, String email, String dirrecion, LocalDate fechaNacimiento){
-
+    public boolean createCosechador (Rut rut, String nombre, String email, String direccion, LocalDate fechaNacimiento){
+        for (Cosechador cosechador : cosechadores) {
+            if (cosechador.getRut().equals(rut)) {
+                return false;
+            }
+        }
+        Cosechador nuevoCosechador = new Cosechador(rut, nombre, email, direccion);
+        cosechadores.add(nuevoCosechador);
+        return true;
     }
-    public boolean createCultivo (int id,String especie, String variedad,float Rendimiento){
-
+    public boolean createCultivo (int id,String especie, String variedad,float rendimiento){
+        for (Cultivo cultivo : cultivos) {
+            if (cultivo.getId() == id) {
+                return false;
+            }
+        }
+        Cultivo nuevoCultivo = new Cultivo(id, especie, variedad, rendimiento);
+        cultivos.add(nuevoCultivo);
+        return true;
     }
     public boolean createHuerto (String nombre, float superficie, String ubicacion, Rut rutPropietario){
-
+        if(findHuertoByName(nombre) != null){
+            return false;
+        }
+        Propietario prop = find
+        for (Huerto huerto : huertos){
+            if (huerto.getNombre().equals(nombre)) {
+                return false;
+            }
+        }
     }
     public boolean addCuartelToHuerto (String nombreHuerto, int idCuartel, float superficie, int idCultivo){
+        Huerto h = findHuertoByName(nombreHuerto);
+        if(h==null){
+            return false;
+        }
+        Cultivo cul = findCultivoById(idCultivo);
+        if(cul==null){
+            return false;
+        }
+        return h.addCuartel(idCuartel, superficie, cul);
 
     }
     public boolean createPlanCosecha (int idPlan, String nom, LocalDate inicio, LocalDate finEstim, double meta, float precioBase, String nomHuerto, int idCuartel){
-
+        if(findPlanById(idPlan) == null){
+            return false;
+        }
+        if(inicio == null ||  finEstim == null || inicio.isAfter(finEstim)){
+            return false;
+        }
+        Huerto h = findHuertoByName(nomHuerto);
+        if(h == null){
+            return false;
+        }
+        Cuartel c = h.getCuartelById(idCuartel);
+        if(c == null){
+            return false;
+        }
+        PlanCosecha plan = new PlanCosecha(idPlan, nom, inicio, finEstim, meta, precioBase, c);
+        planes.add(plan);
+        return true;
     }
     public boolean addCuadrillaToPlan (int idPlan, int idCuad, String nomCuad, Rut rutSup){
         PlanCosecha plan = findPlanById(idPlan);
@@ -60,16 +125,42 @@ public class ControlProduccion {
         return plan.addCosechadorToCuadrilla(idCuadrilla, fInicio, fFin, meta, cos);
     }
     public String[] listCultivos(){
-
+        if (cultivos.isEmpty()) {
+            System.out.println("no hay cultivos listados");
+            return new String[0];
+        }
+        String [] arr = new String[cultivos.size()];
+        for (int i = 0; i < cultivos.size(); i++) {
+            Cultivo c = cultivos.get(i);
+            arr[i] = c.getId() + ", " + c.getEspecie() + ", " + c.getVariedad() + ", " + c.getRendimiento();
+        }
+        return arr;
     }
     public String[] listHuertos(){
-
+        if (huertos.isEmpty()) {
+            return new String[0];
+        }
+        String [] arr = new String[huertos.size()];
+        for (int i = 0; i < huertos.size(); i++) {
+            Huerto h = huertos.get(i);
+            String propRut;
+            if(h.getPropietario() != null && h.getPropietario() != null){
+                propRut = h.getPropietario().getRut().toString();
+            } else {
+                propRut = "";
+            }
+            arr[i] = h.getNombre() + ", " + h.getSuperficie() + ", " + h.getUbicacion() + ", " + propRut + ", " + h.getCuarteles();
+        }
+        return arr;
     }
     public String[] listPropietarios(){
-
-    }
-    public String[] listSupervisores(){
-
+        String[] lista = new String[propietarios.size()];
+        for (int i = 0; i < propietarios.size(); i++) {
+            Propietario prop = propietarios.get(i);
+            lista[i] = prop.getRut() + ", " + prop.getNombre() + ", " + prop.getEmail() + ", " +
+                    prop.getDireccion() + ", " + prop.getDirComercial();
+        }
+        return lista;
     }
     public String[] listCosechadores() {
         if(cosechadores.isEmpty()){
@@ -85,7 +176,25 @@ public class ControlProduccion {
             } else {
                 fNac = c.getFechaNacimiento().toString();
             }
-            arr[i] =toRut(c.getRut()) + ", " + c.getNombre() + ", " + c.getEmail() + ", " + c.getDirrecion() + ", " + fNac + ", " + nCuadrillas;
+            arr[i] =toRut(c.getRut()) + ", " + c.getNombre() + ", " + c.getEmail() + ", " + c.getDireccion() + ", " + fNac + ", " + nCuadrillas;
+        }
+        return arr;
+    }
+
+    public String [] listSupervisores(){
+        if(supervisores.isEmpty()){
+            return new String[0];
+        }
+        String [] arr = new String[supervisores.size()];
+        for(int i = 0; i < supervisores.size(); i++){
+            Supervisor s = supervisores.get(i);
+            String cuadNom;
+            if(s.getCuadrilla() == null){
+                cuadNom = "S/A";
+            } else{
+                cuadNom = s.getCuadrilla().getNombre();
+            }
+            arr[i] = toRut(s.getRut()) + ", " + s.getNombre() + ", " + s.getEmail() + ", " + s.getDireccion() + ", " + s.getProfesion() + ", " + cuadNom;
         }
         return arr;
     }
@@ -110,18 +219,51 @@ public class ControlProduccion {
         return arr;
     }
     private void generateTestData(){
-
+        propietarios.add(new Propietario(new Rut("11.111.111-1"), "Daniel Ruiz Saez",
+                "daniel.ruiz@email.com", "Los Alerces 123", "Calle Comercial 456"));
+        supervisores.add(new Supervisor(new Rut("22.222.222-2"), "Leonora Casas Solís",
+                "leonora.casas@gmail.com", "Los pinguinos 432", "Agronomo"));
+        cosechadores.add(new Cosechador(new Rut("33.333.333-3"), "David Rios Flores",
+                "david.riosf@gmail.com", "Las Amapolas 234"));
     }
 
     private Cosechador findCosechadorByRut(Rut rut){
         for(Cosechador c : cosechadores) if(eqRut(c.getRut(), rut)) return c;
         return null;
     }
+    private Cultivo findCultivoById(int id){
+        for(Cultivo c : cultivos){
+            if(c.getId() == id) {
+                return c;
+            }
+        }
+        return null;
+    }
+    private Propietario findPropietarioByRut(Rut rut){
+        for(Propietario p : propietarios){
+            if(eqRut(p.getRut(), rut)) {
+                return p;
+            }
+        }
+        return null;
+    }
     private PlanCosecha findPlanById(int id){
-        for(PlanCosecha p : planes) if(p.getId() == id) return p;
+        for(PlanCosecha p : planes) {
+            if(p.getId() == id) {
+                return p;
+            }
+        }
         return null;
     }
 
+    private Huerto findHuertoByName(String name){
+        for(Huerto h : huertos) {
+            if(h.getNombre().equals(name) && h.getNombre() == null) {
+                return h;
+            }
+        }
+        return null;
+    }
     private Supervisor findSupervisorByRut(Rut rut){
         for(Supervisor sup : supervisores) if(eqRut(sup.getRut(), rut)) return sup;
         return null;

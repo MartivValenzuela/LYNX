@@ -1,20 +1,18 @@
 import java.util.ArrayList;
-
 public class Cuartel {
     private int id;
     private float superficie;
     private EstadoFonologico estado;
-    PlanCosecha plan;
-    private Huerto huerto;
-    private ArrayList<PlanCosecha> planCosechas;
+    private ArrayList<Cuartel>cuarteles;
     private Cultivo cultivo;
+    private Huerto huerto;
 
     public Cuartel(int id, float superficie, Cultivo cultivo, Huerto huerto ) {
         this.id = id;
         this.superficie = superficie;
         this.cultivo = cultivo;
         this.huerto = huerto;
-        this.planCosechas = new ArrayList<>();
+        this.cuarteles = new ArrayList<>();
     }
 
     public int getId() {
@@ -30,10 +28,7 @@ public class Cuartel {
     }
 
     public float getRendimientoEsperado () {
-        if(getCultivo() == null){
-            return 0;
-        }
-        return getCultivo().getRendimiento() * getSuperficie();
+        return rendimientoEsperado;
     }
     public EstadoFonologico getEstado() {
         return estado;
@@ -49,6 +44,10 @@ public class Cuartel {
         return huerto;
     }
     public PlanCosecha[] getPlanesCosecha(){
-        return planCosechas.toArray(new  PlanCosecha[0]);
+        PlanCosecha[] resultado = new PlanCosecha[cuarteles.size()];
+        for (int i = 0; i < cuarteles.size(); i++) {
+            resultado[i] =cuarteles.get(i).getPlanCosecha();
+        }
+        return resultado;
     }
 }

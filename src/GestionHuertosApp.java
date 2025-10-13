@@ -4,9 +4,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class GestionHuertosApp {
-    private Scanner tcld = new Scanner(System.in);
-    private DateTimeFormatter F = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private ControlProduccion control = new ControlProduccion();
+    private final Scanner tcld = new Scanner(System.in);
+    private final DateTimeFormatter F = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final ControlProduccion control = new ControlProduccion();
 
     public static void main(String[] args) {
         new GestionHuertosApp().menu();
@@ -26,53 +26,78 @@ public class GestionHuertosApp {
         System.out.println("10. Salir");
         int opcion = tcld.nextInt();
         switch (opcion){
-            case 1:
-                creaPersona();
-            case 2:
-                creaCultivo();
-            case 3:
-                creaHuerto();
-            case 4:
-                creaPlanDeCosecha();
-            case 5:
-                asignaCosechadoresAPlan();
-            case 6:
-                listaCultivos();
-            case 7:
-                listaHuertos();
-            case 8:
-                listasPersonas();
-            case 9:
-                listaPlanesCosecha();
-            case 10:
+            case 1-> creaPersona();
+            case 2->creaCultivo();
+            case 3->creaHuerto();
+            case 4->creaPlanDeCosecha();
+            case 5->asignaCosechadoresAPlan();
+            case 6->listaCultivos();
+            case 7->listaHuertos();
+            case 8->listaPersonas();
+            case 9->listaPlanesCosecha();
+            case 10->System.out.println("Saliendo del programa");
+            default -> System.out.println("Opcion no valido");
 
         }
     }
     private void creaCultivo(){
         System.out.println("Creando un cultivo...");
-        System.out.println("Identificación: ");
-        System.out.println("Especie: " + );
-        System.out.println("Variedad: " + );
-        System.out.println("Rendimiento: " + );
-        System.out.println("\nCultivo creado exitosamente");
+        System.out.println("Identificación: " );
+        int id = tcld.nextInt();
+        tcld.nextLine();
+        System.out.println("Especie: " );
+        String especie = tcld.next().trim();
+        System.out.println("Variedad: "  );
+        String variedad = tcld.next().trim();
+        System.out.println("Rendimiento: ");
+        float rendimiento = tcld.nextFloat();
+        tcld.nextLine();
+        boolean ok = control.createCultivo(id, especie, variedad, rendimiento);
+        if(ok){
+            System.out.println("Cultivo creado exitosamente");
+        } else {
+            System.out.println("No se pudo crear: ya existe un cultivo con ese identificador.");
+        }
     }
 
     private void creaHuerto(){
         System.out.println("Creando un huerto...");
-        System.out.println("Nombre: " + );
-        System.out.println("Superficie: " + );
-        System.out.println("Ubicacion: " + );
-        System.out.println("Rut propietario: " + );
+        System.out.println("Nombre: ");
+        String nombre = tcld.next().trim();
+        System.out.println("Superficie: ");
+        float superficie = tcld.nextFloat();
+        tcld.nextLine();
+        System.out.println("Ubicacion: ");
+        String ubicacion = tcld.next().trim();
+        System.out.println("Rut propietario: ");
+        Rut rut = new Rut(tcld.nextLine());
 
-        System.out.println("Huerto creado exitosamente");
+        boolean ok = control.createHuerto(nombre, superficie, ubicacion, rut);
+        if(!ok){
+            System.out.println("No ha sido posible crear el huerto (nombre duplicado o propietario inexistente).");
+            return;
+        }
 
         System.out.println("Agregar cuarteles al huerto" );
-        System.out.println("Nro. de cuarteles: " + );
-        for (int i = 0; i < ; i++) {
-            System.out.println("\nId cuartel: " + );
-            System.out.println("Superficie cuartel: " + );
-            System.out.println("Id cultivo del cuartel: " +);
-            System.out.println("Cuartel agregado exitosamente al huerto");
+        System.out.println("Nro. de cuarteles: ");
+        int n =  tcld.nextInt();
+        tcld.nextLine();
+        for (int i = 0; i < n; i++) {
+            System.out.println("----Cuartel #"+(i+1));
+            System.out.println("Id cuartel: ");
+            int idCuartel = tcld.nextInt();
+            tcld.nextLine();
+            System.out.println("Superficie cuartel: ");
+            float superficieCuartel = tcld.nextFloat();
+            System.out.println("Id cultivo del cuartel: ");
+            int idCultivo = tcld.nextInt();
+            tcld.nextLine();
+            boolean okC = control.addCuartelToHuerto(nombre, idCuartel, superficieCuartel, idCultivo);
+            if(okC){
+                System.out.println("Cuartel agregado exitosamente al huerto");
+            } else {
+                System.out.println("No se pudo agregar cuartel al huerto(id duplicado o cultivo inexistente)");
+            }
         }
 
     }
@@ -173,43 +198,74 @@ public class GestionHuertosApp {
         }
     }
 
-    private void listaHuertos(){
-        System.out.println("LISTADO DE HUERTOS");
-        System.out.println("------------------");
-        System.out.println("Nombre        Superficie Ubicación        Rut Propietario    Nombre propietario        Nro. cuarteles");
+    private void listaHuertos () {
+        String[] huertos = control.listHuertos();
 
-        for (int i = 0; i < ; i++) {
-            System.out.println(+ "    " + + "    " + + "    " + + "     " + );
+        System.out.println("listado de huertos");
+        System.out.println("---");
+
+        if (huertos.length == 0) {
+            System.out.println("No hay huertos registrados en el sistema.");
+            return;
+        }
+        System.out.println("Nombre, Superficie, Ubicacion, Rut propietario, Nombre propietario, Nro. cuarteles");
+        for (String huerto : huertos) {
+            System.out.println(huerto);
         }
     }
 
-    private void listasPersonas(){
-        System.out.println("LISTADO DE PROPIETARIOS");
-        System.out.println("-----------------------");
-        for (int i = 0; i < ; i++) {
-            System.out.println("Rut        Nombre        Dirección        email        Dirección comercial        Nro. huertos");
-            System.out.println(   "    " +  "    " +  "    " +  "    " +  "    " );
+    private void listaPersonas () {
+        System.out.println("listado de personas");
+        System.out.println("---");
+
+        // Propietario
+        String[] propietarios = control.listPropietarios();
+        System.out.println("PROPIETARIOS:");
+        if (propietarios.length == 0) {
+            System.out.println("No hay propietarios registrados");
+        } else {
+            for (String p : propietarios) {
+                System.out.println(p);
+            }
         }
-        System.out.println("LISTADO DE SUPERVISORES");
-        System.out.println("-----------------------");
-        for (int i = 0; i < ; i++) {
-            System.out.println("Rut        Nombre        Dirección        email        Profesión        Nombre cuadrilla");
-            System.out.println( "    " + "    " +  "    " +  "    " +  "    ");
+
+        // Supervisorees
+        String[] supervisores = control.listSupervisores();
+        System.out.println("\nSUPERVISORES:");
+        if (supervisores.length == 0) {
+            System.out.println("No hay supervisores registrados");
+        } else {
+            for (String s : supervisores) {
+                System.out.println(s);
+            }
         }
-        System.out.println("LISTADO DE COSECHADORES");
-        System.out.println("-----------------------");
-        for (int i = 0; i < ; i++) {
-            System.out.println("Rut        Nombre        Dirección        email        Fecha nacimiento        Nro. caudrillas");
-            System.out.println( "    " +  "    " + "    " + "    " + "    " + );
+
+        // cosechadore
+        String[] cosechadores = control.listCosechadores();
+        System.out.println("\nCOSECHADORES:");
+        if (cosechadores.length == 0) {
+            System.out.println("No hay cosechadores registrados");
+        } else {
+            for (String c : cosechadores) {
+                System.out.println(c);
+            }
         }
     }
 
-    private void listaPlanesCosecha(){
-        System.out.println("LISTADO DE PLANES DE COSECHA");
-        System.out.println("----------------------------");
-        for (int i = 0; i < ; i++) {
-            System.out.println("Id        Nombre        Fecha inicio    Fecha término    Meta (kg)    Precio base (kg)    Estado    Id cuartel    Nombre huerto    Nro. cuadrillas");
-            System.out.println(  "    " +  "    " + "    " +  "    " + "    " +  "    " +  "    " +  "    " +  "    " + );
+    private void listaPlanesCosecha () {
+        String[] planes = control.listPlanesCosecha();
+
+        System.out.println("listado de planes de cosecha ");
+        System.out.println("---");
+
+        if (planes.length == 0) {
+            System.out.println("No hay planes de cosecha registrados en el sistema.");
+            return;
+        }
+
+        System.out.println("Id, Nombre, Inicio, Termino, Meta, Precio base, Nombre huerto, Id cuartel, Nro. cuadrillas");
+        for (String plan : planes) {
+            System.out.println(plan);
         }
     }
 
