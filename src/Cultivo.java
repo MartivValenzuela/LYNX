@@ -33,14 +33,14 @@ public class Cultivo {
     public void setRendimiento(float rendimiento) {
         this.rendimiento = rendimiento;
     }
-    public boolean addCuartel (Cuartel cuartel){
-        if (cuartel == null || cuarteles.contains(cuartel)) {
-            return false;
+    public boolean addCuartel (Cuartel cuertel){
+        if (cuertel == null || cuarteles.contains(cuertel)) {
+           return false;
         }
-        cuarteles.add(cuartel);
+        cuarteles.add(cuertel);
         return true;
     }
-    public Cuartel[] getCuarteles(){
+    public Cuartel[] getCuerteles(){
         return cuarteles.toArray(new Cuartel[0]);
     }
 }

@@ -13,11 +13,6 @@ public class Huerto {
         this.ubicacion = ubi;
         this.propietario = prop;
         this.cuarteles = new ArrayList<>();
-
-        if (prop != null) {
-            prop.addHuerto(this);
-        }
-
     }
 
     public String getNombre() {
@@ -40,7 +35,7 @@ public class Huerto {
         this.ubicacion = ubicacion;
     }
 
-    public Propietario getPropietario() {
+    public Persona getPropietario() {
         return propietario;
     }
 

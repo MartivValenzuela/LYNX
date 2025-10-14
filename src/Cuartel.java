@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-
 public class Cuartel {
     private int id;
     private float superficie;
@@ -8,16 +7,12 @@ public class Cuartel {
     private Cultivo cultivo;
     private Huerto huerto;
 
-    public Cuartel(int id, float superficie, Cultivo cultivo, Huerto huerto) {
+    public Cuartel(int id, float superficie, Cultivo cultivo, Huerto huerto ) {
         this.id = id;
         this.superficie = superficie;
         this.cultivo = cultivo;
         this.huerto = huerto;
         this.planCosechas = new ArrayList<>();
-
-        if (cultivo != null) {
-            cultivo.addCuartel(this);
-        }
     }
 
     public int getId() {
