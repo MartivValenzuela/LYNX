@@ -13,6 +13,10 @@ public class Cuartel {
         this.cultivo = cultivo;
         this.huerto = huerto;
         this.planCosechas = new ArrayList<>();
+
+        if (cultivo != null) {
+            cultivo.addCuartel(this);
+        }
     }
 
     public int getId() {
