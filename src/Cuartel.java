@@ -47,11 +47,7 @@ public class Cuartel {
         return huerto;
     }
     public PlanCosecha[] getPlanesCosecha(){
-        PlanCosecha[] resultado = new PlanCosecha[planCosechas.size()];
-        for (int i = 0; i < planCosechas.size(); i++) {
-            resultado[i] = planCosechas.get(i);
-        }
-        return resultado;
+        return planCosechas.toArray(new PlanCosecha[0]);
     }
 
     public void addPlanCosecha(PlanCosecha planCosecha){
