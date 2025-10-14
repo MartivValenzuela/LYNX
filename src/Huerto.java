@@ -1,20 +1,18 @@
-
 import java.util.ArrayList;
 
 public class Huerto {
     private String nombre;
     private float superficie;
     private String ubicacion;
-    private ArrayList<Cuartel>cuarteles;
+    private ArrayList<Cuartel> cuarteles;
     private Propietario propietario;
-    private Cuartel cuartel;
 
     public Huerto(String nom, float sup, String ubi, Propietario prop) {
         this.nombre = nom;
         this.superficie = sup;
         this.ubicacion = ubi;
         this.propietario = prop;
-        this.cuarteles= new ArrayList<>();
+        this.cuarteles = new ArrayList<>();
     }
 
     public String getNombre() {
@@ -37,38 +35,41 @@ public class Huerto {
         this.ubicacion = ubicacion;
     }
 
-    public Persona getPropietario(){
+    public Persona getPropietario() {
         return propietario;
     }
 
-    public void setPropietario(Propietario propietario){
+    public void setPropietario(Propietario propietario) {
         this.propietario = propietario;
     }
-    public boolean addCuartel(int id, float sup,Cultivo cul) {
-        if(cul == null){
+
+    public boolean addCuartel(int id, float sup, Cultivo cul) {
+        if (cul == null) {
             return false;
         }
-        if(getCuartelById(id) != null){
+        if (getCuartelById(id) != null) {
             return false;
         }
         Cuartel c = new Cuartel(id, sup, cul, this);
         cuarteles.add(c);
         return true;
     }
-    public Cuartel getCuartel(int id){
-        return cuartel;
+
+    public Cuartel getCuartel(int id) {
+        return getCuartelById(id);
     }
-    public Cuartel[] getCuarteles(){
+
+    public Cuartel[] getCuarteles() {
         Cuartel[] resultado = new Cuartel[cuarteles.size()];
         for (int i = 0; i < cuarteles.size(); i++) {
-            resultado[i] =cuarteles.get(i);
+            resultado[i] = cuarteles.get(i);
         }
         return resultado;
     }
 
-    public Cuartel getCuartelById(int id){
-        for(Cuartel c : cuarteles){
-            if(c.getId() == id){
+    public Cuartel getCuartelById(int id) {
+        for (Cuartel c : cuarteles) {
+            if (c.getId() == id) {
                 return c;
             }
         }

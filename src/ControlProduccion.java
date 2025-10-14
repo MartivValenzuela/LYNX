@@ -85,7 +85,7 @@ public class ControlProduccion {
 
     }
     public boolean createPlanCosecha (int idPlan, String nom, LocalDate inicio, LocalDate finEstim, double meta, float precioBase, String nomHuerto, int idCuartel){
-        if(findPlanById(idPlan) == null){
+        if(findPlanById(idPlan) != null){
             return false;
         }
         if(inicio == null ||  finEstim == null || inicio.isAfter(finEstim)){
@@ -268,7 +268,7 @@ public class ControlProduccion {
 
     private Huerto findHuertoByName(String name){
         for(Huerto h : huertos) {
-            if(h.getNombre().equals(name) && h.getNombre() == null) {
+            if(h.getNombre() != null && h.getNombre().equals(name)){
                 return h;
             }
         }

@@ -87,7 +87,7 @@ public class PlanCosecha {
         if(supervisor == null){
             return false;
         }
-        if(supervisor.getCuadrilla() == null){
+        if(supervisor.getCuadrilla() != null){
             return false;
         }
         Cuadrilla nueva = new Cuadrilla(idCuad, nomCuad, supervisor, this);
