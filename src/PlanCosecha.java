@@ -1,16 +1,20 @@
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlanCosecha {
     private int id;
     private String nombre;
-    private Date inicio;
-    private Date finEstimado;
-    private Date finReal;
+    private LocalDate inicio;
+    private LocalDate finEstimado;
+    private LocalDate finReal;
     private double metaKilos;
     private double precioBaseKilo;
     private EstadoPlan estado;
+    private Cuartel cuartel;
+    private List<Cuadrilla> cuadrillas;
 
-    public PlanCosecha(int id, String nom, Date ini, Date finEst, double meta, double precio, Cuartel cuartel) {
+    public PlanCosecha(int id, String nom, LocalDate ini, LocalDate finEst, double meta, double precio, Cuartel cuartel) {
         this.id = id;
         this.nombre = nom;
         this.inicio = ini;
@@ -18,6 +22,10 @@ public class PlanCosecha {
         this.metaKilos = meta;
         this.precioBaseKilo = precio;
         this.cuartel = cuartel;
+        this.cuadrillas = new ArrayList<>();
+        if(cuartel != null){
+            cuartel.addPlanCosecha(this);
+        }
     }
 
     public int getId() {
@@ -32,18 +40,18 @@ public class PlanCosecha {
         this.nombre = nombre;
     }
 
-    public Date getInicio() {
+    public LocalDate getInicio() {
         return inicio;
     }
 
-    public Date getFinEstimado() {
+    public LocalDate getFinEstimado() {
         return finEstimado;
     }
 
-    public Date getFinReal() {
+    public LocalDate getFinReal() {
         return finReal;
     }
-    public void setFinReal(Date finReal) {
+    public void setFinReal(LocalDate finReal) {
         this.finReal = finReal;
     }
     public double getMetaKilos() {
@@ -72,13 +80,36 @@ public class PlanCosecha {
     public Cuartel getCuartel(){
         return cuartel;
     }
-    public boolean addCuadrilla (int idCuad, Date fini, Date fFin, double meta, Cosechador cos){
-
+    public boolean addCuadrilla (int idCuad, String nomCuad, Supervisor supervisor){
+        if(findCuadrillaById(idCuad) != null){
+            return false;
+        }
+        if(supervisor == null){
+            return false;
+        }
+        if(supervisor.getCuadrilla() != null){
+            return false;
+        }
+        Cuadrilla nueva = new Cuadrilla(idCuad, nomCuad, supervisor, this);
+        cuadrillas.add(nueva);
+        return true;
     }
-    public boolean addCosechadorToCuadrilla(int idCuad, Date fIni, Date fFin, double meta, Cosechador cos){
-
+    public boolean addCosechadorToCuadrilla(int idCuad, LocalDate fIni, LocalDate fFin, double meta, Cosechador cos){
+        Cuadrilla cuad = findCuadrillaById(idCuad);
+        if(cuad == null){
+            return false;
+        }
+        return cuad.addCosechador(fIni, fFin, meta, cos);
     }
     public Cuadrilla[] getCuadrillas(){
+        return cuadrillas.toArray(new Cuadrilla[0]);
+    }
 
+    private Cuadrilla findCuadrillaById(int idCuad){
+        for(Cuadrilla c : cuadrillas){
+            if(c.getId() == idCuad)
+                return c;
+        }
+        return null;
     }
 }

@@ -1,14 +1,14 @@
-public class Persona {
+public abstract class Persona {
     private Rut rut;
     private String nombre;
     private String email;
-    private String dirrecion;
+    private String direccion;
 
-    public Persona(Rut rut, String nom, String email, String dir) {
+    public Persona(Rut rut, String nombre, String email, String direccion) {
         this.rut = rut;
-        this.nombre = nom;
+        this.nombre = nombre;
         this.email = email;
-        this.dirrecion = dir;
+        this.direccion = direccion;
     }
 
     public Rut getRut() {
@@ -27,12 +27,12 @@ public class Persona {
         this.email = email;
     }
 
-    public String getDirrecion() {
-        return dirrecion;
+    public String getDireccion() {
+        return direccion;
     }
 
-    public void setDirrecion(String dirrecion) {
-        this.dirrecion = dirrecion;
-    }
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
 
+    }
 }
