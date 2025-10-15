@@ -1,4 +1,3 @@
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -53,7 +52,7 @@ public class GestionHuertosApp {
         String especie = tcld.next().trim();
         System.out.println("Variedad: "  );
         String variedad = tcld.next().trim();
-        System.out.println("Rendimiento: ");
+        System.out.println("Rendimiento (Use coma para separador decimal): ");
         float rendimiento = tcld.nextFloat();
         tcld.nextLine();
         boolean ok = control.createCultivo(id, especie, variedad, rendimiento);
@@ -194,89 +193,95 @@ public class GestionHuertosApp {
     }
 
     private void listaCultivos(){
-        String [] v = control.listCultivos();
-
         System.out.println("LISTADO DE CULTIVOS");
         System.out.println("-------------------");
-        if(v.length == 0){
-            System.out.println("No existen cultivos registrados");
-            return;
+        System.out.printf("%-6s %-15s %-20s %-15s %-15s%n",
+                "Id", "Especie", "Variedad", "Rendimiento", "Nro. cuarteles");
+
+        String[] v = control.listCultivos();
+        if (v.length == 0) {
+            System.out.println("No existen cultivos registrados.");
+        } else {
+            for (String s : v) System.out.println(s);
         }
-        System.out.println("Id        Especie        Variedad       Rendimiento        Nro. cuarteles");
-        for (String s : v) {
-            System.out.println(s);
-        }
+        System.out.println();
     }
 
     private void listaHuertos () {
-        String[] huertos = control.listHuertos();
+        System.out.println("LISTADO DE HUERTOS");
+        System.out.println("------------------");
+        System.out.printf("%-20s %-12s %-30s %-18s %-25s %-15s%n",
+                "Nombre", "Superficie", "Ubicación",
+                "Rut propietario", "Nombre propietario", "Nro. cuarteles");
 
-        System.out.println("listado de huertos");
-        System.out.println("---");
-
-        if (huertos.length == 0) {
-            System.out.println("No hay huertos registrados en el sistema.");
-            return;
+        String[] v = control.listHuertos();
+        if (v.length == 0) {
+            System.out.println("No existen huertos registrados.");
+        } else {
+            for (String s : v) System.out.println(s);
         }
-        System.out.println("Nombre, Superficie, Ubicacion, Rut propietario, Nombre propietario, Nro. cuarteles");
-        for (String huerto : huertos) {
-            System.out.println(huerto);
-        }
+        System.out.println();
     }
 
     private void listaPersonas () {
-        System.out.println("listado de personas");
-        System.out.println("---");
+        // === PROPIETARIOS ===
+        System.out.println("LISTADO DE PROPIETARIOS");
+        System.out.println("-----------------------");
+        System.out.printf("%-14s %-28s %-28s %-30s %-22s %-12s%n",
+                "Rut", "Nombre", "Dirección", "email", "Dirección comercial", "Nro. huertos");
 
-        // Propietario
-        String[] propietarios = control.listPropietarios();
-        System.out.println("PROPIETARIOS:");
-        if (propietarios.length == 0) {
-            System.out.println("No hay propietarios registrados");
+        String[] vp = control.listPropietarios();
+        if (vp.length == 0) {
+            System.out.println("No existen propietarios registrados.");
         } else {
-            for (String p : propietarios) {
-                System.out.println(p);
-            }
+            for (String s : vp) System.out.println(s);
         }
+        System.out.println();
 
-        // Supervisorees
-        String[] supervisores = control.listSupervisores();
-        System.out.println("\nSUPERVISORES:");
-        if (supervisores.length == 0) {
-            System.out.println("No hay supervisores registrados");
-        } else {
-            for (String s : supervisores) {
-                System.out.println(s);
-            }
-        }
+        // === SUPERVISORES ===
+        System.out.println("LISTADO DE SUPERVISORES");
+        System.out.println("-----------------------");
+        System.out.printf("%-14s %-28s %-28s %-30s %-14s %-18s%n",
+                "Rut", "Nombre", "Dirección", "email", "Profesión", "Nombre cuadrilla");
 
-        // cosechadore
-        String[] cosechadores = control.listCosechadores();
-        System.out.println("\nCOSECHADORES:");
-        if (cosechadores.length == 0) {
-            System.out.println("No hay cosechadores registrados");
+        String[] vs = control.listSupervisores();
+        if (vs.length == 0) {
+            System.out.println("No existen supervisores registrados.");
         } else {
-            for (String c : cosechadores) {
-                System.out.println(c);
-            }
+            for (String s : vs) System.out.println(s);
         }
+        System.out.println();
+
+        // === COSECHADORES ===
+        System.out.println("LISTADO DE COSECHADORES");
+        System.out.println("-----------------------");
+        System.out.printf("%-14s %-28s %-28s %-30s %-16s %-16s%n",
+                "Rut", "Nombre", "Dirección", "email", "Fecha nacimiento", "Nro. cuadrillas");
+
+        String[] vc = control.listCosechadores();
+        if (vc.length == 0) {
+            System.out.println("No existen cosechadores registrados.");
+        } else {
+            for (String s : vc) System.out.println(s);
+        }
+        System.out.println();
     }
 
     private void listaPlanesCosecha () {
+        System.out.println("LISTADO DE PLANES DE COSECHA");
+        System.out.println("-----------------------------");
+        System.out.printf("%-8s %-20s %-14s %-14s %-12s %-16s %-14s %-10s %-20s %-12s%n",
+                "Id", "Nombre", "Fecha inicio", "Fecha término",
+                "Meta (kg)", "Precio base (kg)", "Estado",
+                "Id cuartel", "Nombre huerto", "Nro. cuadrillas");
+
         String[] planes = control.listPlanesCosecha();
-
-        System.out.println("listado de planes de cosecha ");
-        System.out.println("---");
-
         if (planes.length == 0) {
-            System.out.println("No hay planes de cosecha registrados en el sistema.");
-            return;
+            System.out.println("No existen planes de cosecha registrados.");
+        } else {
+            for (String p : planes) System.out.println(p);
         }
-
-        System.out.println("Id, Nombre, Inicio, Termino, Meta, Precio base, Nombre huerto, Id cuartel, Nro. cuadrillas");
-        for (String plan : planes) {
-            System.out.println(plan);
-        }
+        System.out.println();
     }
 
 
