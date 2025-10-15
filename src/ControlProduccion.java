@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -9,6 +10,7 @@ public class ControlProduccion {
     private ArrayList<Cultivo> cultivos;
     private ArrayList<Huerto> huertos;
     private ArrayList<Propietario> propietarios;
+    private DateTimeFormatter F = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public ControlProduccion() {
         propietarios = new ArrayList<>();
@@ -85,7 +87,7 @@ public class ControlProduccion {
 
     }
     public boolean createPlanCosecha (int idPlan, String nom, LocalDate inicio, LocalDate finEstim, double meta, float precioBase, String nomHuerto, int idCuartel){
-        if(findPlanById(idPlan) != null){
+        if(findPlanById(idPlan) == null){
             return false;
         }
         if(inicio == null ||  finEstim == null || inicio.isAfter(finEstim)){
@@ -134,17 +136,49 @@ public class ControlProduccion {
         }
         return plan.addCosechadorToCuadrilla(idCuadrilla, fInicio, fFin, meta, cos);
     }
-    public String[] listCultivos(){
-        if (cultivos.isEmpty()) {
-            System.out.println("no hay cultivos listados");
-            return new String[0];
-        }
-        String [] arr = new String[cultivos.size()];
+    public String[] listCultivos() {
+        String[] out = new String[cultivos.size()];
+
         for (int i = 0; i < cultivos.size(); i++) {
-            Cultivo c = cultivos.get(i);
-            arr[i] = c.getId() + ", " + c.getEspecie() + ", " + c.getVariedad() + ", " + c.getRendimiento();
+            Cultivo cultivo = cultivos.get(i);
+
+            // se cuentan cuantos cuarteles se utilizan en este cultivo
+            int nCuarteles = 0;
+            for (Huerto huerto : huertos) {
+                Cuartel[] cuarteles = huerto.getCuarteles();
+                if (cuarteles == null) continue;
+
+                for (Cuartel cuartel : cuarteles) {
+                    if (cuartel.getCultivo() != null &&
+                            cuartel.getCultivo().getId() == cultivo.getId()) {
+                        nCuarteles++;
+                    }
+                }
+            }
+
+            // esta parte evita nulos en texto
+            String especie = "";
+            String variedad = "";
+
+            if (cultivo.getEspecie() != null) {
+                especie = cultivo.getEspecie();
+            }
+            if (cultivo.getVariedad() != null) {
+                variedad = cultivo.getVariedad();
+            }
+
+            // Se formatea la línea
+            out[i] = String.format(
+                    "%-6d %-15s %-20s %-15.2f %-15d",
+                    cultivo.getId(),
+                    especie,
+                    variedad,
+                    cultivo.getRendimiento(),
+                    nCuarteles
+            );
         }
-        return arr;
+
+        return out;
     }
     public String[] listHuertos(){
         if (huertos.isEmpty()) {
@@ -153,13 +187,28 @@ public class ControlProduccion {
         String [] arr = new String[huertos.size()];
         for (int i = 0; i < huertos.size(); i++) {
             Huerto h = huertos.get(i);
-            String propRut;
-            if(h.getPropietario() != null && h.getPropietario() != null){
-                propRut = h.getPropietario().getRut().toString();
-            } else {
-                propRut = "";
+            String propRut = "";
+            String nomProp = "";
+            if(h.getPropietario() != null) {
+                if (h.getPropietario().getRut() != null) {
+                    propRut = h.getPropietario().getRut().toString();
+                } else {
+                    propRut = "";
+                }
+                if (h.getPropietario().getNombre() != null) {
+                    nomProp = h.getPropietario().getNombre();
+                } else {
+                    nomProp = "";
+                }
             }
-            arr[i] = h.getNombre() + ", " + h.getSuperficie() + ", " + h.getUbicacion() + ", " + propRut + ", " + h.getCuarteles();
+            int nCuart;
+            if(h.getCuarteles() == null){
+                nCuart = 0;
+            } else{
+                nCuart = h.getCuarteles().length;
+            }
+            arr[i] = String.format("%-20s %-12.1f %-30s %-18s %-25s %-15d",
+                    h.getNombre(), h.getSuperficie(), h.getUbicacion(), propRut, nomProp, nCuart);
         }
         return arr;
     }
@@ -167,8 +216,15 @@ public class ControlProduccion {
         String[] lista = new String[propietarios.size()];
         for (int i = 0; i < propietarios.size(); i++) {
             Propietario prop = propietarios.get(i);
-            lista[i] = prop.getRut() + ", " + prop.getNombre() + ", " + prop.getEmail() + ", " +
-                    prop.getDireccion() + ", " + prop.getDirComercial();
+            int nrHuertos;
+            if(prop.getHuertos() == null){
+                nrHuertos = 0;
+            } else {
+                nrHuertos = prop.getHuertos().length;
+            }
+            lista[i] = String.format(
+                    "%-14s %-28s %-30s %-30s %-22s %2d",
+                    prop.getRut(),prop.getNombre(), prop.getDireccion(),prop.getEmail(), prop.getDirComercial(), nrHuertos);
         }
         return lista;
     }
@@ -179,14 +235,22 @@ public class ControlProduccion {
         String [] arr = new String[cosechadores.size()];
         for(int i = 0; i < cosechadores.size(); i++){
             Cosechador c = cosechadores.get(i);
-            int nCuadrillas = c.getCuadrillas().length;
+            int nCuadrillas;
+            if(c.getCuadrillas() == null){
+                nCuadrillas = 0;
+            } else {
+                nCuadrillas = c.getCuadrillas().length;
+            }
             String fNac;
             if (c.getFechaNacimiento() == null) {
                 fNac = "";
             } else {
                 fNac = c.getFechaNacimiento().toString();
             }
-            arr[i] =toRut(c.getRut()) + ", " + c.getNombre() + ", " + c.getEmail() + ", " + c.getDireccion() + ", " + fNac + ", " + nCuadrillas;
+
+            arr[i] =String.format(
+                    "%-14s %-28s %-30s %-30s %-16s %2d",
+                    c.getRut(), c.getNombre(), c.getDireccion(), c.getEmail(), fNac, nCuadrillas);
         }
         return arr;
     }
@@ -204,7 +268,9 @@ public class ControlProduccion {
             } else{
                 cuadNom = s.getCuadrilla().getNombre();
             }
-            arr[i] = toRut(s.getRut()) + ", " + s.getNombre() + ", " + s.getEmail() + ", " + s.getDireccion() + ", " + s.getProfesion() + ", " + cuadNom;
+            arr[i] =  String.format(
+                    "%-14s %-28s %-30s %-28s %-16s %-18s",
+                    s.getRut(), s.getNombre(), s.getDireccion(), s.getEmail(), s.getProfesion(), cuadNom);
         }
         return arr;
     }
@@ -223,8 +289,23 @@ public class ControlProduccion {
             if (p.getCuartel() != null) {
                 idCuartel = p.getCuartel().getId();
             }
-            int nCuadrillas = p.getCuadrillas().length;
-            arr[i] =p.getId() + ", " + p.getNombre() + ", " + p.getInicio() + ", " + p.getFinEstimado() + ", " + p.getMetaKilos() + ", " + p.getPrecioBaseKilo() + ", " + huerto + ", " + idCuartel + ", " + nCuadrillas;
+            int nCuadrillas;
+            if(p.getCuadrillas() == null){
+                nCuadrillas = 0;
+            } else {
+                nCuadrillas = p.getCuadrillas().length;
+            }
+            arr[i] =String.format("%-8d %-20s %-14s %-14s %-12.1f %-16.1f %-14s %-10d %-20s %-12d",
+                    p.getId(),
+                    p.getNombre(),
+                    p.getInicio().format(F),
+                    p.getFinEstimado().format(F),
+                    p.getMetaKilos(),
+                    p.getPrecioBaseKilo(),
+                    p.getEstado(),
+                    idCuartel,
+                    huerto,
+                    nCuadrillas);
         }
         return arr;
     }
@@ -268,7 +349,7 @@ public class ControlProduccion {
 
     private Huerto findHuertoByName(String name){
         for(Huerto h : huertos) {
-            if(h.getNombre() != null && h.getNombre().equals(name)){
+            if(h.getNombre().equals(name) && h.getNombre() == null) {
                 return h;
             }
         }
