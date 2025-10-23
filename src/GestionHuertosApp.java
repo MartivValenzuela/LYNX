@@ -12,7 +12,7 @@ public class GestionHuertosApp {
     }
     private void menu(){
         while(true){
-            System.out.println("\n *** Sistema de Gestión de Huertos***");
+            System.out.println("\n *** Sistema de Gestión de Huertos***")
             System.out.println("\n MENÚ DE OPCIONES");
             System.out.println("1. Crear Persona");
             System.out.println("2. Crear Cultivo");
