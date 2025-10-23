@@ -1,0 +1,5 @@
+package utilidades;
+
+public enum EstadoFonologico {
+    REPOSO_INVERNAL,FLORACION,CUAJA,FRUCTIFICACION,MADURACION,COSECHA,POSTCOSECHA
+}
