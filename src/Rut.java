@@ -34,4 +34,5 @@ public class Rut {
     public String toString() {
         return numero;
     }
+    ..
 }
