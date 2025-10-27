@@ -1,6 +1,7 @@
 package modelo;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class CosechadorAsignado {
     private LocalDate desde;
@@ -8,6 +9,7 @@ public class CosechadorAsignado {
     private double metaKilos;
     private Cosechador cosechador;
     private Cuadrilla cuadrilla;
+    private ArrayList<Pesaje> pesajes;
 
     public CosechadorAsignado(LocalDate fIni, LocalDate fFin, double meta, Cuadrilla cuad, Cosechador cos) {
         this.desde = fIni;
@@ -52,24 +54,60 @@ public class CosechadorAsignado {
         return cosechador;
     }
     public float getCumplimientoMeta(){
-
+        double totalKg = 0;
+        for(Pesaje p: pesajes){
+            totalKg += p.getCantidadKg();
+        }
+        if(metaKilos <= 0){
+            return 0f;
+        }
+        return (float)(totalKg / metaKilos);
     }
     public int getNroPesajesImpagos(){
-        return 0;
+        int n = 0;
+        for (Pesaje p : pesajes){
+            if(!p.isPagado()){
+                n++;
+            }
+        }
+        return n;
     }
     public double getMontoPesajesImpagos(){
-        return 0;
+        double m = 0;
+        for (Pesaje p : pesajes){
+            if(!p.isPagado()){
+                m += p.getMonto();
+            }
+        }
+        return m;
     }
     public int getNroPesajesPagados(){
-        return 0;
+        int n = 0;
+        for (Pesaje p : pesajes){
+            if(!p.isPagado()){
+                n++;
+            }
+        }
+        return n;
     }
-    public void getMontoPesajesPagados(){
-
+    public double getMontoPesajesPagados(){
+        double m = 0;
+        for(Pesaje p: pesajes){
+            if(p.isPagado()){
+                m += p.getMonto();
+            }
+        }
+        return m;
     }
     public void addPesaje(Pesaje pesaje){
-
+        if(pesajes == null){
+            return;
+        }
+        if(!pesajes.contains(pesaje)){
+            pesajes.add(pesaje);
+        }
     }
     public Pesaje[] getPesaje(){
-
+        return pesajes.toArray(new Pesaje[0]);
     }
 }
