@@ -8,11 +8,14 @@ public class Rut {
         this.numero = numero;
     }
     public Rut of(String rutstr){
-
+        String [] partes = rutstr.split("-");
+        long numero = Long.parseLong(partes[0]);
+        char dv = partes[1].toUpperCase().charAt(0);
+        return new Rut(numero, dv);
     }
 
     @Override
     public String toString() {
-        return numero;
+        return numero + "-" + dv;
     }
 }

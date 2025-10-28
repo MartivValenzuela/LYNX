@@ -24,9 +24,7 @@ public class Cosechador extends Persona {
         this.fechaNacimiento = fNac;
     }
     public void addCuadrilla (CosechadorAsignado cosAs){
-        if(cosAs!=null && !asignaciones.contains(cosAs)){
-            asignaciones.add(cosAs);
-        }
+        asignaciones.add(cosAs);
     }
     public Cuadrilla[] getCuadrillas(){
         Cuadrilla[] resultado = new Cuadrilla[asignaciones.size()];
@@ -36,20 +34,17 @@ public class Cosechador extends Persona {
         return resultado;
     }
 
-    public Optional<CosechadorAsignado> getCosAsign(int idCud, int idPlan){
+    public Optional<CosechadorAsignado> getAsignacion(int idCud, int idPlan){
         for(CosechadorAsignado cos: asignaciones){
             Cuadrilla c = cos.getCuadrilla();
-            if(c == null){
-                continue;
-            }
-            PlanCosecha plan = c.getPlanCosecha();
-            if(plan == null){
-                continue;
-            }
-            if(c.getId() == idCud && plan.getId() == idPlan){
+            PlanCosecha p = c.getPlanCosecha();
+            if(c.getId() == idCud && p.getId() == idPlan){
                 return Optional.of(cos);
             }
         }
         return Optional.empty();
+    }
+    public CosechadorAsignado[] getAsignaciones(){
+        return  asignaciones.toArray(new CosechadorAsignado[0]);
     }
 }
