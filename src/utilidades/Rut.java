@@ -1,3 +1,5 @@
+package utilidades;
+
 import java.util.Objects;
 
 public class Rut {
@@ -34,5 +36,4 @@ public class Rut {
     public String toString() {
         return numero;
     }
-    ..
 }
