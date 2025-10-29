@@ -37,19 +37,34 @@ public class CosechadorAsignado {
     public Cosechador getCosechador(){
         return cosechador;
     }
+    public float getCumplimientoMeta(){
+        return cumplimientoMeta;
+    }
+    public int getNroPesajesImpagos(){
+        return nropesajesImpagos;
+    }
+    public double getMontoPesajesImpagos(){
+        return montoPesajesImpagos;
+    }
+    public int getNroPesajesPagados(){
+        return nroPesajesPagados;
+    }
+    public double getMontoPesajesPagados(){
+        return montoPesajesPagados;
+    }
+    public void addPesaje(Pesaje pesaje){
+
+    }
+    public Pesaje[] getPesajes(){
+        return pesajes;
+    }
 
     public void setDesde(LocalDate desde) {
         this.desde = desde;
     }
-
-
-
     public void setHasta(LocalDate hasta) {
         this.hasta = hasta;
     }
-
-
-
     public void setMetaKilos(double metaKilos) {
         this.metaKilos = metaKilos;
     }
