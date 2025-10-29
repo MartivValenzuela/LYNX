@@ -8,11 +8,11 @@ public abstract class Persona {
     private String email;
     private String direccion;
 
-    public Persona(Rut rut, String nombre, String email, String direccion) {
+    public Persona(Rut rut, String nom, String email, String dir) {
         this.rut = rut;
-        this.nombre = nombre;
+        this.nombre = nom;
         this.email = email;
-        this.direccion = direccion;
+        this.direccion = dir;
     }
 
     public Rut getRut() {

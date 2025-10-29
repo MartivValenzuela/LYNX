@@ -1,5 +1,7 @@
 package modelo;
 
+import utilidades.EstadoFonologico;
+
 import java.util.ArrayList;
 
 public class Huerto {
@@ -41,22 +43,22 @@ public class Huerto {
         this.ubicacion = ubicacion;
     }
 
-    public Propietario getPropietario() {
+    public Persona getPropietario() {
         return propietario;
     }
 
-    public void setPropietario(Propietario propietario) {
+    public void setPropietario(Persona propietario) {
         this.propietario = propietario;
     }
 
-    public boolean addCuartel(int id, float sup, Cultivo cul) {
-        if (cul == null) {
+    public boolean addCuartel(int id, float sup, Cultivo cult) {
+        if (cult == null) {
             return false;
         }
         if (getCuartelById(id) != null) {
             return false;
         }
-        Cuartel c = new Cuartel(id, sup, cul, this);
+        Cuartel c = new Cuartel(id, sup, cult, this);
         cuarteles.add(c);
         return true;
     }
@@ -73,12 +75,8 @@ public class Huerto {
         return resultado;
     }
 
-    public Cuartel getCuartelById(int id) {
-        for (Cuartel c : cuarteles) {
-            if (c.getId() == id) {
-                return c;
-            }
-        }
-        return null;
+    public void setEstadoCuartel(int id, EstadoFonologico estado){
+        this.estadoCuartel = estadoCuartel;
     }
+
 }
