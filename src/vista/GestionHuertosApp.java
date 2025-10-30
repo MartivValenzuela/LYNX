@@ -1,3 +1,8 @@
+package vista;
+
+import controlador.ControlProduccion;
+import utilidades.Rut;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -14,9 +19,9 @@ public class GestionHuertosApp {
         while(true){
             System.out.println("\n *** Sistema de Gestión de Huertos***");
             System.out.println("\n MENÚ DE OPCIONES");
-            System.out.println("1. Crear Persona");
-            System.out.println("2. Crear Cultivo");
-            System.out.println("3. Crear Huerto");
+            System.out.println("1. Crear utilidades.Persona");
+            System.out.println("2. Crear modelo.Cultivo");
+            System.out.println("3. Crear modelo.Huerto");
             System.out.println("4. Crear Plan de Cosecha");
             System.out.println("5. Asignar Cosechadores a Plan");
             System.out.println("6. Listar Cultivos");
@@ -57,7 +62,7 @@ public class GestionHuertosApp {
         tcld.nextLine();
         boolean ok = control.createCultivo(id, especie, variedad, rendimiento);
         if(ok){
-            System.out.println("Cultivo creado exitosamente");
+            System.out.println("modelo.Cultivo creado exitosamente");
         } else {
             System.out.println("No se pudo crear: ya existe un cultivo con ese identificador.");
         }
@@ -73,7 +78,7 @@ public class GestionHuertosApp {
         System.out.println("Ubicacion: ");
         String ubicacion = tcld.nextLine().trim();
         System.out.println("Rut propietario: ");
-        Rut rut = new Rut(tcld.nextLine().trim());
+        Rut rut = new Rut(tcld.nextLong());
 
         boolean ok = control.createHuerto(nombre, superficie, ubicacion, rut);
         if(!ok){
@@ -86,7 +91,7 @@ public class GestionHuertosApp {
         int n =  tcld.nextInt();
         tcld.nextLine();
         for (int i = 0; i < n; i++) {
-            System.out.println("----Cuartel #"+(i+1));
+            System.out.println("----modelo.Cuartel #"+(i+1));
             System.out.println("Id cuartel: ");
             int idCuartel = tcld.nextInt();
             tcld.nextLine();
@@ -98,7 +103,7 @@ public class GestionHuertosApp {
             tcld.nextLine();
             boolean okC = control.addCuartelToHuerto(nombre, idCuartel, superficieCuartel, idCultivo);
             if(okC){
-                System.out.println("Cuartel agregado exitosamente al huerto");
+                System.out.println("modelo.Cuartel agregado exitosamente al huerto");
             } else {
                 System.out.println("No se pudo agregar cuartel al huerto(id duplicado o cultivo inexistente)");
             }
@@ -123,7 +128,7 @@ public class GestionHuertosApp {
         System.out.println("Precio base por kilos: ");
         float precioBase = tcld.nextFloat();
         tcld.nextLine();
-        System.out.println("Nombre Huerto: ");
+        System.out.println("Nombre modelo.Huerto: ");
         String nombreHuerto = tcld.nextLine().trim();
         System.out.println("Id cuartel: ");
         int cuartel = tcld.nextInt();
@@ -141,18 +146,18 @@ public class GestionHuertosApp {
         int nroCuadrillas = tcld.nextInt();
         tcld.nextLine();
         for (int i = 0; i < nroCuadrillas; i++) {
-            System.out.println("------Cuadrilla #" +(i+1));
+            System.out.println("------modelo.Cuadrilla #" +(i+1));
             System.out.println("Id cuadrilla: ");
             int idCuadrilla = tcld.nextInt();
             tcld.nextLine();
             System.out.println("Nombre cuadrilla: ");
             String nombreCuadrilla = tcld.nextLine().trim();
-            System.out.println("Rut supervisor: ");
-            Rut rutSupervisor = new Rut(tcld.nextLine().trim());
+            System.out.println("utilidades.Rut supervisor: ");
+            Rut rutSupervisor = new Rut(tcld.nextLong());
 
             boolean okCuad = control.addCuadrillaToPlan(id, idCuadrilla, nombreCuadrilla, rutSupervisor);
             if(okCuad){
-                System.out.println("Cuadrilla agragada correctamente al plan de cosecha");
+                System.out.println("modelo.Cuadrilla agragada correctamente al plan de cosecha");
             } else {
                 System.out.println("No se pudo crear/asociar (id cuadrilla duplicado en el plan, supervisor inexistente o ya asignado).");
             }
@@ -179,12 +184,12 @@ public class GestionHuertosApp {
             System.out.println("Meta (Kilos): ");
             double metas = tcld.nextDouble();
             tcld.nextLine();
-            System.out.println("Rut cosechador: ");
+            System.out.println("utilidades.Rut cosechador: ");
             Rut rutCosechador = new Rut(tcld.nextLine().trim());
 
             boolean ok = control.addCosechadorToCuadrilla(id, idCuadrilla, inicio, termino, metas, rutCosechador);
             if(ok){
-                System.out.println("Cosechador asignado exitosamente a una cuadrilla del plan de cosecha");
+                System.out.println("modelo.Cosechador asignado exitosamente a una cuadrilla del plan de cosecha");
             } else {
                 System.out.println("No se pudo asignar (plan/cuadrilla/cosechador inexistente o fechas fuera del rango del plan o inválidas).");
             }
@@ -212,7 +217,7 @@ public class GestionHuertosApp {
         System.out.println("------------------");
         System.out.printf("%-20s %-12s %-30s %-18s %-25s %-15s%n",
                 "Nombre", "Superficie", "Ubicación",
-                "Rut propietario", "Nombre propietario", "Nro. cuarteles");
+                "utilidades.Rut propietario", "Nombre propietario", "Nro. cuarteles");
 
         String[] v = control.listHuertos();
         if (v.length == 0) {
@@ -228,7 +233,7 @@ public class GestionHuertosApp {
         System.out.println("LISTADO DE PROPIETARIOS");
         System.out.println("-----------------------");
         System.out.printf("%-14s %-28s %-28s %-30s %-22s %-12s%n",
-                "Rut", "Nombre", "Dirección", "email", "Dirección comercial", "Nro. huertos");
+                "utilidades.Rut", "Nombre", "Dirección", "email", "Dirección comercial", "Nro. huertos");
 
         String[] vp = control.listPropietarios();
         if (vp.length == 0) {
@@ -242,7 +247,7 @@ public class GestionHuertosApp {
         System.out.println("LISTADO DE SUPERVISORES");
         System.out.println("-----------------------");
         System.out.printf("%-14s %-28s %-28s %-30s %-14s %-18s%n",
-                "Rut", "Nombre", "Dirección", "email", "Profesión", "Nombre cuadrilla");
+                "utilidades.Rut", "Nombre", "Dirección", "email", "Profesión", "Nombre cuadrilla");
 
         String[] vs = control.listSupervisores();
         if (vs.length == 0) {
@@ -256,7 +261,7 @@ public class GestionHuertosApp {
         System.out.println("LISTADO DE COSECHADORES");
         System.out.println("-----------------------");
         System.out.printf("%-14s %-28s %-28s %-30s %-16s %-16s%n",
-                "Rut", "Nombre", "Dirección", "email", "Fecha nacimiento", "Nro. cuadrillas");
+                "utilidades.Rut", "Nombre", "Dirección", "email", "Fecha nacimiento", "Nro. cuadrillas");
 
         String[] vc = control.listCosechadores();
         if (vc.length == 0) {
@@ -287,9 +292,9 @@ public class GestionHuertosApp {
 
     private void creaPersona(){
         System.out.println("Creando una persona...");
-        System.out.println("Rol persona (1=Propietario, 2=Supervisor, 3=Cosechador)");
+        System.out.println("Rol persona (1=modelo.Propietario, 2=modelo.Supervisor, 3=modelo.Cosechador)");
         String rol = tcld.nextLine().trim();
-        System.out.println("Rut: ");
+        System.out.println("utilidades.Rut: ");
         Rut rut = new Rut(tcld.nextLine().trim());
         System.out.println("Nombre: ");
         String nombre = tcld.nextLine().trim();
@@ -315,7 +320,7 @@ public class GestionHuertosApp {
             ok = control.createCosechador(rut, nombre, email, direccion, fechaNacimiento);
         }
         if(ok){
-            System.out.println("Persona creada exitosamente");
+            System.out.println("utilidades.Persona creada exitosamente");
         } else {
             System.out.println("Error al crear persona.");
         }

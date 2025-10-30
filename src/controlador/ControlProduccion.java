@@ -1,3 +1,8 @@
+package controlador;
+
+import modelo.*;
+import utilidades.Rut;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -310,8 +315,8 @@ public class ControlProduccion {
         return arr;
     }
     private void generateTestData(){
-        propietarios.add(new Propietario(new Rut("11.111.111-1"), "Daniel Ruiz Saez",
-                "daniel.ruiz@email.com", "Los Alerces 123", "Calle Comercial 456"));
+        propietarios.add(new Propietario(new Rut(11.111.111-1, "Daniel Ruiz Saez",
+                "daniel.ruiz@email.com", "Los Alerces 123", "Calle Comercial 456");
         supervisores.add(new Supervisor(new Rut("22.222.222-2"), "Leonora Casas Solís",
                 "leonora.casas@gmail.com", "Los pinguinos 432", "Agronomo"));
         cosechadores.add(new Cosechador(new Rut("33.333.333-3"), "David Rios Flores",
@@ -370,5 +375,3 @@ public class ControlProduccion {
     }
 
 }
-
-//soy homelo chino Hola
