@@ -1,6 +1,10 @@
 package modelo;
 
+import utilidades.EstadoFonologico;
+import utilidades.GestionHuertosException;
+
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Huerto {
     private String nombre;
@@ -49,20 +53,24 @@ public class Huerto {
         this.propietario = propietario;
     }
 
-    public boolean addCuartel(int id, float sup, Cultivo cul) {
-        if (cul == null) {
-            return false;
+    public void addCuartel(int id, float sup, Cultivo cul) throws GestionHuertosException {
+        for(Cuartel c : cuarteles){
+            if(c.getId() == id){
+                throw new GestionHuertosException("Ya existe en el huerto un cuartel con el id indicado");
+            }
         }
-        if (getCuartelById(id) != null) {
-            return false;
-        }
-        Cuartel c = new Cuartel(id, sup, cul, this);
-        cuarteles.add(c);
-        return true;
-    }
 
-    public Cuartel getCuartel(int id) {
-        return getCuartelById(id);
+        float total = sup;
+        for(Cuartel c : cuarteles){
+            total += c.getSuperficie();
+        }
+        if(total > this.superficie){
+            throw new GestionHuertosException("La superficie del cuartel excederá la superficie del huerto, al sumarle la\n" +
+                    "superficie de sus cuarteles actuales");
+        }
+
+        Cuartel nuevo = new Cuartel(id, sup, cul, this);
+        cuarteles.add(nuevo);
     }
 
     public Cuartel[] getCuarteles() {
@@ -73,12 +81,26 @@ public class Huerto {
         return resultado;
     }
 
-    public Cuartel getCuartelById(int id) {
+    public Optional<Cuartel> getCuartelById(int id) {
         for (Cuartel c : cuarteles) {
             if (c.getId() == id) {
-                return c;
+                return Optional.of(c);
             }
         }
-        return null;
+        return Optional.empty();
+    }
+
+    public void setEstadoCuartel(int id, EstadoFonologico estado)
+        throws GestionHuertosException {
+        Optional<Cuartel> cuartel = getCuartelById(id);
+        if(cuartel.isEmpty()){
+            throw new GestionHuertosException("No existe en el huerto un cuartel con id indicado");
+        }
+
+        Cuartel c = cuartel.get();
+        boolean cambio = c.setEstado(estado);
+        if(!cambio){
+            throw new GestionHuertosException("No está permitido el cambio de estado solicitado");
+        }
     }
 }
