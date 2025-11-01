@@ -79,8 +79,32 @@ public class PlanCosecha {
         return estado;
     }
 
-    public void setEstado(EstadoPlan estado) {
-        this.estado = estado;
+    public boolean setEstado(EstadoPlan nuevo) {
+        if (estado == nuevo) {
+            return true;
+        }
+        if (estado == EstadoPlan.PLANIFICADO) {
+            if (nuevo == EstadoPlan.EJECUTANDO) {
+                estado = nuevo;
+                return true;
+            }
+            if (nuevo == EstadoPlan.CANCELADO) {
+                estado = nuevo;
+                return true;
+            }
+        } else {
+            if (estado == EstadoPlan.EJECUTANDO) {
+                if (nuevo == EstadoPlan.CERRADO) {
+                    estado = nuevo;
+                    return true;
+                }
+                if (nuevo == EstadoPlan.CANCELADO) {
+                    estado = nuevo;
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     public Cuartel getCuartel(){
         return cuartel;

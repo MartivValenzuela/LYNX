@@ -11,7 +11,7 @@ public class Cosechador extends Persona {
     private LocalDate fechaNacimiento;
     private ArrayList<CosechadorAsignado> asignaciones;
 
-    public Cosechador(Rut rut, String nom, String email, String dir) {
+    public Cosechador(Rut rut, String nom, String email, String dir, LocalDate fechaNacimiento) {
         super(rut, nom, email, dir);
         this.asignaciones = new ArrayList<>();
     }
