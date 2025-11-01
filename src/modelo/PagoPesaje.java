@@ -8,12 +8,12 @@ public class PagoPesaje {
     private int id;
     private LocalDate fecha;
     private List<Pesaje> pesajes;
-
-    public PagoPesaje(int id, LocalDate fecha, List<Pesaje> pesajesAPagar) {
+    private Cosechador cosechador;
+    public PagoPesaje(int id, LocalDate fecha, List<Pesaje> pesajesAPagar,Cosechador cosechador) {
         this.id = id;
         this.fecha = fecha;
         this.pesajes = pesajesAPagar;
-
+        this.cosechador = cosechador;
         for (Pesaje pesaje : this.pesajes) {
             pesaje.setPago(this);
         }

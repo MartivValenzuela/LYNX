@@ -17,6 +17,7 @@ public class Cuartel {
         this.cultivo = cultivo;
         this.huerto = huerto;
         this.planCosechas = new ArrayList<>();
+        this.estado = EstadoFonologico.REPOSO_INVERNAL;
 
         if (cultivo != null) {
             cultivo.addCuartel(this);
@@ -45,8 +46,24 @@ public class Cuartel {
         return estado;
     }
 
-    public void setEstado(EstadoFonologico estado) {
-        this.estado = estado;
+
+    public boolean setEstado(EstadoFonologico estado) {
+        if (this.estado == null) {
+            this.estado = estado;
+            return true;
+        }
+
+        if (this.estado == EstadoFonologico.POSTCOSECHA && estado == EstadoFonologico.REPOSO_INVERNAL) {
+
+            this.estado = estado;
+            return true;
+
+        }
+        if (nuevoEstado.ordinal() > this.estado.ordinal()) {
+            this.estado = estado;
+            return true;
+        }
+        return false;
     }
     public Cultivo getCultivo(){
         return cultivo;

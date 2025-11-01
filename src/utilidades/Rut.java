@@ -6,7 +6,10 @@ public class Rut {
 
     public Rut(long numero, char dv) {
         this.numero = numero;
+        this.dv = Character.toUpperCase(dv);
     }
+
+
     public Rut of(String rutstr){
         String [] partes = rutstr.split("-");
         long numero = Long.parseLong(partes[0]);
