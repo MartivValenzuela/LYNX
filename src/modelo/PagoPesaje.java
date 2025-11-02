@@ -38,4 +38,8 @@ public class PagoPesaje {
     public Pesaje[] getPesajes() {
         return this.pesajes.toArray(new Pesaje[0]);
     }
+
+    public Cosechador getCosechador(){
+        return this.cosechador;
+    }
 }

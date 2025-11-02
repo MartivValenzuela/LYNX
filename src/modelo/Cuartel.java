@@ -59,7 +59,7 @@ public class Cuartel {
             return true;
 
         }
-        if (nuevoEstado.ordinal() > this.estado.ordinal()) {
+        if (estado.ordinal() > this.estado.ordinal()) {
             this.estado = estado;
             return true;
         }

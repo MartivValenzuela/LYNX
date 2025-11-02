@@ -72,9 +72,6 @@ public class Huerto {
 
     }
 
-    public Cuartel getCuartel(int id) {
-        return getCuartelById(id);
-    }
 
     public Cuartel[] getCuarteles() {
         Cuartel[] resultado = new Cuartel[cuarteles.size()];

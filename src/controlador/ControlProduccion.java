@@ -363,10 +363,8 @@ public class ControlProduccion {
         if(op.isEmpty()){
             throw new GestionHuertosException("No existe un plan con el id indicado");
         }
-        boolean ok = op.get().setEstado(estado);
-        if(!ok){
-            throw new GestionHuertosException("No esta permitido el cambio de estado solicitado");
-        }
+        op.get().setEstado(estado);
+
     }
     //
 
@@ -474,7 +472,11 @@ public class ControlProduccion {
     }
 
     private static boolean eqRut(Rut rut1, Rut rut2){
-        return rut1 != null && rut2 != null && rut1.equals(rut2);
+        if (rut1 == null || rut2 == null){
+            return false;
+        }
+        return rut1.getNumero() == rut2.getNumero() && rut1.getDv() == rut2.getDv();
+
     }
 
     private static String toRut(Rut r) {
@@ -482,4 +484,96 @@ public class ControlProduccion {
         return r.toString();
     }
 
-}
+    private Optional<Pesaje> findPesajeById(int id) {
+        for (Pesaje p : pesajes) {
+            if (p.getId() == id) {
+                return Optional.of(p);
+            }
+        }
+        return Optional.empty();
+    }
+
+    private Optional<PagoPesaje> findPagoById(int id) {
+        for (PagoPesaje p : pagos) {
+            if (p.getId() == id) {
+                return Optional.of(p);
+            }
+        }
+        return Optional.empty();
+    }
+
+
+    public String[] listPesajes() {
+        if (pesajes.isEmpty()) {
+            return new String[0];
+        }
+
+        String[] lista = new String[pesajes.size()];
+        for (int i = 0; i < pesajes.size(); i++) {
+            Pesaje p = pesajes.get(i);
+
+
+            String pagadoEl = "Impago";
+            if (p.getPagoPesaje() != null) {
+                pagadoEl = p.getPagoPesaje().getFecha().format(F);
+            }
+
+            lista[i] = String.format("%-5d %-12s %-15s %-12s %-12.1f %-10.1f %-10.1f %-12s", p.getId(), p.getFechaHora().toLocalDate().format(F), p.getCosechadorAsignado().getCosechador().getRut().toString(), p.getCalidad(), p.getCantidadKg(), p.getPrecioKg(), p.getMonto(), pagadoEl
+            );
+        }
+        return lista;
+    }
+
+    public String[] listPesajes(Rut rutCosechador) throws GestionHuertosException {
+
+
+        Optional<Cosechador> optCosechador = findCosechadorByRut(rutCosechador);
+        if (optCosechador.isEmpty()) {
+            throw new GestionHuertosException("No existe un cosechador con el rut indicado");
+        }
+        Cosechador cosechador = optCosechador.get();
+
+
+        ArrayList<Pesaje> pesajesCosechador = new ArrayList<>();
+        for (Pesaje p : this.pesajes) {
+            if (p.getCosechadorAsignado().getCosechador().getRut().equals(rutCosechador)) {
+                pesajesCosechador.add(p);
+            }
+        }
+
+        if (pesajesCosechador.isEmpty()) {
+            return new String[0];
+        }
+
+
+        String[] lista = new String[pesajesCosechador.size()];
+        for (int i = 0; i < pesajesCosechador.size(); i++) {
+            Pesaje p = pesajesCosechador.get(i);
+
+            String pagadoEl = "Impago";
+            if (p.getPagoPesaje() != null) {
+                pagadoEl = p.getPagoPesaje().getFecha().format(F);
+            }
+
+            lista[i] = String.format("%-5d %-12s %-12s %-12.1f %-10.1f %-10.1f %-12s", p.getId(), p.getFechaHora().toLocalDate().format(F), p.getCalidad(), p.getCantidadKg(), p.getPrecioKg(), p.getMonto(), pagadoEl
+            );
+        }
+        return lista;
+    }
+
+    public String[] listPagosPesajes() {
+        if (pagos.isEmpty()) {
+            return new String[0];
+        }
+
+        String[] lista = new String[pagos.size()];
+        for (int i = 0; i < pagos.size(); i++) {
+            PagoPesaje p = pagos.get(i);
+
+            lista[i] = String.format("%-5d %-12s %-12.1f %-10d %-15s", p.getId(), p.getFecha().format(F), p.getMonto(), p.getPesajes().length,p.getCosechador().getRut().toString()
+            );
+        }
+        return lista;
+    }
+
+    }
