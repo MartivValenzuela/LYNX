@@ -109,6 +109,91 @@ public class ControlProduccion {
         planes.add(plan);
         return true;
     }
+    public String[] listPesajes() {
+        List<String> lineas = new ArrayList<>();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        for (PlanCosecha plan : this.planesCosecha) {
+            for (Cuadrilla cuad : plan.getCuadrillas()) {
+                for (CosechadorAsignado asig : cuad.getAsignaciones()) {
+                    for (Pesaje pesaje : asig.getPesajes()) {
+
+                        int id = pesaje.getId();
+                        String fecha = pesaje.getFechaHora().format(dtf);
+                        String rut = pesaje.getCosechadorAsignado().getCosechador().getRut().toString();
+                        String calidad = pesaje.getCalidad().toString();
+                        double cantidad = pesaje.getCantidadKg();
+                        double precio = pesaje.getPrecioKg();
+                        double monto = pesaje.getMonto();
+                        String pagadoEl = pesaje.isPagado() ?
+                                pesaje.getPagoPesaje().getFecha().format(dtf) : "Impago";
+
+                        String linea = String.format("%d; %s; %s; %s; %.1f; %.1f; %.1f; %s",
+                                id, fecha, rut, calidad, cantidad, precio, monto, pagadoEl);
+
+                        lineas.add(linea);
+                    }
+                }
+            }
+        }
+
+        return lineas.toArray(new String[0]);
+    }
+
+
+    public String[] listPagosPesajes() {
+        List<String> lineas = new ArrayList<>();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        for (PagoPesaje pago : this.pagosPesaje) {
+
+            int id = pago.getId();
+            String fecha = pago.getFecha().format(dtf);
+            double monto = pago.getMonto();
+            int numPesajes = pago.getPesajes().length;
+
+            String rut = "S/D";
+            if (numPesajes > 0) {
+                rut = pago.getPesajes()[0].getCosechadorAsignado().getCosechador().getRut().toString();
+            }
+
+            String linea = String.format("%d; %s; %.1f; %d; %s",
+                    id, fecha, monto, numPesajes, rut);
+
+            lineas.add(linea);
+        }
+
+        return lineas.toArray(new String[0]);
+    }
+    public String[] listPagosPesajes() {
+        List<String> lineas = new ArrayList<>();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        for (PagoPesaje pago : this.pagosPesaje) {
+            int id = pago.getId();
+            String fecha = pago.getFecha().format(dtf);
+            double monto = pago.getMonto();
+            int numPesajes = pago.getPesajes().length;
+
+            String rut = "S/D";
+            if (numPesajes > 0 &&
+                    pago.getPesajes()[0] != null &&
+                    pago.getPesajes()[0].getCosechadorAsignado() != null &&
+                    pago.getPesajes()[0].getCosechadorAsignado().getCosechador() != null &&
+                    pago.getPesajes()[0].getCosechadorAsignado().getCosechador().getRut() != null) {
+
+                rut = pago.getPesajes()[0].getCosechadorAsignado().getCosechador().getRut().toString();
+            }
+
+            String linea = String.format("%d;%s;%.1f;%d;%s",
+                    id, fecha, monto, numPesajes, rut);
+
+            lineas.add(linea);
+        }
+
+        return lineas.toArray(new String[0]);
+    }
+
     public boolean addCuadrillaToPlan (int idPlan, int idCuad, String nomCuad, Rut rutSup){
         PlanCosecha plan = findPlanById(idPlan);
         if(plan == null){
