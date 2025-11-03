@@ -3,12 +3,15 @@ package controlador;
 import modelo.*;
 import utilidades.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Scanner;
 
 public class ControlProduccion {
     private ArrayList<Cosechador>  cosechadores;
@@ -503,28 +506,26 @@ public class ControlProduccion {
     }
 
 
-    public String[] listPesajes() {
-        if (pesajes.isEmpty()) {
+    public String[] listPesajes(){
+        if (pesajes.isEmpty()){
             return new String[0];
         }
-
         String[] lista = new String[pesajes.size()];
-        for (int i = 0; i < pesajes.size(); i++) {
+        for (int i = 0 ; i < pesajes.size() ; i++){
             Pesaje p = pesajes.get(i);
-
-
             String pagadoEl = "Impago";
-            if (p.getPagoPesaje() != null) {
+            if (p.getPagoPesaje() != null){
                 pagadoEl = p.getPagoPesaje().getFecha().format(F);
             }
-
-            lista[i] = String.format("%-5d %-12s %-15s %-12s %-12.1f %-10.1f %-10.1f %-12s", p.getId(), p.getFechaHora().toLocalDate().format(F), p.getCosechadorAsignado().getCosechador().getRut().toString(), p.getCalidad(), p.getCantidadKg(), p.getPrecioKg(), p.getMonto(), pagadoEl
+            Rut rutDelPesaje =  p.getCosechadorAsignado().getCosechador().getRut();
+            lista[i] = String.format("%-5d %-12s %-15s %-12s %-12.1f %-10.1f %-10.1f %-12s", p.getId(), p.getFechaHora().toLocalDate().format(F),rutDelPesaje,p.getCalidad(), p.getCantidadKg(), p.getPrecioKg(), p.getMonto(), pagadoEl
             );
+
         }
         return lista;
     }
 
-    public String[] listPesajes(Rut rutCosechador) throws GestionHuertosException {
+    public String[] listPesajesCosechador(Rut rutCosechador) throws GestionHuertosException {
 
 
         Optional<Cosechador> optCosechador = findCosechadorByRut(rutCosechador);
@@ -576,4 +577,24 @@ public class ControlProduccion {
         return lista;
     }
 
+    private void readFromTextFile() throws IOException{
+        try{
+            Scanner archivo = new Scanner(new File("archivoGestion.txt"));
+            //archivo.useDelimiter("\r\n-+");
+            System.out.println("Archivo abierto.");
+            //
+            //11.111.111-1;Daniel Ruiz Saez;daniel.ruizs@gmail.com;Las Amapolas 1234;Av Santa Marta 6350
+            while (archivo.hasNext()){
+                String titulo = archivo.next();
+                archivo.useDelimiter("\r\n;+");
+                int indice = archivo.nextInt();
+                System.out.printf("%s ,%d" ,titulo,indice);
+            }
+
+
+
+        }catch (IOException e){
+            throw new IOException("problemas para abrir y/o leer el archivo de texto\n" + e);
+        }
+    }
     }

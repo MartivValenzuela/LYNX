@@ -193,7 +193,7 @@ public class GestionHuertosUI {
                     listaPlanesCosecha();
                     break;
                 case 7:
-                    listaPersonas();
+                    listaPesajes();
                     break;
                 case 8:
                     uiListaPesajesCosechador();
@@ -542,7 +542,9 @@ public class GestionHuertosUI {
             System.out.println();
         }
 
+        /*
         private void listaPersonas () {
+
             // === PROPIETARIOS ===
             System.out.println("LISTADO DE PROPIETARIOS");
             System.out.println("-----------------------");
@@ -585,6 +587,7 @@ public class GestionHuertosUI {
             }
             System.out.println();
         }
+        */
 
         private void listaPlanesCosecha () {
             System.out.println("LISTADO DE PLANES DE COSECHA");
@@ -624,7 +627,7 @@ public class GestionHuertosUI {
             System.out.println("---------------------------------");
             System.out.printf("%-5s %-12s %-12s %-12s %-10s %-10s %-12s%n", "Id", "Fecha", "Calidad", "Cantidad Kg", "Precio $", "Monto $", "Pagado el");
 
-            String[] v = control.listPesajes(rutCosechador);
+            String[] v = control.listPesajesCosechador(rutCosechador);
             if (v.length == 0) {
                 System.out.println("El cosechador no tiene pesajes registrados.");
             } else {
