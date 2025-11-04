@@ -216,29 +216,29 @@ public class GestionHuertosUI {
         try {
             System.out.println("Creando una persona...");
             System.out.println("Rol persona (1=Propietario, 2=Supervisor, 3=Cosechador):");
-            String rol = tcld.nextLine();
+            String rol = tcld.next();
             System.out.print("rut:");
-            Rut rut = Rut.of(tcld.nextLine().trim());
+            Rut rut = Rut.of(tcld.next().trim());
             System.out.print("Nombre:");
-            String nombre = tcld.nextLine().trim();
+            String nombre = tcld.next().trim();
             System.out.print("Email: ");
-            String email = tcld.nextLine().trim();
+            String email = tcld.next().trim();
             System.out.print("Dirección: ");
-            String direccion = tcld.nextLine().trim();
+            String direccion = tcld.next().trim();
             if (rol.equals("1")) {
                 System.out.print("Direccion Comercial:");
-                String DireccionComer = tcld.nextLine().trim();
+                String DireccionComer = tcld.next().trim();
                 control.createPropietario(rut, nombre, email, direccion, DireccionComer);
                 System.out.println("Propietario creado exitosamente");
             } else if (rol.equals("2")) {
                 System.out.print("Profesion:");
-                String profesion = tcld.nextLine().trim();
+                String profesion = tcld.next().trim();
                 control.createSupervisor(rut, nombre, email, direccion, profesion);
                 System.out.println("Supervisor creado exitosamente");
 
             } else if (rol.equals("3")) {
                 System.out.print("Fecha Nacimiento (dd/mm/aaaa): ");
-                LocalDate fechaNacimiento = LocalDate.parse(tcld.nextLine().trim(), F);
+                LocalDate fechaNacimiento = LocalDate.parse(tcld.next().trim(), F);
                 control.createCosechador(rut, nombre, email, direccion, fechaNacimiento);
                 System.out.println("Cosechador creado exitosamente");
             } else {
@@ -273,15 +273,15 @@ public class GestionHuertosUI {
         try {
             System.out.println("Creando un huerto...");
             System.out.println("Nombre: ");
-            String nombre = tcld.nextLine().trim();
+            String nombre = tcld.next().trim();
             System.out.println("Superficie: ");
             float superficie = tcld.nextFloat();
             tcld.nextLine();
             System.out.println("Ubicacion: ");
-            String ubicacion = tcld.nextLine().trim();
+            String ubicacion = tcld.next().trim();
             System.out.println("Rut propietario: ");
 
-            Rut rut = Rut.of(tcld.nextLine().trim());
+            Rut rut = Rut.of(tcld.next().trim());
             control.createHuerto(nombre, superficie, ubicacion, rut);
             System.out.println("Agregar cuarteles al huerto");
             System.out.println("Nro. de cuarteles: ");
@@ -309,7 +309,7 @@ public class GestionHuertosUI {
         try {
             System.out.println("Agregando cuarteles a un huerto...");
             System.out.print("Nombre del huerto:");
-            String nombreHuerto = tcld.nextLine().trim();
+            String nombreHuerto = tcld.next().trim();
             System.out.println("Numeros de cuarteles a Agregar");
             int num = tcld.nextInt();
             tcld.nextLine();
@@ -340,7 +340,7 @@ public class GestionHuertosUI {
         try {
             System.out.println("Cambiando estado de un cuartel...");
             System.out.print("Nombre del Huerto: ");
-            String nombreHuerto = tcld.nextLine().trim();
+            String nombreHuerto = tcld.next().trim();
             System.out.print("Id cuartel: ");
             int idCuartel = tcld.nextInt();
             tcld.nextLine();
@@ -363,11 +363,11 @@ public class GestionHuertosUI {
             int id = tcld.nextInt();
             tcld.nextLine();
             System.out.println("Nombre del plan: ");
-            String nombre = tcld.nextLine().trim();
+            String nombre = tcld.next().trim();
             System.out.println("Fecha de inicio (dd/mm/aaaa): ");
-            LocalDate inicio = LocalDate.parse(tcld.nextLine().trim(), F);
+            LocalDate inicio = LocalDate.parse(tcld.next().trim(), F);
             System.out.println("Fecha de termino (dd/mm/aaaa): ");
-            LocalDate termino = LocalDate.parse(tcld.nextLine().trim(), F);
+            LocalDate termino = LocalDate.parse(tcld.next().trim(), F);
             System.out.println("Meta (kilos): ");
             double metas = tcld.nextDouble();
             tcld.nextLine();
@@ -375,7 +375,7 @@ public class GestionHuertosUI {
             float precioBase = tcld.nextFloat();
             tcld.nextLine();
             System.out.println("Nombre Huerto: ");
-            String nombreHuerto = tcld.nextLine().trim();
+            String nombreHuerto = tcld.next().trim();
             System.out.println("Id cuartel: ");
             int cuartel = tcld.nextInt();
             tcld.nextLine();
@@ -403,9 +403,9 @@ public class GestionHuertosUI {
                 int idCuadrilla = tcld.nextInt();
                 tcld.nextLine();
                 System.out.println("Nombre cuadrilla: ");
-                String nombreCuadrilla = tcld.nextLine().trim();
+                String nombreCuadrilla = tcld.next().trim();
                 System.out.println("Rut supervisor: ");
-                Rut rutSupervisor = Rut.of(tcld.nextLine().trim());
+                Rut rutSupervisor = Rut.of(tcld.next().trim());
 
                 control.addCuadrillaToPlan(id, idCuadrilla, nombreCuadrilla, rutSupervisor);
             }
@@ -429,14 +429,14 @@ public class GestionHuertosUI {
 
             for (int i = 0; i < nroCosechadores; i++) {
                 System.out.println("Fecha de inicio asignación (dd/mm/aaaa)");
-                LocalDate inicio = LocalDate.parse(tcld.nextLine().trim(), F);
+                LocalDate inicio = LocalDate.parse(tcld.next().trim(), F);
                 System.out.println("Fecha de termino asignación (dd/mm/aaaa)");
-                LocalDate termino = LocalDate.parse(tcld.nextLine().trim(), F);
+                LocalDate termino = LocalDate.parse(tcld.next().trim(), F);
                 System.out.println("Meta (Kilos): ");
                 double metas = tcld.nextDouble();
                 tcld.nextLine();
                 System.out.println("Rut cosechador: ");
-                Rut rutCosechador = Rut.of(tcld.nextLine().trim());
+                Rut rutCosechador = Rut.of(tcld.next().trim());
                 control.addCosechadorToCuadrilla(id, idCuadrilla, inicio, termino, metas, rutCosechador);
 
             }
@@ -454,7 +454,7 @@ public class GestionHuertosUI {
             int idPesaje = tcld.nextInt();
             tcld.nextLine();
             System.out.print("Rut Cosechador: ");
-            Rut rutCosechador = Rut.of(tcld.nextLine().trim());
+            Rut rutCosechador = Rut.of(tcld.next().trim());
             System.out.print("Id plan: ");
             int idPlan = tcld.nextInt();
             tcld.nextLine();
@@ -503,7 +503,7 @@ public class GestionHuertosUI {
             int idPago = tcld.nextInt();
             tcld.nextLine();
             System.out.print("Rut cosechador: ");
-            Rut rutCosechador = Rut.of(tcld.nextLine().trim());
+            Rut rutCosechador = Rut.of(tcld.next().trim());
 
             double monto = control.addPagoPesaje(idPago, rutCosechador);
             System.out.printf("Monto pagado al cosechador: $%.1f\n", monto);
@@ -620,12 +620,12 @@ public class GestionHuertosUI {
         try {
             System.out.println("\nLISTADO DE PESAJES DEL COSECHADOR");
             System.out.print("Rut cosechador: ");
-            Rut rutCosechador = Rut.of(tcld.nextLine().trim());
+            Rut rutCosechador = Rut.of(tcld.next().trim());
 
             System.out.println("---------------------------------");
             System.out.printf("%-5s %-12s %-12s %-12s %-10s %-10s %-12s%n", "Id", "Fecha", "Calidad", "Cantidad Kg", "Precio $", "Monto $", "Pagado el");
 
-            String[] v = control.listPesajes(rutCosechador);
+            String[] v = control.listPesajesCosechador(rutCosechador);
             if (v.length == 0) {
                 System.out.println("El cosechador no tiene pesajes registrados.");
             } else {

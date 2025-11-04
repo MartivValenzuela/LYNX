@@ -490,7 +490,7 @@ public class ControlProduccion {
         DateTimeFormatter DF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         try {
-            Scanner leer = new Scanner(new File(path));
+            Scanner leer = new Scanner(new File("archivoGestion.txt"));
             leer.useDelimiter("[;\r\n]+");
             leer.useLocale(Locale.US);
 
@@ -630,7 +630,7 @@ public class ControlProduccion {
 
             leer.close();
         } catch (FileNotFoundException e) {
-            System.err.println("Archivo no encontrado: " + path);
+            System.err.println("Archivo no encontrado: " + e);
         }
     }
 
