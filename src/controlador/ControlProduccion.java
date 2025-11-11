@@ -506,22 +506,22 @@ public class ControlProduccion {
     }
 
 
-    public String[] listPesajes(){
-        if (pesajes.isEmpty()){
+    public String[] listPesajes() {
+        if (pesajes.isEmpty()) {
             return new String[0];
         }
+
         String[] lista = new String[pesajes.size()];
-        for (int i = 0 ; i < pesajes.size() ; i++){
+        for (int i = 0; i < pesajes.size(); i++) {
             Pesaje p = pesajes.get(i);
             String pagadoEl = "Impago";
-            if (p.getPagoPesaje() != null){
+            if (p.getPagoPesaje() != null) {
                 pagadoEl = p.getPagoPesaje().getFecha().format(F);
             }
-            Rut rutDelPesaje =  p.getCosechadorAsignado().getCosechador().getRut();
-            lista[i] = String.format("%-5d %-12s %-15s %-12s %-12.1f %-10.1f %-10.1f %-12s", p.getId(), p.getFechaHora().toLocalDate().format(F),rutDelPesaje,p.getCalidad(), p.getCantidadKg(), p.getPrecioKg(), p.getMonto(), pagadoEl
-            );
 
-        }
+            String rutDelPesaje = p.getCosechadorAsignado().getCosechador().getRut().toString();
+
+            lista[i] = String.format("%-5d %-12s %-15s %-12s %-12.1f %-10.1f %-10.1f %-12s", p.getId(), p.getFechaHora().toLocalDate().format(F),p.getCalidad(), p.getCantidadKg(), p.getPrecioKg(), p.getMonto(), pagadoEl);;}
         return lista;
     }
 
