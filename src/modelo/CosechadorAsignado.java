@@ -17,7 +17,7 @@ public class CosechadorAsignado {
         this.metaKilos = meta;
         this.cosechador = cos;
         this.cuadrilla = cuad;
-
+        this.pesajes = new ArrayList<>();
 
         if (cos != null){
             cos.addCuadrilla(this);
@@ -84,7 +84,7 @@ public class CosechadorAsignado {
     public int getNroPesajesPagados(){
         int n = 0;
         for (Pesaje p : pesajes){
-            if(!p.isPagado()){
+            if(p.isPagado()){
                 n++;
             }
         }
@@ -107,7 +107,7 @@ public class CosechadorAsignado {
             pesajes.add(pesaje);
         }
     }
-    public Pesaje[] getPesaje(){
+    public Pesaje[] getPesajes(){
         return pesajes.toArray(new Pesaje[0]);
     }
 }
