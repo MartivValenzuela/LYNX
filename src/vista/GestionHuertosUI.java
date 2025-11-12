@@ -1,12 +1,13 @@
 package vista;
-
 import controlador.ControlProduccion;
+import jdk.jshell.ImportSnippet;
 import utilidades.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.InputMismatchException;
 import java.util.Scanner;
-
+import java.util.SortedMap;
 
 public class GestionHuertosUI {
     private final Scanner tcld = new Scanner(System.in);
@@ -35,11 +36,12 @@ public class GestionHuertosUI {
                 System.out.println("5. Salir");
                 System.out.print("Opcion:");
                 int opcion = tcld.nextInt();
-                if (opcion < 0 || opcion > 5) {
-                    System.out.println("La opcion no esta en el rango valido");
-                    break;
-                }
+                tcld.nextLine();
 
+                if (opcion == 5) {
+                    System.out.println("Saliendo del Programa...");
+                    return;
+                }
                 switch (opcion) {
                     case 1:
                         CreaPersona();
@@ -53,12 +55,12 @@ public class GestionHuertosUI {
                     case 4:
                         menuListados();
                         break;
-                    case 5:
-                        System.out.println("Saliendo del programa...");
-                        return;
                     default:
-                        System.out.println("opcion no valida,intente de nuevo");
+                        System.out.println("Opcion no valida,intente de nuevo");
                 }
+            } catch (InputMismatchException e) {
+                System.out.println("Error, debe ingresar un numero");
+                tcld.nextLine();
             } catch (Exception e) {
                 System.out.println("ERROR: " + e.getMessage());
             }
@@ -77,9 +79,14 @@ public class GestionHuertosUI {
                 System.out.println("5. Volver");
                 System.out.print("Opcion: ");
                 int opcionSubmenus = tcld.nextInt();
+                tcld.nextLine();
                 if (opcionSubmenus < 0 || opcionSubmenus > 6) {
                     System.out.println("La opcion no esta en el rango valido");
                     continue;
+                }
+                if (opcionSubmenus == 5) {
+                    System.out.println("Regresando. . .");
+                    return;
                 }
                 switch (opcionSubmenus) {
                     case 1:
@@ -94,16 +101,12 @@ public class GestionHuertosUI {
                     case 4:
                         CambiarEstadoCuartel();
                         break;
-                    case 5:
-                        return;
                     default:
                         System.out.println("La opcion no esta en el rango valido");
                 }
-                opcionSubmenus = tcld.nextInt();
-                if (opcionSubmenus < 0 || opcionSubmenus > 6) {
-                    System.out.println("La opcion no esta en el rango valido");
-                    continue;
-                }
+            } catch (InputMismatchException e) {
+                System.out.println("Error, Ingrese un numero valido");
+                tcld.nextLine();
             } catch (Exception e) {
                 System.out.println("Error!  " + e);
             }
@@ -112,133 +115,148 @@ public class GestionHuertosUI {
 
     private void menuPlanesCosecha() {
         while (true) {
-            System.out.println(">>> SUBMENU PLANES DE COSECHA <<<");
-            System.out.println("1. Crear Plan de Cosecha");
-            System.out.println("2. Cambiar Estado de Plan");
-            System.out.println("3. Agregar Cuadrillas a Plan");
-            System.out.println("4. Agregar Cosechadores a Cuadrilla");
-            System.out.println("5. Agregar Pesaje a Cosechador");
-            System.out.println("6. Pagar Pesajes Impagos de Cosechador");
-            System.out.println("7. Volver");
-            System.out.print("Opcion: ");
-            int opcionSubmenus = tcld.nextInt();
-            if (opcionSubmenus < 0 || opcionSubmenus > 7) {
-                System.out.println("La opcion no esta en el rango valido");
-                continue;
-            }
-            switch (opcionSubmenus) {
-                case 1:
-                    creaPlanDeCosecha();
-                    break;
-                case 2:
-                    CambiarEstadoPlan();
-                    break;
-                case 3:
-                    AgregaCuadrillasAPlan();
-                    break;
-                case 4:
-                    asignaCosechadoresAPlan();
-                    break;
-                case 5:
-                    AgregarPesaje();
-                    break;
-                case 6:
-                    PagarPesajes();
-                    break;
-                case 7:
+            try {
+                System.out.println(">>> SUBMENU PLANES DE COSECHA <<<");
+                System.out.println("1. Crear Plan de Cosecha");
+                System.out.println("2. Cambiar Estado de Plan");
+                System.out.println("3. Agregar Cuadrillas a Plan");
+                System.out.println("4. Agregar Cosechadores a Cuadrilla");
+                System.out.println("5. Agregar Pesaje a Cosechador");
+                System.out.println("6. Pagar Pesajes Impagos de Cosechador");
+                System.out.println("7. Volver");
+                System.out.print("Opcion: ");
+                int opcionSubmenus = tcld.nextInt();
+                tcld.nextLine();
+                if (opcionSubmenus == 7){
                     return;
+                }
+                switch (opcionSubmenus) {
+                    case 1:
+                        creaPlanDeCosecha();
+                        break;
+                    case 2:
+                        CambiarEstadoPlan();
+                        break;
+                    case 3:
+                        AgregaCuadrillasAPlan();
+                        break;
+                    case 4:
+                        asignaCosechadoresAPlan();
+                        break;
+                    case 5:
+                        AgregarPesaje();
+                        break;
+                    case 6:
+                        PagarPesajes();
+                        break;
+                    case 7:
+                        return;
 
-                default:
-                    System.out.println("La opcion no esta en el rango valido");
+                    default:
+                        System.out.println("La opcion no esta en el rango valido");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Error, Ingrese un numero valido");
+                tcld.nextLine();
+            } catch (GestionHuertosException e) {
+                System.out.println("Error! " + e);
             }
-        }
 
+
+        }
     }
 
     private void menuListados() {
         while (true) {
-            System.out.println(">>> SUBMENU LISTADOS <<<");
-            System.out.println("1. Listado de Propietarios");
-            System.out.println("2. Listado de Supervisores");
-            System.out.println("3. Listado de Cosechadores");
-            System.out.println("4. Listado de Cultivos");
-            System.out.println("5. Listado de Huertos");
-            System.out.println("6. Listado de Planes de Cosecha");
-            System.out.println("7. Listado Pesajes");
-            System.out.println("8. Listado Pesajes de un Cosechador");
-            System.out.println("9. Listado de Pagos");
-            System.out.println("10. Volver");
-            System.out.print("Opcion: ");
-            int opcionSubmenus = tcld.nextInt();
-            if (opcionSubmenus < 0 || opcionSubmenus > 10) {
-                System.out.println("La opcion no esta en el rango valido");
-                continue;
-            }
-            switch (opcionSubmenus) {
-                case 1:
-                    listapropietarios();
-                    break;
-                case 2:
-                    listasupervisores();
-                    break;
-                case 3:
-                    listacosechadores();
-                    break;
-                case 4:
-                    listaCultivos();
-                    break;
-                case 5:
-                    listaHuertos();
-                    break;
-                case 6:
-                    listaPlanesCosecha();
-                    break;
-                case 7:
-                    listaPersonas();
-                    break;
-                case 8:
-                    uiListaPesajesCosechador();
-                    break;
-                case 9:
-                    ListaPagos();
-                    break;
-                case 10:
+            try {
+                System.out.println(">>> SUBMENU LISTADOS <<<");
+                System.out.println("1. Listado de Propietarios");
+                System.out.println("2. Listado de Supervisores");
+                System.out.println("3. Listado de Cosechadores");
+                System.out.println("4. Listado de Cultivos");
+                System.out.println("5. Listado de Huertos");
+                System.out.println("6. Listado de Planes de Cosecha");
+                System.out.println("7. Listado Pesajes");
+                System.out.println("8. Listado Pesajes de un Cosechador");
+                System.out.println("9. Listado de Pagos");
+                System.out.println("10. Volver");
+                System.out.print("Opcion: ");
+                int opcionSubmenus = tcld.nextInt();
+                tcld.nextLine();
+                if (opcionSubmenus == 10){
                     return;
-                default:
-                    System.out.println("La opcion no esta en el rango valido");
+                }
+                switch (opcionSubmenus) {
+                    case 1:
+                        listapropietarios();
+                        break;
+                    case 2:
+                        listasupervisores();
+                        break;
+                    case 3:
+                        listacosechadores();
+                        break;
+                    case 4:
+                        listaCultivos();
+                        break;
+                    case 5:
+                        listaHuertos();
+                        break;
+                    case 6:
+                        listaPlanesCosecha();
+                        break;
+                    case 7:
+                        listaPesajes();
+                        break;
+                    case 8:
+                        ListaPesajesCosechador();
+                        break;
+                    case 9:
+                        ListaPagos();
+                        break;
+                    case 10:
+                        return;
+                    default:
+                        System.out.println("La opcion no esta en el rango valido");
+                }
+
+
+            }catch(InputMismatchException e){
+                System.out.println("Error Ingrese un caracter valido");
+                tcld.nextLine();
+            } catch(GestionHuertosException e){
+                System.out.println("Error! " + e);
             }
-
         }
-
     }
-
     private void CreaPersona() {
         try {
             System.out.println("Creando una persona...");
             System.out.println("Rol persona (1=Propietario, 2=Supervisor, 3=Cosechador):");
-            String rol = tcld.next();
+            String rol = tcld.nextLine().trim();
+
             System.out.print("rut:");
-            Rut rut = Rut.of(tcld.next().trim());
+            Rut rut = Rut.of(tcld.nextLine().trim());
             System.out.print("Nombre:");
-            String nombre = tcld.next().trim();
+            String nombre = tcld.nextLine().trim();
             System.out.print("Email: ");
-            String email = tcld.next().trim();
+            String email = tcld.nextLine().trim();
             System.out.print("Dirección: ");
-            String direccion = tcld.next().trim();
+            String direccion = tcld.nextLine().trim();
             if (rol.equals("1")) {
                 System.out.print("Direccion Comercial:");
-                String DireccionComer = tcld.next().trim();
+                String DireccionComer = tcld.nextLine().trim();
                 control.createPropietario(rut, nombre, email, direccion, DireccionComer);
                 System.out.println("Propietario creado exitosamente");
             } else if (rol.equals("2")) {
                 System.out.print("Profesion:");
-                String profesion = tcld.next().trim();
+                String profesion = tcld.nextLine().trim();
                 control.createSupervisor(rut, nombre, email, direccion, profesion);
                 System.out.println("Supervisor creado exitosamente");
 
             } else if (rol.equals("3")) {
                 System.out.print("Fecha Nacimiento (dd/mm/aaaa): ");
-                LocalDate fechaNacimiento = LocalDate.parse(tcld.next().trim(), F);
+                LocalDate fechaNacimiento = LocalDate.parse(tcld.nextLine().trim(), F);
                 control.createCosechador(rut, nombre, email, direccion, fechaNacimiento);
                 System.out.println("Cosechador creado exitosamente");
             } else {
@@ -256,13 +274,14 @@ public class GestionHuertosUI {
             int id = tcld.nextInt();
             tcld.nextLine();
             System.out.println("Especie: ");
-            String especie = tcld.next().trim();
+            String especie = tcld.nextLine().trim();
             System.out.println("Variedad: ");
-            String variedad = tcld.next().trim();
+            String variedad = tcld.nextLine().trim();
             System.out.println("Rendimiento (Use coma para separador decimal): ");
             float rendimiento = tcld.nextFloat();
             tcld.nextLine();
             control.createCultivo(id, especie, variedad, rendimiento);
+            System.out.println("Cultivo creado exitosamente");
         } catch (GestionHuertosException e) {
             System.out.println("Error! " + e);
         }
@@ -273,16 +292,18 @@ public class GestionHuertosUI {
         try {
             System.out.println("Creando un huerto...");
             System.out.println("Nombre: ");
-            String nombre = tcld.next().trim();
+            String nombre = tcld.nextLine().trim();
             System.out.println("Superficie: ");
             float superficie = tcld.nextFloat();
             tcld.nextLine();
             System.out.println("Ubicacion: ");
-            String ubicacion = tcld.next().trim();
+            String ubicacion = tcld.nextLine().trim();
             System.out.println("Rut propietario: ");
-
-            Rut rut = Rut.of(tcld.next().trim());
+            Rut rut = Rut.of(tcld.nextLine().trim());
             control.createHuerto(nombre, superficie, ubicacion, rut);
+            System.out.println("Huerto creado exitosamente");
+            /*
+            Creo que esto ya no sigue
             System.out.println("Agregar cuarteles al huerto");
             System.out.println("Nro. de cuarteles: ");
             int n = tcld.nextInt();
@@ -300,6 +321,7 @@ public class GestionHuertosUI {
                 tcld.nextLine();
                 control.addCuartelToHuerto(nombre, idCuartel, superficieCuartel, idCultivo);
             }
+            */
         } catch (GestionHuertosException e) {
             System.out.println("Error! " + e);
         }
@@ -309,7 +331,7 @@ public class GestionHuertosUI {
         try {
             System.out.println("Agregando cuarteles a un huerto...");
             System.out.print("Nombre del huerto:");
-            String nombreHuerto = tcld.next().trim();
+            String nombreHuerto = tcld.nextLine().trim();
             System.out.println("Numeros de cuarteles a Agregar");
             int num = tcld.nextInt();
             tcld.nextLine();
@@ -326,8 +348,13 @@ public class GestionHuertosUI {
                     int idCultivo = tcld.nextInt();
                     tcld.nextLine();
                     control.addCuartelToHuerto(nombreHuerto, idCuartel, superficieCuartel, idCultivo);
-                } catch (GestionHuertosException e) {
-                    System.out.println("Error al agregar cuartel" + i + "Error " + e);
+                    System.out.println("Cuartel agregado exitosamente");
+                }catch (InputMismatchException e){
+                    System.out.println("Error, Dato no valido");
+                }catch (GestionHuertosException e){
+                    System.out.println("Error al agregar al cuartel" + (i+1) + e.getMessage());
+                    tcld.nextLine();
+                    i--;
                 }
 
             }
@@ -340,7 +367,7 @@ public class GestionHuertosUI {
         try {
             System.out.println("Cambiando estado de un cuartel...");
             System.out.print("Nombre del Huerto: ");
-            String nombreHuerto = tcld.next().trim();
+            String nombreHuerto = tcld.nextLine().trim();
             System.out.print("Id cuartel: ");
             int idCuartel = tcld.nextInt();
             tcld.nextLine();
@@ -348,7 +375,9 @@ public class GestionHuertosUI {
             System.out.print("Opcion:");
             int opestado = tcld.nextInt();
             tcld.nextLine();
+
             EstadoFonologico estado = EstadoFonologico.values()[opestado - 1];
+
             control.changeEstadoCuartel(nombreHuerto, idCuartel, estado);
             System.out.println("Estado del cuartel cambiado exitosamente");
         } catch (GestionHuertosException e) {
@@ -363,11 +392,11 @@ public class GestionHuertosUI {
             int id = tcld.nextInt();
             tcld.nextLine();
             System.out.println("Nombre del plan: ");
-            String nombre = tcld.next().trim();
+            String nombre = tcld.nextLine().trim();
             System.out.println("Fecha de inicio (dd/mm/aaaa): ");
-            LocalDate inicio = LocalDate.parse(tcld.next().trim(), F);
+            LocalDate inicio = LocalDate.parse(tcld.nextLine().trim(), F);
             System.out.println("Fecha de termino (dd/mm/aaaa): ");
-            LocalDate termino = LocalDate.parse(tcld.next().trim(), F);
+            LocalDate termino = LocalDate.parse(tcld.nextLine().trim(), F);
             System.out.println("Meta (kilos): ");
             double metas = tcld.nextDouble();
             tcld.nextLine();
@@ -375,7 +404,7 @@ public class GestionHuertosUI {
             float precioBase = tcld.nextFloat();
             tcld.nextLine();
             System.out.println("Nombre Huerto: ");
-            String nombreHuerto = tcld.next().trim();
+            String nombreHuerto = tcld.nextLine().trim();
             System.out.println("Id cuartel: ");
             int cuartel = tcld.nextInt();
             tcld.nextLine();
@@ -403,9 +432,9 @@ public class GestionHuertosUI {
                 int idCuadrilla = tcld.nextInt();
                 tcld.nextLine();
                 System.out.println("Nombre cuadrilla: ");
-                String nombreCuadrilla = tcld.next().trim();
+                String nombreCuadrilla = tcld.nextLine().trim();
                 System.out.println("Rut supervisor: ");
-                Rut rutSupervisor = Rut.of(tcld.next().trim());
+                Rut rutSupervisor = Rut.of(tcld.nextLine().trim());
 
                 control.addCuadrillaToPlan(id, idCuadrilla, nombreCuadrilla, rutSupervisor);
             }
@@ -429,14 +458,14 @@ public class GestionHuertosUI {
 
             for (int i = 0; i < nroCosechadores; i++) {
                 System.out.println("Fecha de inicio asignación (dd/mm/aaaa)");
-                LocalDate inicio = LocalDate.parse(tcld.next().trim(), F);
+                LocalDate inicio = LocalDate.parse(tcld.nextLine().trim(), F);
                 System.out.println("Fecha de termino asignación (dd/mm/aaaa)");
-                LocalDate termino = LocalDate.parse(tcld.next().trim(), F);
+                LocalDate termino = LocalDate.parse(tcld.nextLine().trim(), F);
                 System.out.println("Meta (Kilos): ");
                 double metas = tcld.nextDouble();
                 tcld.nextLine();
                 System.out.println("Rut cosechador: ");
-                Rut rutCosechador = Rut.of(tcld.next().trim());
+                Rut rutCosechador = Rut.of(tcld.nextLine().trim());
                 control.addCosechadorToCuadrilla(id, idCuadrilla, inicio, termino, metas, rutCosechador);
 
             }
@@ -454,7 +483,7 @@ public class GestionHuertosUI {
             int idPesaje = tcld.nextInt();
             tcld.nextLine();
             System.out.print("Rut Cosechador: ");
-            Rut rutCosechador = Rut.of(tcld.next().trim());
+            Rut rutCosechador = Rut.of(tcld.nextLine().trim());
             System.out.print("Id plan: ");
             int idPlan = tcld.nextInt();
             tcld.nextLine();
@@ -488,9 +517,13 @@ public class GestionHuertosUI {
             int opEstado = tcld.nextInt();
             tcld.nextLine();
             EstadoPlan estado = EstadoPlan.values()[opEstado - 1];
+
             control.changeEstadoPlan(IdPlan, estado);
             System.out.println("Estado del plan cambiado exitosamente");
 
+        } catch (InputMismatchException e){
+            System.out.println("Error de caracter");
+            tcld.nextLine();
         } catch (GestionHuertosException e) {
             System.out.println("Error!" + e);
         }
@@ -503,7 +536,7 @@ public class GestionHuertosUI {
             int idPago = tcld.nextInt();
             tcld.nextLine();
             System.out.print("Rut cosechador: ");
-            Rut rutCosechador = Rut.of(tcld.next().trim());
+            Rut rutCosechador = Rut.of(tcld.nextLine().trim());
 
             double monto = control.addPagoPesaje(idPago, rutCosechador);
             System.out.printf("Monto pagado al cosechador: $%.1f\n", monto);
@@ -543,7 +576,7 @@ public class GestionHuertosUI {
         System.out.println();
     }
 
-    private void listaPersonas () {
+    /*private void listaPersonas () {
         // === PROPIETARIOS ===
         System.out.println("LISTADO DE PROPIETARIOS");
         System.out.println("-----------------------");
@@ -586,7 +619,7 @@ public class GestionHuertosUI {
         }
         System.out.println();
     }
-
+    */
     private void listaPlanesCosecha () {
         System.out.println("LISTADO DE PLANES DE COSECHA");
         System.out.println("-----------------------------");
@@ -616,15 +649,16 @@ public class GestionHuertosUI {
         }
     }
 
-    private void uiListaPesajesCosechador() {
+    private void ListaPesajesCosechador() {
         try {
             System.out.println("\nLISTADO DE PESAJES DEL COSECHADOR");
             System.out.print("Rut cosechador: ");
-            Rut rutCosechador = Rut.of(tcld.next().trim());
+            Rut rutCosechador = Rut.of(tcld.nextLine().trim());
 
             System.out.println("---------------------------------");
             System.out.printf("%-5s %-12s %-12s %-12s %-10s %-10s %-12s%n", "Id", "Fecha", "Calidad", "Cantidad Kg", "Precio $", "Monto $", "Pagado el");
 
+            //String[] v = control.listPesajes(rutCosechador);
             String[] v = control.listPesajesCosechador(rutCosechador);
             if (v.length == 0) {
                 System.out.println("El cosechador no tiene pesajes registrados.");
@@ -690,5 +724,7 @@ public class GestionHuertosUI {
         }
         System.out.println();
     }
+
+
 
 }
