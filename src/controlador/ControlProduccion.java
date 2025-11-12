@@ -156,7 +156,7 @@ public class ControlProduccion {
         }
         Cuadrilla c = null;
         for(Cuadrilla cc : plan.getCuadrillas()){
-            if(c.getId() == idCuadrilla){
+            if(cc.getId() == idCuadrilla){
                 c = cc;
                 break;
             }
