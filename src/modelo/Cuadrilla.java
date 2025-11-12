@@ -76,11 +76,13 @@ public class Cuadrilla {
     }
 
     public double getKilosPesados(){
-        double k = 0.0;
+        double kilos = 0.0;
         for(CosechadorAsignado asignado : asignaciones){
-            k += asignado.getMontoPesajesPagados() + asignado.getMontoPesajesImpagos();
+            for(Pesaje pesaje : asignado.getPesajes()){
+                kilos += pesaje.getCantidadKg();
+            }
         }
-        return k;
+        return kilos;
     }
 
     public CosechadorAsignado [] getAsignaciones(){
