@@ -216,7 +216,7 @@ public class GestionHuertosUI {
         try {
             System.out.println("Creando una persona...");
             System.out.println("Rol persona (1=Propietario, 2=Supervisor, 3=Cosechador):");
-            String rol = tcld.next();
+            int rol = tcld.nextInt();
             System.out.print("rut:");
             Rut rut = Rut.of(tcld.next().trim());
             System.out.print("Nombre:");
@@ -225,24 +225,25 @@ public class GestionHuertosUI {
             String email = tcld.next().trim();
             System.out.print("Dirección: ");
             String direccion = tcld.next().trim();
-            if (rol.equals("1")) {
-                System.out.print("Direccion Comercial:");
-                String DireccionComer = tcld.next().trim();
-                control.createPropietario(rut, nombre, email, direccion, DireccionComer);
-                System.out.println("Propietario creado exitosamente");
-            } else if (rol.equals("2")) {
-                System.out.print("Profesion:");
-                String profesion = tcld.next().trim();
-                control.createSupervisor(rut, nombre, email, direccion, profesion);
-                System.out.println("Supervisor creado exitosamente");
+            switch (rol) {
+                case 1:
+                    System.out.print("Direccion Comercial:");
+                    String DireccionComer = tcld.next().trim();
+                    control.createPropietario(rut, nombre, email, direccion, DireccionComer);
+                    System.out.println("Propietario creado exitosamente");
+                case 2:
+                    System.out.print("Profesion:");
+                    String profesion = tcld.next().trim();
+                    control.createSupervisor(rut, nombre, email, direccion, profesion);
+                    System.out.println("Supervisor creado exitosamente");
 
-            } else if (rol.equals("3")) {
-                System.out.print("Fecha Nacimiento (dd/mm/aaaa): ");
-                LocalDate fechaNacimiento = LocalDate.parse(tcld.next().trim(), F);
-                control.createCosechador(rut, nombre, email, direccion, fechaNacimiento);
-                System.out.println("Cosechador creado exitosamente");
-            } else {
-                System.out.println("rol persona no valido");
+                case 3:
+                    System.out.print("Fecha Nacimiento (dd/mm/aaaa): ");
+                    LocalDate fechaNacimiento = LocalDate.parse(tcld.next().trim(), F);
+                    control.createCosechador(rut, nombre, email, direccion, fechaNacimiento);
+                    System.out.println("Cosechador creado exitosamente");
+                default:
+                    System.out.println("rol persona no valido");
             }
         } catch (Exception e) {
             System.out.println("Error!" + e);
