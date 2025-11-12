@@ -1,5 +1,6 @@
 package modelo;
 
+import utilidades.Persona;
 import utilidades.Rut;
 
 import java.util.ArrayList;

@@ -1,5 +1,6 @@
 package modelo;
 
+import utilidades.Persona;
 import utilidades.Rut;
 
 public class Supervisor extends Persona {

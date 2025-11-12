@@ -1,39 +1,38 @@
 package utilidades;
 
-import java.util.Objects;
-
 public class Rut {
-    private String numero;
+    private long numero;
+    private char dv;
 
-    public Rut(String numero) {
+    public Rut(long numero, char dv) {
         this.numero = numero;
+        this.dv = Character.toUpperCase(dv);
     }
-    public String getNumero() {
+
+
+    public static Rut of(String rutstr){
+        String rutlimpio = rutstr.replace(".","");
+        String [] partes = rutstr.split("-");
+        try{
+            long numero = Long.parseLong(partes[0]);
+            char dv = partes[1].toUpperCase().charAt(0);
+            return new Rut(numero, dv);
+        }catch (NumberFormatException e){
+            throw new NumberFormatException("Error" + e);
+        }
+
+    }
+
+    public long getNumero() {
         return numero;
     }
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
 
-    @Override
-    public boolean equals(Object obj) {
-        if(this == obj){
-            return true;
-        }
-        if(!(obj instanceof Rut)){
-            return false;
-        }
-        Rut r = (Rut)obj;
-        return numero != null && numero.equals(r.numero);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(numero);
+    public char getDv() {
+        return dv;
     }
 
     @Override
     public String toString() {
-        return numero;
+        return numero + "-" + dv;
     }
 }
