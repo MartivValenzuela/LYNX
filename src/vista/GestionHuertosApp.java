@@ -19,7 +19,7 @@ public class GestionHuertosApp {
         while(true){
             System.out.println("\n *** Sistema de Gestión de Huertos***");
             System.out.println("\n MENÚ DE OPCIONES");
-            System.out.println("1. Crear modelo.Persona");
+            System.out.println("1. Crear utilidades.Persona");
             System.out.println("2. Crear modelo.Cultivo");
             System.out.println("3. Crear modelo.Huerto");
             System.out.println("4. Crear Plan de Cosecha");
@@ -320,7 +320,7 @@ public class GestionHuertosApp {
             ok = control.createCosechador(rut, nombre, email, direccion, fechaNacimiento);
         }
         if(ok){
-            System.out.println("modelo.Persona creada exitosamente");
+            System.out.println("utilidades.Persona creada exitosamente");
         } else {
             System.out.println("Error al crear persona.");
         }

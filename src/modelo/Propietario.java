@@ -1,5 +1,7 @@
 package modelo;
 
+import utilidades.Persona;
+
 import java.util.ArrayList;
 
 public class Propietario extends Persona {

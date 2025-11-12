@@ -37,7 +37,7 @@ public class Cultivo {
     }
     public boolean addCuartel (Cuartel cuertel){
         if (cuertel == null || cuarteles.contains(cuertel)) {
-           return false;
+            return false;
         }
         cuarteles.add(cuertel);
         return true;

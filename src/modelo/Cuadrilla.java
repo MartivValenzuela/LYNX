@@ -1,7 +1,11 @@
 package modelo;
 
+import utilidades.GestionHuertosException;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class Cuadrilla {
     private int id;
@@ -41,38 +45,46 @@ public class Cuadrilla {
         return planCosecha;
     }
 
-    private Cosechador findCosechadorByRut(Cosechador cos) {
-        if(cos == null || cos.getRut() == null){
-            return null;
-        }
-        for(CosechadorAsignado ca : asignaciones) {
-            if(ca.getCosechador().getRut().equals(cos.getRut())) {
-                return ca.getCosechador();
+    private Optional<Cosechador> findCosechadorByRut(Cosechador cos) {
+        for(CosechadorAsignado asignado : asignaciones){
+            if(asignado.getCosechador().getRut().equals(cos.getRut())){
+                return Optional.of(asignado.getCosechador());
             }
         }
-        return null;
+        return Optional.empty();
     }
-    public boolean addCosechador (LocalDate fIni, LocalDate fFin, double meta, Cosechador cosechador){
-        if(asignaciones.size() >= maximoCosechadores){
-            return false;
+    public void addCosechador (LocalDate fIni, LocalDate fFin, double meta, Cosechador cosechador)
+            throws GestionHuertosException {
+
+        if(maximoCosechadores > 0 && asignaciones.size() >= maximoCosechadores) {
+            throw new GestionHuertosException("No es posible agregar el nuevo cosechador porque ya se alcanzó el máximo número de cosechadores en una cuadrilla");
         }
-        if (cosechador == null || fIni == null || fFin == null) {
-            return false;
-        }
-        if(findCosechadorByRut(cosechador) != null){
-            return false;
+        if(findCosechadorByRut(cosechador).isPresent()){
+            throw new GestionHuertosException("Ya existe un cosechador en la cuadrilla con el mismo rut del cosechador recibido como parámetro");
         }
 
         CosechadorAsignado nuevo = new CosechadorAsignado(fIni, fFin, meta, this, cosechador);
         asignaciones.add(nuevo);
-        return true;
+        cosechador.addCuadrilla(nuevo);
     }
     public Cosechador[] getCosechadores(){
-        Cosechador[] resultado = new Cosechador[asignaciones.size()];
-        for (int i = 0; i < asignaciones.size(); i++) {
-            resultado[i] = asignaciones.get(i).getCosechador();
+        List<Cosechador> lista = new ArrayList<>();
+        for(CosechadorAsignado asignado : asignaciones){
+            lista.add(asignado.getCosechador());
         }
-        return resultado;
+        return lista.toArray(new Cosechador[0]);
+    }
+
+    public double getKilosPesados(){
+        double k = 0.0;
+        for(CosechadorAsignado asignado : asignaciones){
+            k += asignado.getMontoPesajesPagados() + asignado.getMontoPesajesImpagos();
+        }
+        return k;
+    }
+
+    public CosechadorAsignado [] getAsignaciones(){
+        return asignaciones.toArray(new CosechadorAsignado[0]);
     }
     public static int getMaximoCosechadores(){
         return  maximoCosechadores;

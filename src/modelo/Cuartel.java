@@ -1,5 +1,7 @@
 package modelo;
 
+import utilidades.EstadoFonologico;
+
 import java.util.ArrayList;
 public class Cuartel {
     private int id;
@@ -15,6 +17,7 @@ public class Cuartel {
         this.cultivo = cultivo;
         this.huerto = huerto;
         this.planCosechas = new ArrayList<>();
+        this.estado = EstadoFonologico.REPOSO_INVERNAL;
 
         if (cultivo != null) {
             cultivo.addCuartel(this);
@@ -43,8 +46,44 @@ public class Cuartel {
         return estado;
     }
 
-    public void setEstado(EstadoFonologico estado) {
-        this.estado = estado;
+    public boolean setEstado(EstadoFonologico estado) {
+        if(this.estado == estado){
+            return true;
+        }
+
+        if(this.estado == EstadoFonologico.POSTCOSECHA && estado == EstadoFonologico.REPOSO_INVERNAL){
+            this.estado = estado;
+            return true;
+        }
+        EstadoFonologico [] orden = new EstadoFonologico[]{
+                EstadoFonologico.REPOSO_INVERNAL,
+                EstadoFonologico.FLORACION,
+                EstadoFonologico.CUAJA,
+                EstadoFonologico.FRUCTIFICACION,
+                EstadoFonologico.MADURACION,
+                EstadoFonologico.COSECHA,
+                EstadoFonologico.POSTCOSECHA
+        };
+
+        int i = -1;
+        int j = -1;
+
+        for(int k = 0; k < orden.length; k++) {
+            if (orden[k] == this.estado) {
+                i = k;
+            }
+            if (orden[k] == estado) {
+                j = k;
+            }
+        }
+        if (i == -1 || j == -1) {
+            return false;
+        }
+        if (j > i) {
+            this.estado = estado;
+            return true;
+        }
+        return false;
     }
     public Cultivo getCultivo(){
         return cultivo;
