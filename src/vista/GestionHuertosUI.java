@@ -224,7 +224,7 @@ public class GestionHuertosUI {
             System.out.print("Email: ");
             String email = tcld.next().trim();
             System.out.print("Dirección: ");
-            String direccion = tcld.next().trim();
+            String direccion = tcld.nextLine().trim();
             if (rol.equals("1")) {
                 System.out.print("Direccion Comercial:");
                 String DireccionComer = tcld.next().trim();
