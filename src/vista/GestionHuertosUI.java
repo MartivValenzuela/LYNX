@@ -576,50 +576,7 @@ public class GestionHuertosUI {
         System.out.println();
     }
 
-    /*private void listaPersonas () {
-        // === PROPIETARIOS ===
-        System.out.println("LISTADO DE PROPIETARIOS");
-        System.out.println("-----------------------");
-        System.out.printf("%-14s %-28s %-28s %-30s %-22s %-12s%n",
-                "Rut", "Nombre", "Dirección", "email", "Dirección comercial", "Nro. huertos");
 
-        String[] vp = control.listPropietarios();
-        if (vp.length == 0) {
-            System.out.println("No existen propietarios registrados.");
-        } else {
-            for (String s : vp) System.out.println(s);
-        }
-        System.out.println();
-
-        // === SUPERVISORES ===
-        System.out.println("LISTADO DE SUPERVISORES");
-        System.out.println("-----------------------");
-        System.out.printf("%-14s %-28s %-28s %-30s %-14s %-18s%n",
-                "Rut", "Nombre", "Dirección", "email", "Profesión", "Nombre cuadrilla");
-
-        String[] vs = control.listSupervisores();
-        if (vs.length == 0) {
-            System.out.println("No existen supervisores registrados.");
-        } else {
-            for (String s : vs) System.out.println(s);
-        }
-        System.out.println();
-
-        // === COSECHADORES ===
-        System.out.println("LISTADO DE COSECHADORES");
-        System.out.println("-----------------------");
-        System.out.printf("%-14s %-28s %-28s %-30s %-16s %-16s%n",
-                "Rut", "Nombre", "Dirección", "email", "Fecha nacimiento", "Nro. cuadrillas");
-
-        String[] vc = control.listCosechadores();
-        if (vc.length == 0) {
-            System.out.println("No existen cosechadores registrados.");
-        } else {
-            for (String s : vc) System.out.println(s);
-        }
-        System.out.println();
-    }
-    */
     private void listaPlanesCosecha () {
         System.out.println("LISTADO DE PLANES DE COSECHA");
         System.out.println("-----------------------------");
