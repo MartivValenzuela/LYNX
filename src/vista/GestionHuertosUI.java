@@ -273,7 +273,7 @@ public class GestionHuertosUI {
         try {
             System.out.println("Creando un huerto...");
             System.out.println("Nombre: ");
-            String nombre = tcld.next().trim();
+            String nombre = tcld.nextLine().trim();
             System.out.println("Superficie: ");
             float superficie = tcld.nextFloat();
             tcld.nextLine();
@@ -309,7 +309,7 @@ public class GestionHuertosUI {
         try {
             System.out.println("Agregando cuarteles a un huerto...");
             System.out.print("Nombre del huerto:");
-            String nombreHuerto = tcld.next().trim();
+            String nombreHuerto = tcld.nextLine().trim();
             System.out.println("Numeros de cuarteles a Agregar");
             int num = tcld.nextInt();
             tcld.nextLine();
