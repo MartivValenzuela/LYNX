@@ -122,6 +122,9 @@ public class ControlProduccion {
         if(oc.isEmpty()){
             throw new GestionHuertosException("No existe un cuartel con el id indicado");
         }
+        if(finEstim.isBefore(inicio)){
+            throw new GestionHuertosException("La fecha de término no puede ser anterior a la fecha de inicio.");
+        }
         PlanCosecha plan = new PlanCosecha(idPlan, nom, inicio, finEstim, meta, precioBase, oc.get());
         planes.add(plan);
         oc.get().addPlanCosecha(plan);

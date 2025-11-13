@@ -37,6 +37,12 @@ public class Rut {
             throw new GestionHuertosException("El RUT no puede estar vacío");
         }
 
+        if (!rutstr.matches("^[0-9]{1,2}\\.[0-9]{3}\\.[0-9]{3}-[0-9Kk]$")) {
+            throw new GestionHuertosException(
+                    "Formato de RUT inválido. Debe ser del tipo XX.XXX.XXX-Y"
+            );
+        }
+
         String rutlimpio = rutstr.replace(".", "").trim();
         String[] partes = rutlimpio.split("-");
 
