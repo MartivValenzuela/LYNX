@@ -182,6 +182,9 @@ public class ControlProduccion {
             throw new GestionHuertosException("No existe un plan con el id indicado");
         }
         PlanCosecha plan = existePlan.get();
+        if (plan.getEstado() != EstadoPlan.EJECUTANDO) {
+            throw new GestionHuertosException("El plan no se encuentra en estado en ejecución");
+        }
         if (plan.getCuartel().getEstado() != EstadoFonologico.COSECHA){
             throw new GestionHuertosException("El cuartel no se encuentra en estado fenológico cosecha");
         }
@@ -223,7 +226,7 @@ public class ControlProduccion {
 
         PagoPesaje nuevopago = new PagoPesaje(id,fechaPago,pesajes1);
         this.pagosPesajes.add(nuevopago);
-        this.pagosPesajes.add(nuevopago);return nuevopago.getMonto();
+        return nuevopago.getMonto();
     }
     public String[] listCultivos() {
         String[] out = new String[cultivos.size()];
@@ -324,12 +327,14 @@ public class ControlProduccion {
         String [] arr = new String[cosechadores.size()];
         for(int i = 0; i < cosechadores.size(); i++){
             Cosechador c = cosechadores.get(i);
+
             int nCuadrillas;
             if(c.getCuadrillas() == null){
                 nCuadrillas = 0;
             } else {
                 nCuadrillas = c.getCuadrillas().length;
             }
+
             String fNac;
             if (c.getFechaNacimiento() == null) {
                 fNac = "";
@@ -337,9 +342,18 @@ public class ControlProduccion {
                 fNac = c.getFechaNacimiento().toString();
             }
 
-            arr[i] =String.format(
-                    "%-14s %-28s %-30s %-30s %-16s %2d",
-                    c.getRut(), c.getNombre(), c.getDireccion(), c.getEmail(), fNac, nCuadrillas);
+            double montoImpago = 0.0;
+            double montoPagado = 0.0;
+
+            for(CosechadorAsignado asignacion : c.getAsignaciones()){
+                montoImpago += asignacion.getMontoPesajesImpagos();
+                montoPagado += asignacion.getMontoPesajesPagados();
+            }
+
+            arr[i] = String.format(
+                    "%-14s %-28s %-30s %-30s %-16s %-16d %-16.1f %-16.1f",
+                    c.getRut(), c.getNombre(), c.getDireccion(), c.getEmail(),
+                    fNac, nCuadrillas, montoImpago, montoPagado);
         }
         return arr;
     }
@@ -349,17 +363,38 @@ public class ControlProduccion {
             return new String[0];
         }
         String [] arr = new String[supervisores.size()];
+
         for(int i = 0; i < supervisores.size(); i++){
             Supervisor s = supervisores.get(i);
+
             String cuadNom;
-            if(s.getCuadrilla() == null){
+            double kilosPesados = 0.0;
+            int nroPesajesImpagos = 0;
+
+            Cuadrilla cuad = s.getCuadrilla();
+
+            if(cuad == null){
                 cuadNom = "S/A";
             } else{
-                cuadNom = s.getCuadrilla().getNombre();
+                cuadNom = cuad.getNombre();
+                kilosPesados = cuad.getKilosPesados();
+
+                for(CosechadorAsignado asignado : cuad.getAsignaciones()){
+                    nroPesajesImpagos += asignado.getNroPesajesImpagos();
+                }
             }
+
             arr[i] =  String.format(
-                    "%-14s %-28s %-30s %-28s %-16s %-18s",
-                    s.getRut(), s.getNombre(), s.getDireccion(), s.getEmail(), s.getProfesion(), cuadNom);
+                    "%-14s %-28s %-30s %-28s %-16s %-18s %-12.1f %-12d",
+                    s.getRut(),
+                    s.getNombre(),
+                    s.getDireccion(),
+                    s.getEmail(),
+                    s.getProfesion(),
+                    cuadNom,
+                    kilosPesados,
+                    nroPesajesImpagos
+            );
         }
         return arr;
     }
