@@ -106,7 +106,7 @@ public class GestionHuertosUI {
                 System.out.println("Error, Ingrese un numero valido");
                 tcld.nextLine();
             } catch (Exception e) {
-                System.out.println("Error!  " + e);
+                System.out.println("Error:  " + e.getMessage());
             }
         }
     }
@@ -157,7 +157,7 @@ public class GestionHuertosUI {
                 System.out.println("Error, Ingrese un numero valido");
                 tcld.nextLine();
             } catch (Exception e) {
-                System.out.println("Error! " + e);
+                System.out.println("Error: " + e.getMessage());
             }
 
 
@@ -223,7 +223,7 @@ public class GestionHuertosUI {
                 System.out.println("Error Ingrese un caracter valido");
                 tcld.nextLine();
             } catch(Exception e){
-                System.out.println("Error! " + e);
+                System.out.println("Error: " + e.getMessage());
             }
         }
     }
@@ -269,7 +269,7 @@ public class GestionHuertosUI {
             System.out.println("Error, debe ingresar un numero");
             tcld.nextLine();
         } catch (GestionHuertosException e) {
-            throw new RuntimeException("Error!" + e);
+            System.out.println("Error al intentar crear la persona: " + e.getMessage());
         }
 
     }
@@ -290,7 +290,7 @@ public class GestionHuertosUI {
             control.createCultivo(id, especie, variedad, rendimiento);
             System.out.println("Cultivo creado exitosamente");
         } catch (GestionHuertosException e) {
-            System.out.println("Error! " + e);
+            System.out.println("Error al intentar crear el cultivo: " + e.getMessage());
         }
 
     }
@@ -311,7 +311,7 @@ public class GestionHuertosUI {
             System.out.println("Huerto creado exitosamente");
 
         } catch (GestionHuertosException e) {
-            System.out.println("Error! " + e);
+            System.out.println("Error al intentar crear el Huerto: " + e.getMessage());
         }
     }
 
@@ -343,13 +343,13 @@ public class GestionHuertosUI {
                     tcld.nextLine();
                     i--;
                 }catch (GestionHuertosException e){
-                    System.out.println("Error al agregar al cuartel" + (i+1) + e.getMessage());
+                    System.out.println("Error al intentar agregar al cuartel" + (i+1) + e.getMessage());
                     return;
                 }
 
             }
         } catch (Exception e) {
-            System.out.println("Error!" + e);
+            System.out.println("Error al intentar agregar el cuartel al Huerto: " + e.getMessage());
         }
     }
 
@@ -375,7 +375,7 @@ public class GestionHuertosUI {
             control.changeEstadoCuartel(nombreHuerto, idCuartel, estado);
             System.out.println("Estado del cuartel cambiado exitosamente");
         } catch (GestionHuertosException e) {
-            System.out.println("Error!" + e);
+            System.out.println("Error al intentar cambiar de estado el cuartel: " + e.getMessage());
         }
     }
 
@@ -407,7 +407,7 @@ public class GestionHuertosUI {
             System.out.println("Plan de cosecha creado exitosamente");
 
         } catch (GestionHuertosException e) {
-            System.out.println("Error!" + e);
+            System.out.println("Error al intentar crear el Plan de Cosecha: " + e.getMessage());
         }
 
     }
@@ -431,9 +431,10 @@ public class GestionHuertosUI {
                 Rut rutSupervisor = Rut.of(tcld.nextLine().trim());
 
                 control.addCuadrillaToPlan(id, idCuadrilla, nombreCuadrilla, rutSupervisor);
+                System.out.println("Cuadrilla agregada exitosamente al plan de cosecha");
             }
         } catch (GestionHuertosException e) {
-            System.out.println("Error!" + e);
+            System.out.println("Error al intentar agregar Cuadrillas al plan" + e.getMessage());
         }
     }
 
@@ -461,10 +462,10 @@ public class GestionHuertosUI {
                 System.out.println("Rut cosechador: ");
                 Rut rutCosechador = Rut.of(tcld.nextLine().trim());
                 control.addCosechadorToCuadrilla(id, idCuadrilla, inicio, termino, metas, rutCosechador);
-
+                System.out.println("Cosechador asigando exitosamente a una cuadrilla del plan de cosecha");
             }
         } catch (GestionHuertosException e) {
-            System.out.println("Error " + e);
+            System.out.println("Error al intentar asignar Cosechadores al Plan: " + e.getMessage());
         }
 
 
@@ -499,7 +500,7 @@ public class GestionHuertosUI {
             control.addPesaje(idPesaje,rutCosechador,idPlan,idCuadrilla,cantidadKg,calidad);
             System.out.println("Pesaje agregado exitosamente al cosechador");
         }catch (GestionHuertosException e){
-            System.out.println("Error!" + e);
+            System.out.println("Error al intentar agregar pesaje: " + e.getMessage());
         }
     }
 
@@ -527,7 +528,7 @@ public class GestionHuertosUI {
             System.out.println("Error de caracter");
             tcld.nextLine();
         } catch (GestionHuertosException e) {
-            System.out.println("Error!" + e);
+            System.out.println("Error al intentar camiar el estado del Plan: " + e.getMessage());
         }
     }
 
@@ -543,7 +544,7 @@ public class GestionHuertosUI {
             double monto = control.addPagoPesaje(idPago, rutCosechador);
             System.out.printf("Monto pagado al cosechador: $%.1f\n", monto);
         }catch (GestionHuertosException e){
-            System.out.println(e);
+            System.out.println("Error al intentar pagar Pesajes: "+e.getMessage());
         }
     }
 
@@ -617,7 +618,6 @@ public class GestionHuertosUI {
             System.out.println("---------------------------------");
             System.out.printf("%-5s %-12s %-12s %-12s %-10s %-10s %-12s%n", "Id", "Fecha", "Calidad", "Cantidad Kg", "Precio $", "Monto $", "Pagado el");
 
-            //String[] v = control.listPesajes(rutCosechador);
             String[] v = control.listPesajesCosechador(rutCosechador);
             if (v.length == 0) {
                 System.out.println("El cosechador no tiene pesajes registrados.");
