@@ -12,7 +12,7 @@ public class Rut {
 
     public static Rut of(String rutstr){
         String rutlimpio = rutstr.replace(".","");
-        String [] partes = rutstr.split("-");
+        String [] partes = rutlimpio.split("-");
         try{
             long numero = Long.parseLong(partes[0]);
             char dv = partes[1].toUpperCase().charAt(0);

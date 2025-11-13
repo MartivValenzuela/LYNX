@@ -215,7 +215,8 @@ public class ControlProduccion {
         ArrayList<Pesaje> pesajes1 = new ArrayList<>();
         for (Pesaje p : this.pesajes){
             Cosechador cPesaje = p.getCosechadorAsignado().getCosechador();
-            if (p.getPagoPesaje() == null && cPesaje.getRut().equals(rutCosechador)){
+            Rut r = cPesaje.getRut();
+            if (p.getPagoPesaje() == null && r.getNumero() == rutCosechador.getNumero() && r.getDv() == rutCosechador.getDv()) {
                 pesajes1.add(p);
             }
         }
@@ -466,7 +467,8 @@ public class ControlProduccion {
 
         ArrayList<Pesaje> pesajesCosechador = new ArrayList<>();
         for (Pesaje p : this.pesajes) {
-            if (p.getCosechadorAsignado().getCosechador().getRut().equals(rutCosechador)) {
+            Rut r = p.getCosechadorAsignado().getCosechador().getRut();
+            if (r.getNumero() == rutCosechador.getNumero() && r.getDv() == rutCosechador.getDv()) {
                 pesajesCosechador.add(p);
             }
         }
@@ -672,7 +674,8 @@ public class ControlProduccion {
 
     private Optional<Cosechador> findCosechadorByRut(Rut rut){
         for(Cosechador c : cosechadores){
-            if(c.getRut().equals(rut)){
+            Rut r = c.getRut();
+            if(r.getNumero() == rut.getNumero() && r.getDv() == rut.getDv()){
                 return Optional.of(c);
             }
         }
@@ -688,7 +691,8 @@ public class ControlProduccion {
     }
     private Optional<Propietario> findPropietarioByRut(Rut rut){
         for(Propietario p : propietarios){
-            if(p.getRut().equals(rut)) {
+            Rut r =  p.getRut();
+            if(r.getNumero() == rut.getNumero() && r.getDv() == rut.getDv()) {
                 return Optional.of(p);
             }
         }
@@ -713,7 +717,8 @@ public class ControlProduccion {
     }
     private Optional<Supervisor> findSupervisorByRut(Rut rut){
         for(Supervisor sup : supervisores){
-            if(sup.getRut().equals(rut)) {
+            Rut r = sup.getRut();
+            if(r.getNumero() == rut.getNumero() && r.getDv() == rut.getDv()) {
                 return Optional.of(sup);
             }
         }

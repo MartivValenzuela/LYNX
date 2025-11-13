@@ -269,6 +269,7 @@ public class GestionHuertosUI {
             }
         } catch (InputMismatchException e) {
             System.out.println("Error, debe ingresar un numero");
+            tcld.nextLine();
         } catch (Exception e) {
             throw new RuntimeException("Error!" + e);
         }
@@ -338,12 +339,14 @@ public class GestionHuertosUI {
                     tcld.nextLine();
                     control.addCuartelToHuerto(nombreHuerto, idCuartel, superficieCuartel, idCultivo);
                     System.out.println("Cuartel agregado exitosamente");
+
                 }catch (InputMismatchException e){
                     System.out.println("Error, Dato no valido");
-                }catch (GestionHuertosException e){
-                    System.out.println("Error al agregar al cuartel" + (i+1) + e.getMessage());
                     tcld.nextLine();
                     i--;
+                }catch (GestionHuertosException e){
+                    System.out.println("Error al agregar al cuartel" + (i+1) + e.getMessage());
+                    return;
                 }
 
             }
@@ -365,6 +368,10 @@ public class GestionHuertosUI {
             int opestado = tcld.nextInt();
             tcld.nextLine();
 
+            if(opestado < 1 || opestado > EstadoFonologico.values().length){
+                System.out.println("Opcion de estado no valida");
+                return;
+            }
             EstadoFonologico estado = EstadoFonologico.values()[opestado - 1];
 
             control.changeEstadoCuartel(nombreHuerto, idCuartel, estado);
@@ -486,6 +493,10 @@ public class GestionHuertosUI {
             System.out.print("Opcion: ");
             int opCalidad = tcld.nextInt();
             tcld.nextLine();
+            if (opCalidad < 1 || opCalidad > EstadoPlan.values().length) {
+                System.out.println("Opción de estado no válida");
+                return;
+            }
             Calidad calidad = Calidad.values()[opCalidad - 1];
             control.addPesaje(idPesaje,rutCosechador,idPlan,idCuadrilla,cantidadKg,calidad);
             System.out.println("Pesaje agregado exitosamente al cosechador");
@@ -505,6 +516,10 @@ public class GestionHuertosUI {
             System.out.print("Opcion:");
             int opEstado = tcld.nextInt();
             tcld.nextLine();
+            if (opEstado < 1 || opEstado > EstadoPlan.values().length) {
+                System.out.println("Opción de estado no válida");
+                return;
+            }
             EstadoPlan estado = EstadoPlan.values()[opEstado - 1];
 
             control.changeEstadoPlan(IdPlan, estado);
