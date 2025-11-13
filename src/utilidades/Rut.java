@@ -9,18 +9,59 @@ public class Rut {
         this.dv = Character.toUpperCase(dv);
     }
 
+    private static char calcularDV(long numero) {
+        long rut = numero;
+        int suma = 0;
+        int multiplicador = 2;
 
-    public static Rut of(String rutstr){
-        String rutlimpio = rutstr.replace(".","");
-        String [] partes = rutlimpio.split("-");
-        try{
-            long numero = Long.parseLong(partes[0]);
-            char dv = partes[1].toUpperCase().charAt(0);
-            return new Rut(numero, dv);
-        }catch (NumberFormatException e){
-            throw new NumberFormatException("Error" + e);
+        while (rut > 0) {
+            suma += (rut % 10) * multiplicador;
+            rut /= 10;
+            multiplicador++;
+            if (multiplicador == 8) {
+                multiplicador = 2;
+            }
         }
 
+        int resto = suma % 11;
+        int dvNum = 11 - resto;
+
+        if (dvNum == 11) return '0';
+        if (dvNum == 10) return 'K';
+        return (char) (dvNum + '0');
+    }
+
+    public static Rut of(String rutstr) throws GestionHuertosException {
+        if (rutstr == null || rutstr.trim().isEmpty()) {
+            throw new GestionHuertosException("El RUT no puede estar vacío");
+        }
+
+        String rutlimpio = rutstr.replace(".", "").trim();
+        String[] partes = rutlimpio.split("-");
+
+        if (partes.length != 2) {
+            throw new GestionHuertosException("Formato de RUT incorrecto. Debe ser (numero)-(dv)");
+        }
+
+        if (partes[1].length() != 1) {
+            throw new GestionHuertosException("El dígito verificador debe ser un solo caracter");
+        }
+
+        try {
+            long numero = Long.parseLong(partes[0]);
+            char dvIngresado = partes[1].toUpperCase().charAt(0);
+
+            char dvCalculado = calcularDV(numero);
+
+            if (dvIngresado != dvCalculado) {
+                throw new GestionHuertosException("El dígito verificador es incorrecto. Para " + numero + " el DV correcto es " + dvCalculado + ", pero se ingreso " + dvIngresado);
+            }
+
+            return new Rut(numero, dvIngresado);
+
+        } catch (NumberFormatException e) {
+            throw new GestionHuertosException("El numero del RUT no es válido (solo debe contener dígitos)");
+        }
     }
 
     public long getNumero() {
@@ -34,5 +75,13 @@ public class Rut {
     @Override
     public String toString() {
         return numero + "-" + dv;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Rut rut = (Rut) obj;
+        return numero == rut.numero && dv == rut.dv;
     }
 }
