@@ -4,11 +4,12 @@ public class Rut {
     private long numero;
     private char dv;
 
-    public Rut(long numero, char dv) {
+    private Rut(long numero, char dv) {
         this.numero = numero;
         this.dv = Character.toUpperCase(dv);
     }
 
+    //Metodo priavdo para verificar que el dv sea correcto
     private static char calcularDV(long numero) {
         long rut = numero;
         int suma = 0;
@@ -75,13 +76,5 @@ public class Rut {
     @Override
     public String toString() {
         return numero + "-" + dv;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Rut rut = (Rut) obj;
-        return numero == rut.numero && dv == rut.dv;
     }
 }
