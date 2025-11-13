@@ -42,7 +42,7 @@ public class Cultivo {
         cuarteles.add(cuertel);
         return true;
     }
-    public Cuartel[] getCuerteles(){
+    public Cuartel[] getCuarteles(){
         return cuarteles.toArray(new Cuartel[0]);
     }
 }

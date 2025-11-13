@@ -491,8 +491,8 @@ public class GestionHuertosUI {
             System.out.print("Opcion: ");
             int opCalidad = tcld.nextInt();
             tcld.nextLine();
-            if (opCalidad < 1 || opCalidad > EstadoPlan.values().length) {
-                System.out.println("Opción de calidad no válida");
+            if (opCalidad < 1 || opCalidad > Calidad.values().length) {
+                System.out.println("Opcion de calidad no valida");
                 return;
             }
             Calidad calidad = Calidad.values()[opCalidad - 1];

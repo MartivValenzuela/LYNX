@@ -131,13 +131,9 @@ public class ControlProduccion {
         PlanCosecha plan = findPlanById(idPlan)
                 .orElseThrow(() -> new GestionHuertosException("Plan de cosecha no existe"));
 
-        EstadoPlan actual = plan.getEstado();
+        boolean cambioExitoso = plan.setEstado(nuevo);
 
-        if (actual == EstadoPlan.PLANIFICADO && nuevo == EstadoPlan.EJECUTANDO) {
-            plan.setEstado(nuevo);
-        } else if (actual == EstadoPlan.EJECUTANDO && nuevo == EstadoPlan.CERRADO) {
-            plan.setEstado(nuevo);
-        } else {
+        if (!cambioExitoso) {
             throw new GestionHuertosException("No esta permitido el cambio de estado solicitado");
         }
     }
@@ -158,7 +154,7 @@ public class ControlProduccion {
         op.get().addCuadrilla(idCuad, nomCuad, os.get());
     }
     public void addCosechadorToCuadrilla (int idPlan, int idCuadrilla, LocalDate fInicio, LocalDate fFin, double meta, Rut rutCosechador)
-        throws GestionHuertosException{
+            throws GestionHuertosException{
         Optional<PlanCosecha> op = findPlanById(idPlan);
         if(op.isEmpty()){
             throw new GestionHuertosException("No existe un plan con el id indicado");
@@ -171,6 +167,7 @@ public class ControlProduccion {
         if(fInicio.isBefore(plan.getInicio()) || fFin.isAfter(plan.getFinEstimado())){
             throw new GestionHuertosException("El rango de fechas de asignación del cosechador a la cuadrilla está fuera del rango de fechas del plan");
         }
+
         Cuadrilla c = null;
         for(Cuadrilla cc : plan.getCuadrillas()){
             if(cc.getId() == idCuadrilla){
@@ -178,6 +175,11 @@ public class ControlProduccion {
                 break;
             }
         }
+
+        if(c == null){
+            throw new GestionHuertosException("No existe una cuadrilla con el id indicado en este plan");
+        }
+
         if(c.getMaximoCosechadores() > 0 && c.getCosechadores().length >= c.getMaximoCosechadores()){
             throw new GestionHuertosException("El numero de cosechadores ya alcanzo el maximo permitido");
         }
