@@ -1,13 +1,11 @@
 package vista;
 import controlador.ControlProduccion;
-import jdk.jshell.ImportSnippet;
 import utilidades.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.util.SortedMap;
 
 public class GestionHuertosUI {
     private final Scanner tcld = new Scanner(System.in);
@@ -80,7 +78,7 @@ public class GestionHuertosUI {
                 System.out.print("Opcion: ");
                 int opcionSubmenus = tcld.nextInt();
                 tcld.nextLine();
-                if (opcionSubmenus < 0 || opcionSubmenus > 6) {
+                if (opcionSubmenus < 1 || opcionSubmenus > 5) {
                     System.out.println("La opcion no esta en el rango valido");
                     continue;
                 }
@@ -158,7 +156,7 @@ public class GestionHuertosUI {
             } catch (InputMismatchException e) {
                 System.out.println("Error, Ingrese un numero valido");
                 tcld.nextLine();
-            } catch (GestionHuertosException e) {
+            } catch (Exception e) {
                 System.out.println("Error! " + e);
             }
 
@@ -224,7 +222,7 @@ public class GestionHuertosUI {
             }catch(InputMismatchException e){
                 System.out.println("Error Ingrese un caracter valido");
                 tcld.nextLine();
-            } catch(GestionHuertosException e){
+            } catch(Exception e){
                 System.out.println("Error! " + e);
             }
         }
@@ -270,7 +268,7 @@ public class GestionHuertosUI {
         } catch (InputMismatchException e) {
             System.out.println("Error, debe ingresar un numero");
             tcld.nextLine();
-        } catch (Exception e) {
+        } catch (GestionHuertosException e) {
             throw new RuntimeException("Error!" + e);
         }
 
@@ -350,7 +348,7 @@ public class GestionHuertosUI {
                 }
 
             }
-        } catch (GestionHuertosException e) {
+        } catch (Exception e) {
             System.out.println("Error!" + e);
         }
     }
@@ -494,7 +492,7 @@ public class GestionHuertosUI {
             int opCalidad = tcld.nextInt();
             tcld.nextLine();
             if (opCalidad < 1 || opCalidad > EstadoPlan.values().length) {
-                System.out.println("Opción de estado no válida");
+                System.out.println("Opción de calidad no válida");
                 return;
             }
             Calidad calidad = Calidad.values()[opCalidad - 1];

@@ -28,6 +28,7 @@ public class PlanCosecha {
         this.precioBaseKilo = precio;
         this.cuartel = cuartel;
         this.cuadrillas = new ArrayList<>();
+        this.estado = EstadoPlan.PLANIFICADO;
         if(cuartel != null){
             cuartel.addPlanCosecha(this);
         }

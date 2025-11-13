@@ -24,7 +24,20 @@ public class ControlProduccion {
     private List<PagoPesaje> pagosPesajes = new ArrayList<>();
     private DateTimeFormatter F = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public ControlProduccion(){}
+    public ControlProduccion() {
+        try {
+            readDataFromTextFile("archivoGestion.txt");
+            System.out.println(">> Datos cargados correctamente desde archivoGestion.txt");
+        }catch (GestionHuertosException e) {
+            System.out.println(">> Error al cargar datos de archivoGestion.txt: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println(">> Error inesperado: " + e.getClass().getName());
+            e.printStackTrace();
+        }
+    }
+
+
     public static ControlProduccion getInstance(){
         if(instance==null){
             instance = new ControlProduccion();
@@ -114,17 +127,21 @@ public class ControlProduccion {
         oc.get().addPlanCosecha(plan);
     }
 
-    public void changeEstadoPlan(int idPlan, EstadoPlan estado)
-        throws GestionHuertosException{
-        Optional<PlanCosecha> op = findPlanById(idPlan);
-        if(op.isEmpty()){
-            throw new GestionHuertosException("No existe un plan con el id indicado");
-        }
-        boolean ok = op.get().setEstado(estado);
-        if(!ok){
+    public void changeEstadoPlan(int idPlan, EstadoPlan nuevo) throws GestionHuertosException {
+        PlanCosecha plan = findPlanById(idPlan)
+                .orElseThrow(() -> new GestionHuertosException("Plan de cosecha no existe"));
+
+        EstadoPlan actual = plan.getEstado();
+
+        if (actual == EstadoPlan.PLANIFICADO && nuevo == EstadoPlan.EJECUTANDO) {
+            plan.setEstado(nuevo);
+        } else if (actual == EstadoPlan.EJECUTANDO && nuevo == EstadoPlan.CERRADO) {
+            plan.setEstado(nuevo);
+        } else {
             throw new GestionHuertosException("No esta permitido el cambio de estado solicitado");
         }
     }
+
     public void addCuadrillaToPlan (int idPlan, int idCuad, String nomCuad, Rut rutSup)
         throws GestionHuertosException{
         Optional<PlanCosecha> op = findPlanById(idPlan);
@@ -526,21 +543,29 @@ public class ControlProduccion {
         throws FileNotFoundException, GestionHuertosException {
         DateTimeFormatter DF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        try {
-            Scanner leer = new Scanner(new File("archivoGestion.txt"));
+            Scanner leer = new Scanner(new File(path));
             leer.useDelimiter("[;\r\n]+");
             leer.useLocale(Locale.US);
 
             while (leer.hasNext()) {
                 String token = leer.next().trim();
-                if (token.isEmpty() || token.startsWith("#")) continue;
+                if (token.isEmpty()) continue;
+
+                if(token.startsWith("#")){
+                    if(leer.hasNextLine()){
+                        leer.nextLine();
+                    }
+                    continue;
+                }
 
 
                 String operacion = token;
+                if(!leer.hasNextInt()){
+                    throw new GestionHuertosException("Falta la cantidad de registros para la operación: " + operacion);
+                }
                 int n = leer.nextInt();
 
                 for (int i = 0; i < n; i++) {
-                    try {
                         switch (operacion) {
                             case "createPropietario": {
                                 String rut = leer.next().trim();
@@ -658,17 +683,10 @@ public class ControlProduccion {
                                 break;
                             }
                         }
-
-                    } catch (GestionHuertosException e) {
-                       throw new GestionHuertosException(e.getMessage());
-                    }
                 }
             }
 
             leer.close();
-        } catch (FileNotFoundException e) {
-            System.err.println("Archivo no encontrado: " + e);
-        }
     }
 
 
