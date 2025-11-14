@@ -30,6 +30,7 @@ public class Rut {
         if (dvNum == 11) return '0';
         if (dvNum == 10) return 'K';
         return (char) (dvNum + '0');
+
     }
 
     public static Rut of(String rutstr) throws GestionHuertosException {
