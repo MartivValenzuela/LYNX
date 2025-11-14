@@ -45,27 +45,66 @@ public class ControlProduccion {
         return instance;
     }
 
-    public void createPropietario (Rut rut, String nombre, String email, String dirParticular, String dirComercial)
-        throws GestionHuertosException {
-        if(findPropietarioByRut(rut).isPresent()){
+    public void createPropietario(Rut rut, String nombre, String email, String dirParticular, String dirComercial)
+            throws GestionHuertosException {
+
+        if (findPropietarioByRut(rut).isPresent()) {
             throw new GestionHuertosException("Ya existe un propietario con el rut indicado");
+        }
+        if (existePersonaConRut(rut)) {
+            throw new GestionHuertosException("Ya existe una persona (propietario, supervisor o cosechador) con el rut indicado");
         }
         propietarios.add(new Propietario(rut, nombre, email, dirParticular, dirComercial));
     }
 
-    public void createSupervisor (Rut rut, String nombre, String email, String direccion, String profesion)
-        throws GestionHuertosException {
-        if(findSupervisorByRut(rut).isPresent()){
+    public void createSupervisor(Rut rut, String nombre, String email, String direccion, String profesion)
+            throws GestionHuertosException {
+
+        if (findSupervisorByRut(rut).isPresent()) {
             throw new GestionHuertosException("Ya existe un supervisor con el rut indicado");
+        }
+        if (existePersonaConRut(rut)) {
+            throw new GestionHuertosException("Ya existe una persona (propietario, supervisor o cosechador) con el rut indicado");
         }
         supervisores.add(new Supervisor(rut, nombre, email, direccion, profesion));
     }
-    public void createCosechador (Rut rut, String nombre, String email, String direccion, LocalDate fechaNacimiento)
-        throws GestionHuertosException {
-        if(findCosechadorByRut(rut).isPresent()){
+    public void createCosechador(Rut rut, String nombre, String email, String direccion, LocalDate fechaNacimiento)
+            throws GestionHuertosException {
+
+        if (findCosechadorByRut(rut).isPresent()) {
             throw new GestionHuertosException("Ya existe un cosechador con el rut indicado");
         }
+        if (existePersonaConRut(rut)) {
+            throw new GestionHuertosException("Ya existe una persona (propietario, supervisor o cosechador) con el rut indicado");
+        }
         cosechadores.add(new Cosechador(rut, nombre, email, direccion, fechaNacimiento));
+    }
+    private boolean existePersonaConRut(Rut rut) {
+        // verificar  propietarios
+        for (Propietario p : propietarios) {
+            if (p.getRut().getNumero() == rut.getNumero() &&
+                    p.getRut().getDv() == rut.getDv()) {
+                return true;
+            }
+        }
+
+        // verificar supervisores
+        for (Supervisor s : supervisores) {
+            if (s.getRut().getNumero() == rut.getNumero() &&
+                    s.getRut().getDv() == rut.getDv()) {
+                return true;
+            }
+        }
+
+        // Verificar en cosechadores
+        for (Cosechador c : cosechadores) {
+            if (c.getRut().getNumero() == rut.getNumero() &&
+                    c.getRut().getDv() == rut.getDv()) {
+                return true;
+            }
+        }
+
+        return false;
     }
     public void createCultivo (int id,String especie, String variedad,float rendimiento)
         throws GestionHuertosException {
