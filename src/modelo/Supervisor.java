@@ -12,7 +12,7 @@ public class Supervisor extends Persona {
         this.profesion = profesion;
         this.cuadrilla = null;
     }
-
+//prueba
     public String getProfesion() {
         return profesion;
     }
