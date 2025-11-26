@@ -177,6 +177,8 @@ public class ControlProduccion {
 
         if (!cambioExitoso) {
             throw new GestionHuertosException("No esta permitido el cambio de estado solicitado");
+
+
         }
     }
 
