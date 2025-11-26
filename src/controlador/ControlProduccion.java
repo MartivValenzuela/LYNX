@@ -293,296 +293,278 @@ public class ControlProduccion {
         return nuevopago.getMonto();
     }
     public String[] listCultivos() {
-        String[] out = new String[cultivos.size()];
+        return cultivos.stream()
+                .map(cultivo -> {
+                    // contar cuántos cuarteles usan este cultivo
+                    long nCuarteles = huertos.stream()
+                            .filter(h -> h.getCuarteles() != null)
+                            .flatMap(h -> Arrays.stream(h.getCuarteles()))
+                            .filter(cuartel -> cuartel.getCultivo() != null
+                                    && cuartel.getCultivo().getId() == cultivo.getId())
+                            .count();
 
-        for (int i = 0; i < cultivos.size(); i++) {
-            Cultivo cultivo = cultivos.get(i);
+                    String especie = Optional.ofNullable(cultivo.getEspecie()).orElse("");
+                    String variedad = Optional.ofNullable(cultivo.getVariedad()).orElse("");
 
-            // se cuentan cuantos cuarteles se utilizan en este cultivo
-            int nCuarteles = 0;
-            for (Huerto huerto : huertos) {
-                Cuartel[] cuarteles = huerto.getCuarteles();
-                if (cuarteles == null) continue;
-
-                for (Cuartel cuartel : cuarteles) {
-                    if (cuartel.getCultivo() != null &&
-                            cuartel.getCultivo().getId() == cultivo.getId()) {
-                        nCuarteles++;
-                    }
-                }
-            }
-
-            // esta parte evita nulos en texto
-            String especie = "";
-            String variedad = "";
-
-            if (cultivo.getEspecie() != null) {
-                especie = cultivo.getEspecie();
-            }
-            if (cultivo.getVariedad() != null) {
-                variedad = cultivo.getVariedad();
-            }
-
-            // Se formatea la línea
-            out[i] = String.format(
-                    "%-6d %-15s %-20s %-15.2f %-15d",
-                    cultivo.getId(),
-                    especie,
-                    variedad,
-                    cultivo.getRendimiento(),
-                    nCuarteles
-            );
-        }
-
-        return out;
+                    return String.format(
+                            "%-6d %-15s %-20s %-15.2f %-15d",
+                            cultivo.getId(),
+                            especie,
+                            variedad,
+                            cultivo.getRendimiento(),
+                            (int) nCuarteles
+                    );
+                })
+                .toArray(String[]::new);
     }
+
     public String[] listHuertos(){
-        if (huertos.isEmpty()) {
-            return new String[0];
-        }
-        String [] arr = new String[huertos.size()];
-        for (int i = 0; i < huertos.size(); i++) {
-            Huerto h = huertos.get(i);
-            String propRut = "";
-            String nomProp = "";
-            if(h.getPropietario() != null) {
-                if (h.getPropietario().getRut() != null) {
-                    propRut = h.getPropietario().getRut().toString();
-                } else {
-                    propRut = "";
-                }
-                if (h.getPropietario().getNombre() != null) {
-                    nomProp = h.getPropietario().getNombre();
-                } else {
-                    nomProp = "";
-                }
-            }
-            int nCuart;
-            if(h.getCuarteles() == null){
-                nCuart = 0;
-            } else{
-                nCuart = h.getCuarteles().length;
-            }
-            arr[i] = String.format("%-20s %-12.1f %-30s %-18s %-25s %-15d",
-                    h.getNombre(), h.getSuperficie(), h.getUbicacion(), propRut, nomProp, nCuart);
-        }
-        return arr;
+        return huertos.stream()
+                .map(h -> {
+                    String propRut = "";
+                    String nomProp = "";
+                    if (h.getPropietario() != null) {
+                        if (h.getPropietario().getRut() != null) {
+                            propRut = h.getPropietario().getRut().toString();
+                        }
+                        if (h.getPropietario().getNombre() != null) {
+                            nomProp = h.getPropietario().getNombre();
+                        }
+                    }
+                    int nCuart;
+                    if(h.getCuarteles() == null){
+                        nCuart = 0;
+                    } else{
+                        nCuart = h.getCuarteles().length;
+                    }
+                    return String.format("%-20s %-12.1f %-30s %-18s %-25s %-15d",
+                            h.getNombre(), h.getSuperficie(), h.getUbicacion(), propRut, nomProp, nCuart);
+
+                })
+                    .toArray(String[]::new);
     }
     public String[] listPropietarios(){
-        String[] lista = new String[propietarios.size()];
-        for (int i = 0; i < propietarios.size(); i++) {
-            Propietario prop = propietarios.get(i);
-            int nrHuertos;
-            if(prop.getHuertos() == null){
-                nrHuertos = 0;
-            } else {
-                nrHuertos = prop.getHuertos().length;
-            }
-            lista[i] = String.format(
-                    "%-14s %-28s %-30s %-30s %-22s %2d",
-                    prop.getRut(),prop.getNombre(), prop.getDireccion(),prop.getEmail(), prop.getDirComercial(), nrHuertos);
-        }
-        return lista;
+        return propietarios.stream()
+                .map(prop -> {
+                    int nrHuertos;
+                    if(prop.getHuertos() == null){
+                        nrHuertos = 0;
+                    } else {
+                        nrHuertos = prop.getHuertos().length;
+                    }
+                    return String.format(
+                            "%-14s %-28s %-30s %-30s %-22s %2d",
+                            prop.getRut(),
+                            prop.getNombre(),
+                            prop.getDireccion(),
+                            prop.getEmail(),
+                            prop.getDirComercial(),
+                            nrHuertos
+                    );
+                })
+                .toArray(String[]::new);
     }
     public String[] listCosechadores() {
         if(cosechadores.isEmpty()){
             return new String[0];
         }
-        String [] arr = new String[cosechadores.size()];
-        for(int i = 0; i < cosechadores.size(); i++){
-            Cosechador c = cosechadores.get(i);
+        return cosechadores.stream()
+                .map(c ->{
+                    int nCuadrillas;
+                    if(c.getCuadrillas() == null){
+                        nCuadrillas = 0;
+                    } else {
+                        nCuadrillas = c.getCuadrillas().length;
+                    }
 
-            int nCuadrillas;
-            if(c.getCuadrillas() == null){
-                nCuadrillas = 0;
-            } else {
-                nCuadrillas = c.getCuadrillas().length;
-            }
+                    String fNac;
+                    if (c.getFechaNacimiento() == null) {
+                        fNac = "";
+                    } else {
+                        fNac = c.getFechaNacimiento().toString();
+                    }
 
-            String fNac;
-            if (c.getFechaNacimiento() == null) {
-                fNac = "";
-            } else {
-                fNac = c.getFechaNacimiento().toString();
-            }
+                    double montoImpago = Arrays.stream(c.getAsignaciones())
+                            .mapToDouble(CosechadorAsignado::getMontoPesajesImpagos)
+                            .sum();
 
-            double montoImpago = 0.0;
-            double montoPagado = 0.0;
+                    double montoPagado = Arrays.stream(c.getAsignaciones())
+                            .mapToDouble(CosechadorAsignado::getMontoPesajesPagados)
+                            .sum();
 
-            for(CosechadorAsignado asignacion : c.getAsignaciones()){
-                montoImpago += asignacion.getMontoPesajesImpagos();
-                montoPagado += asignacion.getMontoPesajesPagados();
-            }
-
-            arr[i] = String.format(
-                    "%-14s %-28s %-30s %-30s %-16s %-16d %-16.1f %-16.1f",
-                    c.getRut(), c.getNombre(), c.getDireccion(), c.getEmail(),
-                    fNac, nCuadrillas, montoImpago, montoPagado);
-        }
-        return arr;
+                    return String.format(
+                            "%-14s %-28s %-30s %-30s %-16s %-16d %-16.1f %-16.1f",
+                            c.getRut(),
+                            c.getNombre(),
+                            c.getDireccion(),
+                            c.getEmail(),
+                            fNac,
+                            nCuadrillas,
+                            montoImpago,
+                            montoPagado
+                    );
+                })
+                .toArray(String[]::new);
     }
 
     public String [] listSupervisores(){
         if(supervisores.isEmpty()){
             return new String[0];
         }
-        String [] arr = new String[supervisores.size()];
+        return supervisores.stream()
+                .map(s -> {
+                    String cuadNom = "S/A";
+                    double kilosPesados = 0.0;
+                    int nroPesajesImpagos = 0;
 
-        for(int i = 0; i < supervisores.size(); i++){
-            Supervisor s = supervisores.get(i);
+                    Cuadrilla cuad = s.getCuadrilla();
 
-            String cuadNom;
-            double kilosPesados = 0.0;
-            int nroPesajesImpagos = 0;
+                    if(cuad != null) {
+                        cuadNom = cuad.getNombre();
+                        kilosPesados = cuad.getKilosPesados();
 
-            Cuadrilla cuad = s.getCuadrilla();
+                        if(cuad.getAsignaciones() != null) {
+                            nroPesajesImpagos = Arrays.stream(cuad.getAsignaciones())
+                                    .mapToInt(CosechadorAsignado:: getNroPesajesImpagos)
+                                    .sum();
+                        }
+                    }
 
-            if(cuad == null){
-                cuadNom = "S/A";
-            } else{
-                cuadNom = cuad.getNombre();
-                kilosPesados = cuad.getKilosPesados();
-
-                for(CosechadorAsignado asignado : cuad.getAsignaciones()){
-                    nroPesajesImpagos += asignado.getNroPesajesImpagos();
-                }
-            }
-
-            arr[i] =  String.format(
-                    "%-14s %-28s %-30s %-28s %-16s %-18s %-12.1f %-12d",
-                    s.getRut(),
-                    s.getNombre(),
-                    s.getDireccion(),
-                    s.getEmail(),
-                    s.getProfesion(),
-                    cuadNom,
-                    kilosPesados,
-                    nroPesajesImpagos
-            );
-        }
-        return arr;
+                    return  String.format(
+                            "%-14s %-28s %-30s %-28s %-16s %-18s %-12.1f %-12d",
+                            s.getRut(),
+                            s.getNombre(),
+                            s.getDireccion(),
+                            s.getEmail(),
+                            s.getProfesion(),
+                            cuadNom,
+                            kilosPesados,
+                            nroPesajesImpagos
+                    );
+                })
+                .toArray(String[]::new);
     }
     public String[] listPlanesCosecha(){
         if(planes.isEmpty()){
             return new String[0];
         }
-        String [] arr = new String[planes.size()];
-        for(int i = 0; i < planes.size(); i++){
-            PlanCosecha p = planes.get(i);
-            String huerto = "";
-            if (p.getCuartel() != null && p.getCuartel().getHuerto() != null) {
-                huerto = p.getCuartel().getHuerto().getNombre();
-            }
-            int idCuartel = 0;
-            if (p.getCuartel() != null) {
-                idCuartel = p.getCuartel().getId();
-            }
-            int nCuadrillas;
-            if(p.getCuadrillas() == null){
-                nCuadrillas = 0;
-            } else {
-                nCuadrillas = p.getCuadrillas().length;
-            }
-            arr[i] =String.format("%-8d %-20s %-14s %-14s %-12.1f %-16.1f %-14s %-10d %-20s %-12d",
-                    p.getId(),
-                    p.getNombre(),
-                    p.getInicio().format(F),
-                    p.getFinEstimado().format(F),
-                    p.getMetaKilos(),
-                    p.getPrecioBaseKilo(),
-                    p.getEstado(),
-                    idCuartel,
-                    huerto,
-                    nCuadrillas);
-        }
-        return arr;
+        return planes.stream()
+                .map(p -> {
+                    String huerto = "";
+                    if (p.getCuartel() != null && p.getCuartel().getHuerto() != null) {
+                        huerto = p.getCuartel().getHuerto().getNombre();
+                    }
+                    int idCuartel = 0;
+                    if (p.getCuartel() != null) {
+                        idCuartel = p.getCuartel().getId();
+                    }
+                    int nCuadrillas;
+                    if(p.getCuadrillas() == null){
+                        nCuadrillas = 0;
+                    } else {
+                        nCuadrillas = p.getCuadrillas().length;
+                    }
+                    return String.format("%-8d %-20s %-14s %-14s %-12.1f %-16.1f %-14s %-10d %-20s %-12d",
+                            p.getId(),
+                            p.getNombre(),
+                            p.getInicio().format(F),
+                            p.getFinEstimado().format(F),
+                            p.getMetaKilos(),
+                            p.getPrecioBaseKilo(),
+                            p.getEstado(),
+                            idCuartel,
+                            huerto,
+                            nCuadrillas
+                    );
+                })
+                .toArray(String[]::new);
     }
 
     public String[] listPesajes() {
         if (pesajes.isEmpty()) {
             return new String[0];
         }
+        return pesajes.stream()
+                .map(p -> {
+                    String pagadoEl = "Impago";
+                    if (p.getPagoPesaje() != null) {
+                        pagadoEl = p.getPagoPesaje().getFecha().format(F);
+                    }
 
-        String[] lista = new String[pesajes.size()];
-        for (int i = 0; i < pesajes.size(); i++) {
-            Pesaje p = pesajes.get(i);
-
-
-            String pagadoEl = "Impago";
-            if (p.getPagoPesaje() != null) {
-                pagadoEl = p.getPagoPesaje().getFecha().format(F);
-            }
-
-            lista[i] = String.format("%-5d %-12s %-15s %-12s %-12.1f %-10.1f %-10.1f %-12s", p.getId(), p.getFechaHora().toLocalDate().format(F), p.getCosechadorAsignado().getCosechador().getRut().toString(), p.getCalidad(), p.getCantidadKg(), p.getPrecioKg(), p.getMonto(), pagadoEl
-            );
-        }
-        return lista;
+                    return String.format("%-5d %-12s %-15s %-12s %-12.1f %-10.1f %-10.1f %-12s",
+                            p.getId(),
+                            p.getFechaHora().toLocalDate().format(F),
+                            p.getCosechadorAsignado().getCosechador().getRut().toString(),
+                            p.getCalidad(),
+                            p.getCantidadKg(),
+                            p.getPrecioKg(),
+                            p.getMonto(),
+                            pagadoEl
+                    );
+                }).toArray(String[]::new);
     }
 
     public String[] listPesajesCosechador(Rut rutCosechador)
         throws GestionHuertosException{
-        Optional<Cosechador> optCosechador = findCosechadorByRut(rutCosechador);
-        if (optCosechador.isEmpty()) {
-            throw new GestionHuertosException("No existe un cosechador con el rut indicado");
-        }
-        Cosechador cosechador = optCosechador.get();
+        Cosechador cosechador = findCosechadorByRut(rutCosechador)
+                .orElseThrow(() -> new GestionHuertosException("No existe el Cosechador con el rut indicado"));
 
-
-        ArrayList<Pesaje> pesajesCosechador = new ArrayList<>();
-        for (Pesaje p : this.pesajes) {
-            Rut r = p.getCosechadorAsignado().getCosechador().getRut();
-            if (r.getNumero() == rutCosechador.getNumero() && r.getDv() == rutCosechador.getDv()) {
-                pesajesCosechador.add(p);
-            }
-        }
-
+        List<Pesaje> pesajesCosechador = pesajes.stream()
+                .filter(p -> {
+                    Rut r = p.getCosechadorAsignado().getCosechador().getRut();
+                    return r.getNumero() == rutCosechador.getNumero()
+                            && r.getDv() == rutCosechador.getDv();
+                })
+                .toList();
         if (pesajesCosechador.isEmpty()) {
             return new String[0];
         }
 
+        return pesajesCosechador.stream()
+                .map(p -> {
+                    String pagadoEl = "Impago";
+                    if (p.getPagoPesaje() != null) {
+                        pagadoEl = p.getPagoPesaje().getFecha().format(F);
+                    }
 
-        String[] lista = new String[pesajesCosechador.size()];
-        for (int i = 0; i < pesajesCosechador.size(); i++) {
-            Pesaje p = pesajesCosechador.get(i);
+                    return String.format("%-5d %-12s %-12s %-12.1f %-10.1f %-10.1f %-12s",
+                            p.getId(),
+                            p.getFechaHora().toLocalDate().format(F),
+                            p.getCalidad(),
+                            p.getCantidadKg(),
+                            p.getPrecioKg(),
+                            p.getMonto(),
+                            pagadoEl
+                    );
+                })
+                .toArray(String[]::new);
 
-            String pagadoEl = "Impago";
-            if (p.getPagoPesaje() != null) {
-                pagadoEl = p.getPagoPesaje().getFecha().format(F);
-            }
-
-            lista[i] = String.format("%-5d %-12s %-12s %-12.1f %-10.1f %-10.1f %-12s", p.getId(), p.getFechaHora().toLocalDate().format(F), p.getCalidad(), p.getCantidadKg(), p.getPrecioKg(), p.getMonto(), pagadoEl
-            );
-        }
-        return lista;
     }
 
     public String[] listPagosPesajes() {
-        List<String> lineas = new ArrayList<>();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return pagosPesajes.stream()
+                .map(pago -> {
+                    int id = pago.getId();
+                    String fecha = pago.getFecha().format(dtf);
+                    double monto = pago.getMonto();
+                    int numPesajes = pago.getPesajes().length;
 
-        for (PagoPesaje pago : this.pagosPesajes) {
-            int id = pago.getId();
-            String fecha = pago.getFecha().format(dtf);
-            double monto = pago.getMonto();
-            int numPesajes = pago.getPesajes().length;
+                    String rut = "S/D";
+                    if (numPesajes > 0 &&
+                            pago.getPesajes()[0] != null &&
+                            pago.getPesajes()[0].getCosechadorAsignado() != null &&
+                            pago.getPesajes()[0].getCosechadorAsignado().getCosechador() != null &&
+                            pago.getPesajes()[0].getCosechadorAsignado().getCosechador().getRut() != null) {
 
-            String rut = "S/D";
-            if (numPesajes > 0 &&
-                    pago.getPesajes()[0] != null &&
-                    pago.getPesajes()[0].getCosechadorAsignado() != null &&
-                    pago.getPesajes()[0].getCosechadorAsignado().getCosechador() != null &&
-                    pago.getPesajes()[0].getCosechadorAsignado().getCosechador().getRut() != null) {
+                        rut = pago.getPesajes()[0].getCosechadorAsignado().getCosechador().getRut().toString();
+                    }
 
-                rut = pago.getPesajes()[0].getCosechadorAsignado().getCosechador().getRut().toString();
-            }
-
-            String linea = String.format("%d;%s;%.1f;%d;%s",
-                    id, fecha, monto, numPesajes, rut);
-
-            lineas.add(linea);
-        }
-
-        return lineas.toArray(new String[0]);
+                    return String.format("%d;%s;%.1f;%d;%s",
+                            id, fecha, monto, numPesajes, rut
+                    );
+                })
+                .toArray(String[]::new);
     }
 
     private void readDataFromTextFile(String path)
@@ -737,74 +719,58 @@ public class ControlProduccion {
 
 
     private Optional<Cosechador> findCosechadorByRut(Rut rut){
-        for(Cosechador c : cosechadores){
-            Rut r = c.getRut();
-            if(r.getNumero() == rut.getNumero() && r.getDv() == rut.getDv()){
-                return Optional.of(c);
-            }
-        }
-        return Optional.empty();
+        return cosechadores
+                .stream()
+                .filter(c -> c.getRut().getNumero() == rut.getNumero()
+                        && c.getRut().getDv() == rut.getDv())
+                .findFirst();
     }
     private Optional<Cultivo> findCultivoById(int id){
-        for(Cultivo c : cultivos){
-            if(c.getId() == id) {
-                return Optional.of(c);
-            }
-        }
-        return Optional.empty();
+        return cultivos
+                .stream()
+                .filter(c -> c.getId() == id)
+                .findFirst();
     }
-    private Optional<Propietario> findPropietarioByRut(Rut rut){
-        for(Propietario p : propietarios){
-            Rut r =  p.getRut();
-            if(r.getNumero() == rut.getNumero() && r.getDv() == rut.getDv()) {
-                return Optional.of(p);
-            }
-        }
-        return Optional.empty();
+    private Optional<Propietario> findPropietarioByRut(Rut rut) {
+        return propietarios
+                .stream()
+                .filter(p -> p.getRut().getNumero() == rut.getNumero()
+                        && p.getRut().getDv() == rut.getDv())
+                .findFirst();
     }
     private Optional<PlanCosecha> findPlanById(int id){
-        for(PlanCosecha p : planes) {
-            if(p.getId() == id) {
-                return Optional.of(p);
-            }
-        }
-        return Optional.empty();
+        return planes
+                .stream()
+                .filter(p -> p.getId() == id)
+                .findFirst();
     }
 
     private Optional<Huerto> findHuertoByName(String name){
-        for(Huerto h : huertos) {
-            if(h.getNombre().equalsIgnoreCase(name)) {
-                return Optional.of(h);
-            }
-        }
-        return Optional.empty();
+        return huertos
+                .stream()
+                .filter(h -> h.getNombre().equalsIgnoreCase(name))
+                .findFirst();
     }
     private Optional<Supervisor> findSupervisorByRut(Rut rut){
-        for(Supervisor sup : supervisores){
-            Rut r = sup.getRut();
-            if(r.getNumero() == rut.getNumero() && r.getDv() == rut.getDv()) {
-                return Optional.of(sup);
-            }
-        }
-        return Optional.empty();
+        return supervisores
+                .stream()
+                .filter(s -> s.getRut().getNumero() == rut.getNumero()
+                        && s.getRut().getDv() == rut.getDv())
+                .findFirst();
     }
 
     private Optional<Pesaje> findPesajeById(int id){
-        for(Pesaje p : pesajes){
-            if(p.getId() == id) {
-                return Optional.of(p);
-            }
-        }
-        return Optional.empty();
+        return pesajes
+                .stream()
+                .filter(p -> p.getId() == id)
+                .findFirst();
     }
 
     private Optional<PagoPesaje>  findPagoPesajeById(int id){
-        for(PagoPesaje p : pagosPesajes){
-            if(p.getId() == id) {
-                return Optional.of(p);
-            }
-        }
-        return Optional.empty();
+        return pagosPesajes
+                .stream()
+                .filter(p -> p.getId() == id)
+                .findFirst();
     }
 
 }
