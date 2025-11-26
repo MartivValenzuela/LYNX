@@ -1,9 +1,11 @@
 package modelo;
 
 import utilidades.EstadoFonologico;
-
+import java.io.Serializable;
 import java.util.ArrayList;
-public class Cuartel {
+
+public class Cuartel implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int id;
     private float superficie;
     private EstadoFonologico estado;

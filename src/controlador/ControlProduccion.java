@@ -13,7 +13,7 @@ import java.util.*;
 public class ControlProduccion {
 
     private static ControlProduccion instance;
-
+    private GestionHuertosIO io = new GestionHuertosIO();
     private List<Cosechador> cosechadores = new ArrayList<>();
     private List<PlanCosecha> planes = new ArrayList<>();
     private List<Supervisor>  supervisores = new ArrayList<>();
@@ -804,5 +804,93 @@ public class ControlProduccion {
         }
         return Optional.empty();
     }
+//persistencia
+    public void readSystemData() throws GestionHuertosException {
+        //limpiar todas las coleciones
+        this.propietarios.clear();
+        this.supervisores.clear();
+        this.cosechadores.clear();
+        this.cultivos.clear();
+        this.planes.clear();
+        this.huertos.clear();
+        this.pesajes.clear();
+        this.pagosPesajes.clear();
 
+        try {
+            Persona[] personasLeidas = io.readPersonas();
+            for (Persona p : personasLeidas) {
+                if (p instanceof Propietario) {
+                    Propietario prop = (Propietario) p;
+                    this.propietarios.add(prop);
+                } else if (p instanceof Supervisor) {
+                    this.supervisores.add((Supervisor) p);
+                } else if (p instanceof Cosechador) {
+                    this.cosechadores.add((Cosechador) p);
+                }
+            }
+        } catch (GestionHuertosException e) {
+            if (!e.getMessage().contains("no encontrado")) throw e;
+        }
+
+        try {
+            Cultivo[] cultivosLeidos = io.readCultivos();
+            if (cultivosLeidos != null) {
+                for(Cultivo c : cultivosLeidos) this.cultivos.add(c);
+            }
+        } catch (GestionHuertosException e) {
+            if (!e.getMessage().contains("no encontrado")) throw e;
+        }
+
+        try {
+            PlanCosecha[] planesLeidos = io.readPlanesCosecha();
+            if (planesLeidos != null) {
+                for(PlanCosecha p : planesLeidos) this.planes.add(p);
+            }
+        } catch (GestionHuertosException e) {
+            if (!e.getMessage().contains("no encontrado")) throw e;
+        }
+
+        for (Propietario prop : this.propietarios) {
+            if (prop.getHuertos() != null) {
+                for (Huerto h : prop.getHuertos()) {
+                    h.setPropietario(prop);
+                    if (!this.huertos.contains(h)) {
+                        this.huertos.add(h);
+                    }
+                }
+            }
+        }
+
+        for (PlanCosecha plan : this.planes) {
+            if (plan.getCuadrillas() != null) {
+                for (Cuadrilla cuad : plan.getCuadrillas()) {
+                    if (cuad.getAsignaciones() != null) {
+                        for (CosechadorAsignado asig : cuad.getAsignaciones()) {
+                            if (asig.getPesajes() != null) {
+                                for (Pesaje p : asig.getPesajes()) {
+                                    this.pesajes.add(p);
+                                    if (p.getPagoPesaje() != null) {
+                                        if (!this.pagosPesajes.contains(p.getPagoPesaje())) {
+                                            this.pagosPesajes.add(p.getPagoPesaje());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void saveSystemData() throws GestionHuertosException {
+        ArrayList<Persona> todasLasPersonas = new ArrayList<>();
+        todasLasPersonas.addAll(this.propietarios);
+        todasLasPersonas.addAll(this.supervisores);
+        todasLasPersonas.addAll(this.cosechadores);
+
+        io.savePersonas(todasLasPersonas.toArray(new Persona[0]));
+        io.saveCultivos(this.cultivos.toArray(new Cultivo[0]));
+        io.savePlanesCosecha(this.planes.toArray(new PlanCosecha[0]));
+    }
 }

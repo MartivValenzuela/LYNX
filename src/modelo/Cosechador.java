@@ -2,12 +2,13 @@ package modelo;
 
 import utilidades.Persona;
 import utilidades.Rut;
-
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class Cosechador extends Persona {
+public class Cosechador extends Persona implements Serializable {
+    private static final long serialVersionUID = 1L;
     private LocalDate fechaNacimiento;
     private ArrayList<CosechadorAsignado> asignaciones;
 

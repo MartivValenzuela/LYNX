@@ -2,10 +2,11 @@ package modelo;
 
 import utilidades.Persona;
 import utilidades.Rut;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Propietario extends Persona {
+public class Propietario extends Persona implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String direccionComercial;
     private ArrayList<Huerto> huertos;
 

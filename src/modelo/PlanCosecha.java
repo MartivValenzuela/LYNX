@@ -2,12 +2,13 @@ package modelo;
 
 import utilidades.EstadoPlan;
 import utilidades.GestionHuertosException;
-
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlanCosecha {
+public class PlanCosecha implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int id;
     private String nombre;
     private LocalDate inicio;

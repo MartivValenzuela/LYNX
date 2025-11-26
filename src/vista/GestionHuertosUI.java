@@ -31,30 +31,41 @@ public class GestionHuertosUI {
                 System.out.println("2. Menu Huertos");
                 System.out.println("3. Menú Planes de Cosecha");
                 System.out.println("4. Menú listados");
-                System.out.println("5. Salir");
+                System.out.println("5. Leer Datos Sistema");
+                System.out.println("6. Guardar Datos Sistema");
+                System.out.println("7. Salir");
                 System.out.print("Opcion:");
                 int opcion = tcld.nextInt();
                 tcld.nextLine();
 
-                if (opcion == 5) {
+                if (opcion == 7) {
                     System.out.println("Saliendo del Programa...");
                     return;
                 }
+
                 switch (opcion) {
-                    case 1:
-                        CreaPersona();
+                    case 1: CreaPersona(); break;
+                    case 2: menuHuertos(); break;
+                    case 3: menuPlanesCosecha(); break;
+                    case 4: menuListados(); break;
+                    case 5:
+                        try {
+                            control.readSystemData();
+                            System.out.println("Datos del sistema cargados exitosamente.");
+                        } catch (GestionHuertosException e) {
+                            System.out.println("Error al leer datos: " + e.getMessage());
+                        }
                         break;
-                    case 2:
-                        menuHuertos();
-                        break;
-                    case 3:
-                        menuPlanesCosecha();
-                        break;
-                    case 4:
-                        menuListados();
+                    case 6:
+                        try {
+                            control.saveSystemData();
+                            System.out.println("Datos del sistema guardados exitosamente.");
+                        } catch (GestionHuertosException e) {
+                            System.out.println("Error al guardar datos: " + e.getMessage());
+                        }
                         break;
                     default:
-                        System.out.println("Opcion no valida,intente de nuevo");
+                        System.out.println("Opcion no valida, intente de nuevo");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Error, debe ingresar un numero");
@@ -62,7 +73,6 @@ public class GestionHuertosUI {
             } catch (Exception e) {
                 System.out.println("ERROR: " + e.getMessage());
             }
-
         }
     }
 
