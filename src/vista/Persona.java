@@ -1,4 +1,6 @@
-package utilidades;
+package vista;
+
+import utilidades.Rut;
 
 public abstract class Persona {
     private Rut rut;
