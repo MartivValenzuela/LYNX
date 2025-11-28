@@ -92,11 +92,9 @@ public class Cuartel {
         return huerto;
     }
     public PlanCosecha[] getPlanesCosecha(){
-        PlanCosecha[] resultado = new PlanCosecha[planCosechas.size()];
-        for (int i = 0; i < planCosechas.size(); i++) {
-            resultado[i] = planCosechas.get(i);
-        }
-        return resultado;
+        return planCosechas.
+                stream()
+                .toArray(PlanCosecha[]::new);
     }
 
     public void addPlanCosecha(PlanCosecha planCosecha){

@@ -27,10 +27,12 @@ public class Propietario extends Persona {
         if (huerto == null) {
             return false;
         }
-        for (Huerto h : huertos) {
-            if (h.getNombre().equals(huerto.getNombre())) {
-                return false;
-            }
+
+        boolean existe = huertos.stream()
+                .anyMatch(h -> h.equals(huerto));
+
+        if(existe){
+            return false;
         }
         huerto.setPropietario(this);
         huertos.add(huerto);
@@ -38,7 +40,7 @@ public class Propietario extends Persona {
     }
 
     public Huerto[] getHuertos() {
-        Huerto[] arrayHuertos = new Huerto[huertos.size()];
-        return huertos.toArray(arrayHuertos);
+        return huertos.stream()
+                .toArray(Huerto[]::new);
     }
 }

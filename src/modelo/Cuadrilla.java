@@ -4,6 +4,7 @@ import utilidades.GestionHuertosException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,12 +47,11 @@ public class Cuadrilla {
     }
 
     private Optional<Cosechador> findCosechadorByRut(Cosechador cos) {
-        for(CosechadorAsignado asignado : asignaciones){
-            if(asignado.getCosechador().getRut().equals(cos.getRut())){
-                return Optional.of(asignado.getCosechador());
-            }
-        }
-        return Optional.empty();
+        return asignaciones
+                .stream()
+                .map(CosechadorAsignado::getCosechador)
+                .filter(c -> c.getRut().equals(cos.getRut()))
+                .findFirst();
     }
     public void addCosechador (LocalDate fIni, LocalDate fFin, double meta, Cosechador cosechador)
             throws GestionHuertosException {
@@ -68,21 +68,17 @@ public class Cuadrilla {
         cosechador.addCuadrilla(nuevo);
     }
     public Cosechador[] getCosechadores(){
-        List<Cosechador> lista = new ArrayList<>();
-        for(CosechadorAsignado asignado : asignaciones){
-            lista.add(asignado.getCosechador());
-        }
-        return lista.toArray(new Cosechador[0]);
+        return asignaciones
+                .stream()
+                .map(CosechadorAsignado::getCosechador)
+                .toArray(Cosechador[]::new);
     }
 
     public double getKilosPesados(){
-        double kilos = 0.0;
-        for(CosechadorAsignado asignado : asignaciones){
-            for(Pesaje pesaje : asignado.getPesajes()){
-                kilos += pesaje.getCantidadKg();
-            }
-        }
-        return kilos;
+        return asignaciones.stream()
+                .flatMap(asignado -> Arrays.stream(asignado.getPesajes()))
+                .mapToDouble(Pesaje::getCantidadKg)
+                .sum();
     }
 
     public CosechadorAsignado [] getAsignaciones(){

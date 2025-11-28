@@ -54,16 +54,19 @@ public class Huerto {
     }
 
     public void addCuartel(int id, float sup, Cultivo cul) throws GestionHuertosException {
-        for(Cuartel c : cuarteles){
-            if(c.getId() == id){
-                throw new GestionHuertosException("Ya existe en el huerto un cuartel con el id indicado");
-            }
+        boolean existeId = cuarteles
+                .stream()
+                .anyMatch(c -> c.getId() == id);
+        if (existeId) {
+            throw new GestionHuertosException("Ya existe en el huerto un cuartel con el id indicado");
         }
 
-        float total = sup;
-        for(Cuartel c : cuarteles){
-            total += c.getSuperficie();
-        }
+
+        float total = sup + (float) cuarteles
+                            .stream()
+                            .mapToDouble(Cuartel::getSuperficie)
+                            .sum();
+
         if(total > this.superficie){
             throw new GestionHuertosException("La superficie del cuartel excederá la superficie del huerto, al sumarle la\n" +
                     "superficie de sus cuarteles actuales");
@@ -74,20 +77,16 @@ public class Huerto {
     }
 
     public Cuartel[] getCuarteles() {
-        Cuartel[] resultado = new Cuartel[cuarteles.size()];
-        for (int i = 0; i < cuarteles.size(); i++) {
-            resultado[i] = cuarteles.get(i);
-        }
-        return resultado;
+        return cuarteles
+                .stream()
+                .toArray(Cuartel[]::new);
     }
 
     public Optional<Cuartel> getCuartelById(int id) {
-        for (Cuartel c : cuarteles) {
-            if (c.getId() == id) {
-                return Optional.of(c);
-            }
-        }
-        return Optional.empty();
+        return cuarteles
+                .stream()
+                .filter(c -> c.getId() == id)
+                .findFirst();
     }
 
     public void setEstadoCuartel(int id, EstadoFonologico estado)

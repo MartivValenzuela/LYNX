@@ -28,22 +28,18 @@ public class Cosechador extends Persona {
         asignaciones.add(cosAs);
     }
     public Cuadrilla[] getCuadrillas(){
-        Cuadrilla[] resultado = new Cuadrilla[asignaciones.size()];
-        for (int i = 0; i < asignaciones.size(); i++){
-            resultado[i] = asignaciones.get(i).getCuadrilla();
-        }
-        return resultado;
+        return asignaciones
+                .stream()
+                .map(CosechadorAsignado::getCuadrilla)
+                .toArray(Cuadrilla[]::new);
     }
 
     public Optional<CosechadorAsignado> getAsignacion(int idCud, int idPlan){
-        for(CosechadorAsignado cos: asignaciones){
-            Cuadrilla c = cos.getCuadrilla();
-            PlanCosecha p = c.getPlanCosecha();
-            if(c.getId() == idCud && p.getId() == idPlan){
-                return Optional.of(cos);
-            }
-        }
-        return Optional.empty();
+        return asignaciones
+                .stream()
+                .filter(cos -> cos.getCuadrilla().getId() == idCud
+                            && cos.getCuadrilla().getPlanCosecha().getId() == idPlan)
+                .findFirst();
     }
     public CosechadorAsignado[] getAsignaciones(){
         return  asignaciones.toArray(new CosechadorAsignado[0]);

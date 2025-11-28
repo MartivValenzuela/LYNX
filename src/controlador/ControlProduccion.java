@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ControlProduccion {
 
@@ -78,33 +79,6 @@ public class ControlProduccion {
             throw new GestionHuertosException("Ya existe una persona (propietario, supervisor o cosechador) con el rut indicado");
         }
         cosechadores.add(new Cosechador(rut, nombre, email, direccion, fechaNacimiento));
-    }
-    private boolean existePersonaConRut(Rut rut) {
-        // verificar  propietarios
-        for (Propietario p : propietarios) {
-            if (p.getRut().getNumero() == rut.getNumero() &&
-                    p.getRut().getDv() == rut.getDv()) {
-                return true;
-            }
-        }
-
-        // verificar supervisores
-        for (Supervisor s : supervisores) {
-            if (s.getRut().getNumero() == rut.getNumero() &&
-                    s.getRut().getDv() == rut.getDv()) {
-                return true;
-            }
-        }
-
-        // Verificar en cosechadores
-        for (Cosechador c : cosechadores) {
-            if (c.getRut().getNumero() == rut.getNumero() &&
-                    c.getRut().getDv() == rut.getDv()) {
-                return true;
-            }
-        }
-
-        return false;
     }
     public void createCultivo (int id,String especie, String variedad,float rendimiento)
         throws GestionHuertosException {
@@ -199,35 +173,33 @@ public class ControlProduccion {
     }
     public void addCosechadorToCuadrilla (int idPlan, int idCuadrilla, LocalDate fInicio, LocalDate fFin, double meta, Rut rutCosechador)
             throws GestionHuertosException{
-        Optional<PlanCosecha> op = findPlanById(idPlan);
-        if(op.isEmpty()){
-            throw new GestionHuertosException("No existe un plan con el id indicado");
-        }
-        Optional<Cosechador> oc =  findCosechadorByRut(rutCosechador);
-        if(oc.isEmpty()){
-            throw new GestionHuertosException("No existe un cosechador con el id indicado");
-        }
-        PlanCosecha plan = op.get();
+
+        PlanCosecha plan = findPlanById(idPlan)
+                .orElseThrow(() ->
+                        new GestionHuertosException("No existe un plan con el id indicado")
+                );
+
+        Cosechador cosechador = findCosechadorByRut(rutCosechador)
+                .orElseThrow(() ->
+                        new GestionHuertosException("No existe un cosechador con el id indicado")
+                );
         if(fInicio.isBefore(plan.getInicio()) || fFin.isAfter(plan.getFinEstimado())){
             throw new GestionHuertosException("El rango de fechas de asignación del cosechador a la cuadrilla está fuera del rango de fechas del plan");
         }
 
-        Cuadrilla c = null;
-        for(Cuadrilla cc : plan.getCuadrillas()){
-            if(cc.getId() == idCuadrilla){
-                c = cc;
-                break;
-            }
-        }
+        Cuadrilla c = Arrays.stream(plan.getCuadrillas())
+                .filter(cc -> cc.getId() == idCuadrilla)
+                .findFirst()
+                .orElseThrow(() ->
+                         new GestionHuertosException("No existe una cuadrilla con el id indicado en este plan")
+                );
 
-        if(c == null){
-            throw new GestionHuertosException("No existe una cuadrilla con el id indicado en este plan");
-        }
 
-        if(c.getMaximoCosechadores() > 0 && c.getCosechadores().length >= c.getMaximoCosechadores()){
+        if(Cuadrilla.getMaximoCosechadores() > 0
+                && c.getCosechadores().length >= Cuadrilla.getMaximoCosechadores()){
             throw new GestionHuertosException("El numero de cosechadores ya alcanzo el maximo permitido");
         }
-        c.addCosechador(fInicio, fFin, meta, oc.get());
+        c.addCosechador(fInicio, fFin, meta, cosechador);
     }
 
     public void addPesaje(int id, Rut rutCosechador, int idPlan, int idCuadrilla, float cantidadKg, Calidad calidad)
@@ -270,25 +242,23 @@ public class ControlProduccion {
             throw new GestionHuertosException("Ya existe un pago de pesaje con el id indicado");
         }
 
-        Optional<Cosechador> existeCos = findCosechadorByRut(rutCosechador);
-        if (existeCos.isEmpty()) {
-            throw new GestionHuertosException("No existe un cosechador con el rut indicado" );
-        }
-        Cosechador cosechador1 = existeCos.get();
-        ArrayList<Pesaje> pesajes1 = new ArrayList<>();
-        for (Pesaje p : this.pesajes){
-            Cosechador cPesaje = p.getCosechadorAsignado().getCosechador();
-            Rut r = cPesaje.getRut();
-            if (p.getPagoPesaje() == null && r.getNumero() == rutCosechador.getNumero() && r.getDv() == rutCosechador.getDv()) {
-                pesajes1.add(p);
-            }
-        }
-        if (pesajes1.isEmpty()){
+        Cosechador cosechador = findCosechadorByRut(rutCosechador)
+                .orElseThrow(() -> new GestionHuertosException("No existe un cosechador con el rut indicado")
+                );
+        List<Pesaje> pesajesImpagos = pesajes.stream()
+                .filter(p -> p.getPagoPesaje() == null)
+                .filter(p -> {
+                    Rut r = p.getCosechadorAsignado().getCosechador().getRut();
+                    return r.getNumero() == rutCosechador.getNumero()
+                            && r.getDv() == rutCosechador.getDv();
+                })
+                .collect(Collectors.toCollection(ArrayList::new));
+        if (pesajesImpagos.isEmpty()){
             throw new GestionHuertosException("El cosechador no tiene pesajes impagos");
         }
         LocalDate fechaPago = LocalDate.now();
 
-        PagoPesaje nuevopago = new PagoPesaje(id,fechaPago,pesajes1);
+        PagoPesaje nuevopago = new PagoPesaje(id,fechaPago,pesajesImpagos);
         this.pagosPesajes.add(nuevopago);
         return nuevopago.getMonto();
     }
@@ -771,6 +741,18 @@ public class ControlProduccion {
                 .stream()
                 .filter(p -> p.getId() == id)
                 .findFirst();
+    }
+
+    private boolean existePersonaConRut(Rut rut) {
+       return propietarios.stream()
+               .anyMatch(p -> p.getRut().getNumero() == rut.getNumero()
+                            && p.getRut().getDv() == rut.getDv())
+               || supervisores.stream()
+               .anyMatch(s -> s.getRut().getNumero() == rut.getNumero()
+                       && s.getRut().getDv() == rut.getDv())
+               || cosechadores.stream()
+               .anyMatch(c -> c.getRut().getNumero() == rut.getNumero()
+                       && c.getRut().getDv() == rut.getDv());
     }
 
 }

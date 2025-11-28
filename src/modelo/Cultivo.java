@@ -35,9 +35,14 @@ public class Cultivo {
     public void setRendimiento(float rendimiento) {
         this.rendimiento = rendimiento;
     }
+
     public boolean addCuartel (Cuartel cuertel){
-        if (cuertel == null || cuarteles.contains(cuertel)) {
-           return false;
+        if (cuertel == null){
+            return false;
+        }
+        boolean existe = cuarteles.stream().anyMatch(c -> c.equals(cuertel));
+        if (existe){
+            return false;
         }
         cuarteles.add(cuertel);
         return true;
