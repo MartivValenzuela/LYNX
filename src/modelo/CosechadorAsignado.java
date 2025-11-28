@@ -57,56 +57,43 @@ public class CosechadorAsignado implements Serializable {
         return cosechador;
     }
     public float getCumplimientoMeta(){
-        double totalKg = 0;
-        for(Pesaje p: pesajes){
-            totalKg += p.getCantidadKg();
-        }
+        double totalKg = pesajes.stream()
+                .mapToDouble(p-> (double) p.getCantidadKg())
+                .sum();
+
         if(metaKilos <= 0){
             return 0f;
         }
         return (float)(totalKg / metaKilos);
     }
     public int getNroPesajesImpagos(){
-        int n = 0;
-        for (Pesaje p : pesajes){
-            if(!p.isPagado()){
-                n++;
-            }
-        }
-        return n;
+        return (int) pesajes.stream()
+                .filter(p-> !p.isPagado())
+                .count();
     }
     public double getMontoPesajesImpagos(){
-        double m = 0;
-        for (Pesaje p : pesajes){
-            if(!p.isPagado()){
-                m += p.getMonto();
-            }
-        }
-        return m;
+       return (double) pesajes.stream()
+               .filter(p-> !p.isPagado())
+               .mapToDouble(Pesaje::getMonto)
+               .sum();
     }
     public int getNroPesajesPagados(){
-        int n = 0;
-        for (Pesaje p : pesajes){
-            if(p.isPagado()){
-                n++;
-            }
-        }
-        return n;
+        return (int) pesajes.stream()
+                .filter(Pesaje::isPagado)
+                .count();
     }
     public double getMontoPesajesPagados(){
-        double m = 0;
-        for(Pesaje p: pesajes){
-            if(p.isPagado()){
-                m += p.getMonto();
-            }
-        }
-        return m;
+        return pesajes.stream()
+                .filter(Pesaje::isPagado)
+                .mapToDouble(Pesaje::getMonto)
+                .sum();
     }
     public void addPesaje(Pesaje pesaje){
         if(pesajes == null){
             return;
         }
-        if(!pesajes.contains(pesaje)){
+        boolean yaExiste = pesajes.stream().anyMatch(p->p.equals(pesaje));
+        if(yaExiste){
             pesajes.add(pesaje);
         }
     }

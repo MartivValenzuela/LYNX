@@ -22,11 +22,9 @@ public class PagoPesaje implements Serializable {
     }
 
     public double getMonto() {
-        double montoTotal = 0.0;
-        for (Pesaje pesaje : this.pesajes) {
-            montoTotal += pesaje.getMonto();
-        }
-        return montoTotal;
+        return pesajes.stream()
+                .mapToDouble(Pesaje::getMonto)
+                .sum();
     }
 
     public int getId() {

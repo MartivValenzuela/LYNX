@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PlanCosecha implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -113,10 +114,9 @@ public class PlanCosecha implements Serializable {
     }
 
     public double getCumplimientoMeta(){
-        double kilos = 0.0;
-        for(Cuadrilla c : cuadrillas){
-            kilos += c.getKilosPesados();
-        }
+        double kilos = cuadrillas.stream()
+                .mapToDouble(Cuadrilla::getKilosPesados)
+                .sum();
         if(metaKilos <= 0.0){
             return 0.0;
         }
@@ -129,10 +129,12 @@ public class PlanCosecha implements Serializable {
     public void addCuadrilla (int idCuad, String nomCuad, Supervisor supervisor)
         throws GestionHuertosException{
 
-        for(Cuadrilla c : cuadrillas){
-            if(c.getId() == idCuad){
-                throw new GestionHuertosException("Ya existe una cuadrilla con el ID indicado.");
-            }
+        boolean existeId = cuadrillas.stream()
+                .anyMatch(c -> c.getId() == idCuad);
+
+        if(existeId){
+            throw new GestionHuertosException("Ya existe una cuadrilla con el ID indicado.");
+
         }
         if(supervisor.getCuadrilla() != null){
             throw new GestionHuertosException("El supervisor ya tiene una cuadrilla asignada.");
@@ -142,23 +144,25 @@ public class PlanCosecha implements Serializable {
         cuadrillas.add(nueva);
         supervisor.setCuadrilla(nueva);
     }
+
     public void addCosechadorToCuadrilla(int idCuad, LocalDate fIni, LocalDate fFin, double meta, Cosechador cos)
         throws GestionHuertosException {
-        Cuadrilla encontrada = null;
-        for(Cuadrilla c : cuadrillas){
-            if(c.getId() == idCuad){
-                encontrada = c;
-                break;
-            }
-        }
 
-        if(encontrada == null){
-            throw new GestionHuertosException("No existe una cuadrilla con el ID indicado.");
-        }
+        Cuadrilla encontrada = findCuadrillaById(idCuad)
+                        .orElseThrow(() ->
+                                new GestionHuertosException("No existe una cuadrilla con el ID indicado.")
+                                );
+
         encontrada.addCosechador(fIni, fFin, meta, cos);
     }
     public Cuadrilla[] getCuadrillas(){
         return cuadrillas.toArray(new Cuadrilla[0]);
     }
 
+    private Optional<Cuadrilla> findCuadrillaById(int idCuad){
+        return cuadrillas
+                .stream()
+                .filter(c -> c.getId() == idCuad)
+                .findFirst();
+    }
 }
