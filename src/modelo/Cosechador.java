@@ -1,6 +1,5 @@
 package modelo;
 
-import vista.Persona;
 import utilidades.Rut;
 import java.io.Serializable;
 import java.time.LocalDate;
