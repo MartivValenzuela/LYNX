@@ -583,7 +583,7 @@ public class ControlProduccion {
         return lineas.toArray(new String[0]);
     }
 
-    private void readDataFromTextFile(String path)
+    /*private void readDataFromTextFile(String path)
         throws FileNotFoundException, GestionHuertosException {
         DateTimeFormatter DF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -731,6 +731,157 @@ public class ControlProduccion {
             }
 
             leer.close();
+    }
+
+     */
+    private void readDataFromTextFile(String path)
+            throws FileNotFoundException, GestionHuertosException {
+        DateTimeFormatter DF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        Scanner leer = new Scanner(new File(path));
+        leer.useDelimiter("[;\r\n]+");
+        leer.useLocale(Locale.US);
+
+        while (leer.hasNext()) {
+            String token = leer.next().trim();
+            if (token.isEmpty()) continue;
+
+            if(token.startsWith("#")){
+                if(leer.hasNextLine()){
+                    leer.nextLine();
+                }
+                continue;
+            }
+
+
+            String operacion = token;
+            if(!leer.hasNextInt()){
+                throw new GestionHuertosException("Falta la cantidad de registros para la operación: " + operacion);
+            }
+            int n = leer.nextInt();
+
+            for (int i = 0; i < n; i++) {
+                switch (operacion) {
+                    case "createPropietario": {
+                        String rut = leer.next().trim();
+                        String nombre = leer.next().trim();
+                        String email = leer.next().trim();
+                        String direccion = leer.next().trim();
+                        String dirComercial = leer.next().trim();
+                        createPropietario(Rut.of(rut), nombre, email, direccion, dirComercial);
+                        break;
+                    }
+
+                    case "createSupervisor": {
+                        String rut = leer.next().trim();
+                        String nombre = leer.next().trim();
+                        String email = leer.next().trim();
+                        String direccion = leer.next().trim();
+                        String profesion = leer.next().trim();
+                        createSupervisor(Rut.of(rut), nombre, email, direccion, profesion);
+                        break;
+                    }
+
+                    case "createCosechador": {
+                        String rut = leer.next().trim();
+                        String nombre = leer.next().trim();
+                        String email = leer.next().trim();
+                        String direccion = leer.next().trim();
+                        LocalDate fnac = LocalDate.parse(leer.next().trim(), DF);
+                        createCosechador(Rut.of(rut), nombre, email, direccion, fnac);
+                        break;
+                    }
+
+                    case "createCultivo": {
+                        int id = leer.nextInt();
+                        String especie = leer.next().trim();
+                        String variedad = leer.next().trim();
+                        float rendimiento = leer.nextFloat();
+                        createCultivo(id, especie, variedad, rendimiento);
+                        break;
+                    }
+
+                    case "createHuerto": {
+                        String nombre = leer.next().trim();
+                        float superficie = leer.nextFloat();
+                        String ubicacion = leer.next().trim();
+                        String rutProp = leer.next().trim();
+                        createHuerto(nombre, superficie, ubicacion, Rut.of(rutProp));
+                        break;
+                    }
+
+                    case "addCuartelToHuerto": {
+                        String nomHuerto = leer.next().trim();
+                        int idCuartel = leer.nextInt();
+                        float sup = leer.nextFloat();
+                        int idCultivo = leer.nextInt();
+                        addCuartelToHuerto(nomHuerto, idCuartel, sup, idCultivo);
+                        break;
+                    }
+
+                    case "createPlanCosecha": {
+                        int idPlan = leer.nextInt();
+                        String nombrePlan = leer.next().trim();
+                        LocalDate ini = LocalDate.parse(leer.next().trim(), DF);
+                        LocalDate fin = LocalDate.parse(leer.next().trim(), DF);
+                        double meta = leer.nextDouble();
+                        double precio = leer.nextDouble();
+                        String nomHuerto = leer.next().trim();
+                        int idCuartel = leer.nextInt();
+                        createPlanCosecha(idPlan, nombrePlan, ini, fin, meta, (float) precio, nomHuerto, idCuartel);
+                        break;
+                    }
+
+                    case "addCuadrillaToPlan": {
+                        int idPlan = leer.nextInt();
+                        int idCuad = leer.nextInt();
+                        String nomCuad = leer.next().trim();
+                        String rutSup = leer.next().trim();
+                        addCuadrillaToPlan(idPlan, idCuad, nomCuad, Rut.of(rutSup));
+                        break;
+                    }
+
+                    case "addCosechadorToCuadrilla": {
+                        int idPlan = leer.nextInt();
+                        int idCuad = leer.nextInt();
+                        LocalDate finicio = LocalDate.parse(leer.next().trim(), DF);
+                        LocalDate ffin = LocalDate.parse(leer.next().trim(), DF);
+                        double meta = leer.nextDouble();
+                        String rutCosech = leer.next().trim();
+                        addCosechadorToCuadrilla(idPlan, idCuad, finicio, ffin, meta, Rut.of(rutCosech));
+                        break;
+                    }
+
+                    case "changeEstadoPlan": {
+                        int idPlan = leer.nextInt();
+                        EstadoPlan nuevo = EstadoPlan.valueOf(leer.next().trim().toUpperCase());
+                        changeEstadoPlan(idPlan, nuevo);
+                        break;
+                    }
+
+                    case "changeEstadoCuartel": {
+                        int idCuartel = leer.nextInt();
+                        String nomHuerto = leer.next().trim();
+                        EstadoFonologico nuevo = EstadoFonologico.valueOf(leer.next().trim().toUpperCase());
+                        changeEstadoCuartel(nomHuerto, idCuartel, nuevo);
+                        break;
+                    }
+
+                    case "addPesaje": {
+                        int id = leer.nextInt();
+                        String rutCos = leer.next().trim();
+                        int idPlan = leer.nextInt();
+                        int idCuad = leer.nextInt();
+                        float cantidad = leer.nextFloat();
+                        Calidad calidad = Calidad.valueOf(leer.next().trim().toUpperCase());
+                        addPesaje(id, Rut.of(rutCos), idPlan, idCuad, cantidad, calidad);
+                        break;
+                    }
+                }
+            }
+        }
+
+        leer.close();
     }
 
 

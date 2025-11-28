@@ -1,6 +1,7 @@
 package vista;
 import controlador.ControlProduccion;
 import utilidades.*;
+import vista.GUI.CreaPersona;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -44,7 +45,11 @@ public class GestionHuertosUI {
                 }
 
                 switch (opcion) {
-                    case 1: CreaPersona(); break;
+                    case 1: //CreaPersona();
+                        CreaPersona ventana = new CreaPersona(control);
+                        ventana.setVisible(true);
+
+                        break;
                     case 2: menuHuertos(); break;
                     case 3: menuPlanesCosecha(); break;
                     case 4: menuListados(); break;

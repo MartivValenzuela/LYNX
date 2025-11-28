@@ -12,7 +12,6 @@ public class Rut implements Serializable {
         this.dv = Character.toUpperCase(dv);
     }
 
-    //Metodo priavdo para verificar que el dv sea correcto
     private static char calcularDV(long numero) {
         long rut = numero;
         int suma = 0;
