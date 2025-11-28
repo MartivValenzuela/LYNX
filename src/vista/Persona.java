@@ -1,4 +1,6 @@
-package utilidades;
+package vista;
+
+import utilidades.Rut;
 
 import java.io.Serializable;
 

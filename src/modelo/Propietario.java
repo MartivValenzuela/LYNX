@@ -1,6 +1,6 @@
 package modelo;
 
-import utilidades.Persona;
+import vista.Persona;
 import utilidades.Rut;
 import java.io.Serializable;
 import java.util.ArrayList;
