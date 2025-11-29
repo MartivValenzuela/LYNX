@@ -11,6 +11,7 @@ public class GestionHuertosUI {
     private final Scanner tcld = new Scanner(System.in);
     private final DateTimeFormatter F = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final ControlProduccion control = ControlProduccion.getInstance();
+    private final CreaCultivo ventana = new CreaCultivo();
 
     //Implementacion del singleton
     private static GestionHuertosUI instance;
@@ -88,7 +89,6 @@ public class GestionHuertosUI {
                 }
                 switch (opcionSubmenus) {
                     case 1:
-                        CreaCultivo ventana = new CreaCultivo();
                         ventana.pack();
                         ventana.setLocationRelativeTo(null);
                         ventana.setVisible(true);
