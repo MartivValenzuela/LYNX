@@ -103,7 +103,10 @@ public class GestionHuertosUI {
                 }
                 switch (opcionSubmenus) {
                     case 1:
-                        creaCultivo();
+                        CreaCultivo ventana = new CreaCultivo();
+                        ventana.pack();
+                        ventana.setLocationRelativeTo(null);
+                        ventana.setVisible(true);
                         break;
                     case 2:
                         creaHuerto();
