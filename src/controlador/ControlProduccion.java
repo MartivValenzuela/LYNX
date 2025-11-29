@@ -147,7 +147,32 @@ public class ControlProduccion {
         }
         oh.get().setEstadoCuartel(idCuartel,estado);
     }
+    public String[] getCuadrillasDeCosechadorDePlan(Rut rutCosechador) throws GestionHuertosException {
+        Cosechador cosechador = findCosechadorByRut(rutCosechador)
+                .orElseThrow(() -> new GestionHuertosException("No existe un cosechador con el rut indicado"));
 
+        LocalDate hoy = LocalDate.now();
+
+        List<String> cuadrillasValidas = java.util.Arrays.stream(cosechador.getAsignaciones())
+                .filter(asignacion -> {
+                    PlanCosecha plan = asignacion.getCuadrilla().getPlanCosecha();
+                    return plan.getEstado() == EstadoPlan.EJECUTANDO &&
+                            !hoy.isBefore(asignacion.getDesde()) &&
+                            !hoy.isAfter(asignacion.getHasta());
+                })
+                .map(asignacion -> {
+                    Cuadrilla c = asignacion.getCuadrilla();
+                    PlanCosecha p = c.getPlanCosecha();
+                    return c.getId() + ";" + c.getNombre() + ";" + p.getId();
+                })
+                .collect(java.util.stream.Collectors.toList());
+
+        if (cuadrillasValidas.isEmpty()) {
+            throw new GestionHuertosException("El cosechador no tiene cuadrillas disponibles para pesaje");
+        }
+
+        return cuadrillasValidas.toArray(new String[0]);
+    }
     public void createPlanCosecha (int idPlan, String nom, LocalDate inicio, LocalDate finEstim, double meta, float precioBase, String nomHuerto, int idCuartel)
         throws GestionHuertosException{
         if(findPlanById(idPlan).isPresent()){

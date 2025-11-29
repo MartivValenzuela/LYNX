@@ -481,37 +481,11 @@ public class GestionHuertosUI {
 
     }
 
-    private void AgregarPesaje(){
-        try{
-            System.out.println("Agregando pesaje a un cosechador...");
-            System.out.print("Id pesaje: ");
-            int idPesaje = tcld.nextInt();
-            tcld.nextLine();
-            System.out.print("Rut Cosechador: ");
-            Rut rutCosechador = Rut.of(tcld.nextLine().trim());
-            System.out.print("Id plan: ");
-            int idPlan = tcld.nextInt();
-            tcld.nextLine();
-            System.out.print("Id cuadrilla: ");
-            int idCuadrilla = tcld.nextInt();
-            tcld.nextLine();
-            System.out.print("Cantidad de kilos: ");
-            float cantidadKg = tcld.nextFloat();
-            tcld.nextLine();
-            System.out.println("Calidad: [1=Excelente, 2=Suficiente, 3=Deficiente]");
-            System.out.print("Opcion: ");
-            int opCalidad = tcld.nextInt();
-            tcld.nextLine();
-            if (opCalidad < 1 || opCalidad > Calidad.values().length) {
-                System.out.println("Opcion de calidad no valida");
-                return;
-            }
-            Calidad calidad = Calidad.values()[opCalidad - 1];
-            control.addPesaje(idPesaje,rutCosechador,idPlan,idCuadrilla,cantidadKg,calidad);
-            System.out.println("Pesaje agregado exitosamente al cosechador");
-        }catch (GestionHuertosException e){
-            System.out.println("Error al intentar agregar pesaje: " + e.getMessage());
-        }
+    private void AgregarPesaje() {
+        System.out.println("Abriendo ventana de agregación de pesaje");
+        java.awt.EventQueue.invokeLater(() -> {
+            new VentanaAgregarPesaje().setVisible(true);
+        });
     }
 
 
