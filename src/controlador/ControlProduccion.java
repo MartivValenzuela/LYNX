@@ -5,7 +5,6 @@ import utilidades.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -256,7 +255,7 @@ public class ControlProduccion {
             throw new GestionHuertosException("El Cosechador no tiene una asignaciona una cuadrilla con el id indicado en el plan con el id señalado");
         }
         CosechadorAsignado asignar = existeAsignacion.get();
-        LocalDate hoy = LocalDate.now();
+        LocalDate hoy = asignar.getDesde();
         if (hoy.isBefore(asignar.getDesde()) || hoy.isAfter(asignar.getHasta())) {
             throw new GestionHuertosException("La fecha no está en el rango de la asignación del cosechador a la cuadrilla");
         }
@@ -293,9 +292,25 @@ public class ControlProduccion {
         return nuevopago.getMonto();
     }
     public String[] listCultivos() {
+        if(cultivos.isEmpty()){
+            return new String[0];
+        }
         return cultivos.stream()
                 .map(cultivo -> {
-                    // contar cuántos cuarteles usan este cultivo
+
+                    String id = String.valueOf(cultivo.getId());
+
+                    String especie = cultivo.getEspecie();
+                    if(especie == null){
+                        especie = "S/D";
+                    }
+
+                    String variedad = cultivo.getVariedad();
+                    if(variedad == null){
+                        variedad = "S/D";
+                    }
+
+                    String rendimiento = String.format("%.2f", cultivo.getRendimiento());
                     long nCuarteles = huertos.stream()
                             .filter(h -> h.getCuarteles() != null)
                             .flatMap(h -> Arrays.stream(h.getCuarteles()))
@@ -303,48 +318,59 @@ public class ControlProduccion {
                                     && cuartel.getCultivo().getId() == cultivo.getId())
                             .count();
 
-                    String especie = Optional.ofNullable(cultivo.getEspecie()).orElse("");
-                    String variedad = Optional.ofNullable(cultivo.getVariedad()).orElse("");
-
-                    return String.format(
-                            "%-6d %-15s %-20s %-15.2f %-15d",
-                            cultivo.getId(),
+                    return String.join("; ",
+                            id,
                             especie,
                             variedad,
-                            cultivo.getRendimiento(),
-                            (int) nCuarteles
+                            rendimiento,
+                            String.valueOf(nCuarteles)
                     );
                 })
                 .toArray(String[]::new);
     }
 
     public String[] listHuertos(){
+        if(huertos.isEmpty()){
+            return new String[0];
+        }
+
         return huertos.stream()
                 .map(h -> {
-                    String propRut = "";
-                    String nomProp = "";
+                    String nombre = h.getNombre();
+                    String superficie = String.format("%.1f", h.getSuperficie());
+                    String ubicacion = h.getUbicacion();
+
+                    String rutProp = "S/D";
+                    String nomProp = "S/D";
+
                     if (h.getPropietario() != null) {
                         if (h.getPropietario().getRut() != null) {
-                            propRut = h.getPropietario().getRut().toString();
+                            rutProp = h.getPropietario().getRut().toString();
                         }
                         if (h.getPropietario().getNombre() != null) {
                             nomProp = h.getPropietario().getNombre();
                         }
                     }
-                    int nCuart;
-                    if(h.getCuarteles() == null){
-                        nCuart = 0;
-                    } else{
-                        nCuart = h.getCuarteles().length;
+                    int nCuart = 0;
+                    Cuartel[] arr = h.getCuarteles();
+                    if(arr != null){
+                        nCuart = arr.length;
                     }
-                    return String.format("%-20s %-12.1f %-30s %-18s %-25s %-15d",
-                            h.getNombre(), h.getSuperficie(), h.getUbicacion(), propRut, nomProp, nCuart);
+                    return String.join("; ",
+                            nombre,
+                            superficie,
+                            ubicacion,
+                            rutProp,
+                            nomProp,
+                            String.valueOf(nCuart)
+                    );
 
                 })
                     .toArray(String[]::new);
     }
     public String[] listPropietarios(){
         return propietarios.stream()
+                .sorted(Comparator.comparing(Propietario:: getNombre, String.CASE_INSENSITIVE_ORDER))
                 .map(prop -> {
                     int nrHuertos;
                     if(prop.getHuertos() == null){
@@ -352,37 +378,42 @@ public class ControlProduccion {
                     } else {
                         nrHuertos = prop.getHuertos().length;
                     }
-                    return String.format(
-                            "%-14s %-28s %-30s %-30s %-22s %2d",
-                            prop.getRut(),
+                    return String.join(";",
+                            prop.getRut().toString(),
                             prop.getNombre(),
                             prop.getDireccion(),
                             prop.getEmail(),
                             prop.getDirComercial(),
-                            nrHuertos
+                            String.valueOf(nrHuertos)
                     );
                 })
                 .toArray(String[]::new);
     }
     public String[] listCosechadores() {
-        if(cosechadores.isEmpty()){
+        if (cosechadores.isEmpty()) {
             return new String[0];
         }
-        return cosechadores.stream()
-                .map(c ->{
-                    int nCuadrillas;
-                    if(c.getCuadrillas() == null){
-                        nCuadrillas = 0;
-                    } else {
-                        nCuadrillas = c.getCuadrillas().length;
-                    }
 
-                    String fNac;
-                    if (c.getFechaNacimiento() == null) {
-                        fNac = "";
-                    } else {
-                        fNac = c.getFechaNacimiento().toString();
-                    }
+        return cosechadores.stream()
+                .sorted((c1, c2) -> {
+                    double imp1 = Arrays.stream(c1.getAsignaciones())
+                            .mapToDouble(CosechadorAsignado::getMontoPesajesImpagos)
+                            .sum();
+
+                    double imp2 = Arrays.stream(c2.getAsignaciones())
+                            .mapToDouble(CosechadorAsignado::getMontoPesajesImpagos)
+                            .sum();
+
+                    return Double.compare(imp2, imp1);
+                })
+                .map(c -> {
+                    int nCuadrillas = (c.getCuadrillas() == null)
+                            ? 0
+                            : c.getCuadrillas().length;
+
+                    String fNac = (c.getFechaNacimiento() == null)
+                            ? ""
+                            : c.getFechaNacimiento().format(F);
 
                     double montoImpago = Arrays.stream(c.getAsignaciones())
                             .mapToDouble(CosechadorAsignado::getMontoPesajesImpagos)
@@ -392,26 +423,35 @@ public class ControlProduccion {
                             .mapToDouble(CosechadorAsignado::getMontoPesajesPagados)
                             .sum();
 
-                    return String.format(
-                            "%-14s %-28s %-30s %-30s %-16s %-16d %-16.1f %-16.1f",
-                            c.getRut(),
+                    return String.join("; ",
+                            c.getRut().toString(),
                             c.getNombre(),
                             c.getDireccion(),
                             c.getEmail(),
                             fNac,
-                            nCuadrillas,
-                            montoImpago,
-                            montoPagado
+                            String.valueOf(nCuadrillas),
+                            String.format("%.1f", montoImpago),
+                            String.format("%.1f", montoPagado)
                     );
                 })
+
                 .toArray(String[]::new);
     }
+
 
     public String [] listSupervisores(){
         if(supervisores.isEmpty()){
             return new String[0];
         }
         return supervisores.stream()
+                .sorted(Comparator.comparingDouble((Supervisor s)-> {
+                    Cuadrilla c = s.getCuadrilla();
+                    if(c == null){
+                        return 0.0;
+                    } else {
+                        return c.getKilosPesados();
+                    }
+                }).reversed())
                 .map(s -> {
                     String cuadNom = "S/A";
                     double kilosPesados = 0.0;
@@ -430,16 +470,16 @@ public class ControlProduccion {
                         }
                     }
 
-                    return  String.format(
-                            "%-14s %-28s %-30s %-28s %-16s %-18s %-12.1f %-12d",
-                            s.getRut(),
+                    return  String.join("; " +
+                            s.getRut().toString(),
                             s.getNombre(),
                             s.getDireccion(),
                             s.getEmail(),
                             s.getProfesion(),
-                            cuadNom,
-                            kilosPesados,
-                            nroPesajesImpagos
+                            String.valueOf(cuadNom),
+                            String.format("%s", kilosPesados),
+                            String.format("%s", nroPesajesImpagos)
+
                     );
                 })
                 .toArray(String[]::new);
@@ -449,32 +489,37 @@ public class ControlProduccion {
             return new String[0];
         }
         return planes.stream()
+                .sorted(Comparator.comparing(PlanCosecha::getEstado).thenComparing(PlanCosecha::getMetaKilos))
                 .map(p -> {
                     String huerto = "";
                     if (p.getCuartel() != null && p.getCuartel().getHuerto() != null) {
                         huerto = p.getCuartel().getHuerto().getNombre();
                     }
+
                     int idCuartel = 0;
                     if (p.getCuartel() != null) {
                         idCuartel = p.getCuartel().getId();
                     }
-                    int nCuadrillas;
-                    if(p.getCuadrillas() == null){
-                        nCuadrillas = 0;
-                    } else {
+
+                    int nCuadrillas = 0;
+                    if(p.getCuadrillas() != null){
                         nCuadrillas = p.getCuadrillas().length;
                     }
-                    return String.format("%-8d %-20s %-14s %-14s %-12.1f %-16.1f %-14s %-10d %-20s %-12d",
-                            p.getId(),
+
+                    String meta = String.format("%.1f", p.getMetaKilos());
+                    String precio = String.format("%.1f", p.getPrecioBaseKilo());
+
+                    return String.join("; ",
+                            String.valueOf(p.getId()),
                             p.getNombre(),
                             p.getInicio().format(F),
                             p.getFinEstimado().format(F),
-                            p.getMetaKilos(),
-                            p.getPrecioBaseKilo(),
-                            p.getEstado(),
-                            idCuartel,
+                            meta,
+                            precio,
+                            p.getEstado().toString(),
+                            String.valueOf(idCuartel),
                             huerto,
-                            nCuadrillas
+                            String.valueOf(nCuadrillas)
                     );
                 })
                 .toArray(String[]::new);
@@ -490,15 +535,18 @@ public class ControlProduccion {
                     if (p.getPagoPesaje() != null) {
                         pagadoEl = p.getPagoPesaje().getFecha().format(F);
                     }
+                    String cantidad = String.format("%.1f", p.getCantidadKg());
+                    String precio = String.format("%.1f", p.getPrecioKg());
+                    String monto = String.format("%.1f", p.getMonto());
 
-                    return String.format("%-5d %-12s %-15s %-12s %-12.1f %-10.1f %-10.1f %-12s",
-                            p.getId(),
+                    return String.join("; ",
+                            String.valueOf(p.getId()),
                             p.getFechaHora().toLocalDate().format(F),
                             p.getCosechadorAsignado().getCosechador().getRut().toString(),
-                            p.getCalidad(),
-                            p.getCantidadKg(),
-                            p.getPrecioKg(),
-                            p.getMonto(),
+                            p.getCalidad().toString(),
+                            cantidad,
+                            precio,
+                            monto,
                             pagadoEl
                     );
                 }).toArray(String[]::new);
@@ -522,18 +570,23 @@ public class ControlProduccion {
 
         return pesajesCosechador.stream()
                 .map(p -> {
+
                     String pagadoEl = "Impago";
                     if (p.getPagoPesaje() != null) {
                         pagadoEl = p.getPagoPesaje().getFecha().format(F);
                     }
 
-                    return String.format("%-5d %-12s %-12s %-12.1f %-10.1f %-10.1f %-12s",
-                            p.getId(),
+                    String cantidad = String.format("%.1f", p.getCantidadKg());
+                    String precio = String.format("%.1f", p.getPrecioKg());
+                    String monto = String.format("%.1f", p.getMonto());
+
+                    return String.join("; ",
+                            String.valueOf(p.getId()),
                             p.getFechaHora().toLocalDate().format(F),
-                            p.getCalidad(),
-                            p.getCantidadKg(),
-                            p.getPrecioKg(),
-                            p.getMonto(),
+                            p.getCalidad().toString(),
+                            cantidad,
+                            precio,
+                            monto,
                             pagadoEl
                     );
                 })
@@ -542,26 +595,37 @@ public class ControlProduccion {
     }
 
     public String[] listPagosPesajes() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return pagosPesajes.stream()
                 .map(pago -> {
-                    int id = pago.getId();
-                    String fecha = pago.getFecha().format(dtf);
-                    double monto = pago.getMonto();
-                    int numPesajes = pago.getPesajes().length;
+                    String id = String.valueOf(pago.getId());
+                    String fecha = pago.getFecha().format(F);
 
-                    String rut = "S/D";
-                    if (numPesajes > 0 &&
-                            pago.getPesajes()[0] != null &&
-                            pago.getPesajes()[0].getCosechadorAsignado() != null &&
-                            pago.getPesajes()[0].getCosechadorAsignado().getCosechador() != null &&
-                            pago.getPesajes()[0].getCosechadorAsignado().getCosechador().getRut() != null) {
+                    String monto = String.format("%.1f", pago.getMonto());
 
-                        rut = pago.getPesajes()[0].getCosechadorAsignado().getCosechador().getRut().toString();
+
+                    int numPesajes = 0;
+                    Pesaje [] pesajesArr = pago.getPesajes();
+                    if(pesajesArr != null) {
+                        numPesajes = pesajesArr.length;
                     }
 
-                    return String.format("%d;%s;%.1f;%d;%s",
-                            id, fecha, monto, numPesajes, rut
+                    String rut = "S/D";
+                    if(numPesajes > 0) {
+                        Pesaje p0 = pesajesArr[0];
+                        if(p0 != null){
+                            CosechadorAsignado ca = p0.getCosechadorAsignado();
+                            if(ca != null && ca.getCosechador() != null && ca.getCosechador().getRut() != null) {
+                                rut = ca.getCosechador().getRut().toString();
+                            }
+                        }
+                    }
+
+                    return String.join("; ",
+                            id,
+                            fecha,
+                            monto,
+                            String.valueOf(numPesajes),
+                            rut
                     );
                 })
                 .toArray(String[]::new);

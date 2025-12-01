@@ -13,42 +13,23 @@ public class CreaCultivo extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JLabel lbLogo;
     private JTextField textEspecie;
     private JTextField textVariedad;
     private JTextField textRendimiento;
     private JTextField textId;
-    private JPanel panelDatos;   // usa un nombre claro
 
     private final ControlProduccion controlProduccion = ControlProduccion.getInstance();
 
     public CreaCultivo() {
         setContentPane(contentPane);
         setModal(true);
-        setTitle("Crear cultivo");
 
         getRootPane().setDefaultButton(buttonOK);
-
-        // Iconos (si fallan, no tiran excepción)
-        lbLogo.setIcon(new ImageIcon(getClass().getResource("/vista/resources/agregar-archivo.png")));
-        buttonOK.setIcon(new ImageIcon(getClass().getResource("/vista/resources/aceptar.png")));
-        buttonCancel.setIcon(new ImageIcon(getClass().getResource("/vista/resources/cancelar.png")));
-
-        // Borde del panel "Datos del cultivo"
-        if (panelDatos != null) {
-            panelDatos.setBorder(BorderFactory.createTitledBorder(
-                    BorderFactory.createEtchedBorder(),
-                    "Datos del cultivo",
-                    TitledBorder.DEFAULT_JUSTIFICATION,
-                    TitledBorder.DEFAULT_POSITION,
-                    new Font("Arial", Font.BOLD, 10),
-                    Color.DARK_GRAY
-            ));
-        }
 
         buttonOK.addActionListener(e -> onOK());
         buttonCancel.addActionListener(e -> onCancel());
 
+        //Esto sirve para cerrar con la X de la ventana
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -56,6 +37,7 @@ public class CreaCultivo extends JDialog {
             }
         });
 
+        //2Este para cerrar con el esc del teclado
         contentPane.registerKeyboardAction(
                 e -> onCancel(),
                 KeyStroke.getKeyStroke("ESCAPE"),

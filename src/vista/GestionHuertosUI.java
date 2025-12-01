@@ -576,7 +576,26 @@ public class GestionHuertosUI {
         if (v.length == 0) {
             System.out.println("No existen cultivos registrados.");
         } else {
-            for (String s : v) System.out.println(s);
+            for (String linea : v) {
+                String [] partes = linea.split(";");
+
+                if(partes.length < 5){
+                    continue;
+                }
+
+                String id = partes[0];
+                String especie = partes[1];
+                String variedad = partes[2];
+                String rendimiento = partes[3];
+                String nroCuarteles = partes[4];
+
+                System.out.printf("%-6s %-15s %-20s %-15s %-15s%n",
+                        id,
+                        especie,
+                        variedad,
+                        rendimiento,
+                        nroCuarteles);
+            }
         }
         System.out.println();
     }
@@ -610,7 +629,36 @@ public class GestionHuertosUI {
         if (planes.length == 0) {
             System.out.println("No existen planes de cosecha registrados.");
         } else {
-            for (String p : planes) System.out.println(p);
+            for (String linea : planes){
+                String[] partes = linea.split(";");
+
+                if(partes.length < 10){
+                    continue;
+                }
+                String id = partes[0];
+                String nombre = partes[1];
+                String fechaIni = partes[2];
+                String fechaTermino = partes[3];
+                String meta = partes[4];
+                String precioBase = partes[5];
+                String estado = partes[6];
+                String idCuartel = partes[7];
+                String nombreHuerto = partes[8];
+                String nroCuadrillas = partes[9];
+
+                System.out.printf("%-8s %-20s %-14s %-14s %-12s %-16s %-14s %-10s %-20s %-12s%n",
+                        id,
+                        nombre,
+                        fechaIni,
+                        fechaTermino,
+                        meta,
+                        precioBase,
+                        estado,
+                        idCuartel,
+                        nombreHuerto,
+                        nroCuadrillas);
+
+            }
         }
         System.out.println();
     }
@@ -618,13 +666,41 @@ public class GestionHuertosUI {
     private void listaPesajes(){
         System.out.println("\n LISTADO DE PESAJES");
         System.out.println("----------------------");
-        System.out.printf("%-5s %-12s %-15s %-12s %-12s %-10s %-10s %-12s%n", "Id", "Fecha", "Rut Cosechador", "Calidad", "Cantidad Kg", "Precio $", "Monto $", "Pagado el");
+        System.out.printf("%-5s %-12s %-15s %-12s %-12s %-10s %-10s %-12s%n",
+                "Id", "Fecha", "Rut Cosechador", "Calidad", "Cantidad Kg",
+                "Precio $", "Monto $", "Pagado el");
         String[] v = control.listPesajes();
         if (v.length == 0) {
             System.out.println("No existen pesajes registrados.");
         } else {
-            for (String s : v) System.out.println(s);
+            for (String linea : v){
+                String[] partes = linea.split(";");
+
+                if(partes.length < 8){
+                    continue;
+                }
+
+                String id = partes[0];
+                String fecha = partes[1];
+                String rutCosechador = partes[2];
+                String calidad = partes[3];
+                String cantidadKg = partes[4];
+                String precioBase = partes[5];
+                String monto = partes[6];
+                String pagadoEl = partes[7];
+
+                System.out.printf("%-5s %-12s %-15s %-12s %-12s %-10s %-10s %-12s%n",
+                        id,
+                        fecha,
+                        rutCosechador,
+                        calidad,
+                        cantidadKg,
+                        precioBase,
+                        monto,
+                        pagadoEl);
+            }
         }
+        System.out.println();
     }
 
     private void ListaPesajesCosechador() {
@@ -634,14 +710,40 @@ public class GestionHuertosUI {
             Rut rutCosechador = Rut.of(tcld.nextLine().trim());
 
             System.out.println("---------------------------------");
-            System.out.printf("%-5s %-12s %-12s %-12s %-10s %-10s %-12s%n", "Id", "Fecha", "Calidad", "Cantidad Kg", "Precio $", "Monto $", "Pagado el");
+            System.out.printf("%-5s %-12s %-12s %-12s %-10s %-10s %-12s%n", "Id", "Fecha",
+                    "Calidad", "Cantidad Kg", "Precio $", "Monto $", "Pagado el");
 
             String[] v = control.listPesajesCosechador(rutCosechador);
             if (v.length == 0) {
                 System.out.println("El cosechador no tiene pesajes registrados.");
             } else {
-                for (String s : v) System.out.println(s);
+                for (String linea : v){
+                    String [] partes = linea.split(";");
+
+                    if(partes.length < 7){
+                        continue;
+                    }
+
+                    String  id = partes[0];
+                    String fecha = partes[1];
+                    String calidad =  partes[2];
+                    String cantidad =  partes[3];
+                    String precioBase = partes[4];
+                    String monto = partes[5];
+                    String pagadoEl = partes[6];
+
+                    System.out.printf("%-5s %-12s %-12s %-12s %-10s %-10s %-12s%n",
+                            id,
+                            fecha,
+                            calidad,
+                            cantidad,
+                            precioBase,
+                            monto,
+                            pagadoEl);
+                }
             }
+
+            System.out.println();
         } catch (Exception e){
             System.out.println("ERROR: Datos de entrada no válidos. " + e.getMessage());
         }
@@ -649,25 +751,67 @@ public class GestionHuertosUI {
     private void ListaPagos(){
         System.out.println("\nLISTADO DE PAGOS DE PESAJES");
         System.out.println("---------------------------");
-        System.out.printf("%-5s %-12s %-12s %-10s %-15s%n", "Id", "Fecha", "Monto $", "Nro. Pesajes", "Rut Cosechador");
+        System.out.printf("%-5s %-12s %-12s %-10s %-15s%n", "Id", "Fecha", "Monto $",
+                "Nro. Pesajes", "Rut Cosechador");
 
         String[] v = control.listPagosPesajes();
         if (v.length == 0) {
             System.out.println("No existen pagos registrados.");
         } else {
-            for (String s : v) System.out.println(s);
+            for (String linea : v){
+                String[] partes = linea.split(";");
+
+                if(partes.length < 5){
+                    continue;
+                }
+
+                String id = partes[0];
+                String fecha = partes[1];
+                String monto = partes[2];
+                String nroPesaje = partes[3];
+                String rutCosechador = partes[4];
+
+                System.out.printf("%-5s %-12s %-12s %-10s %-15s%n",
+                        id,
+                        fecha,
+                        monto,
+                        nroPesaje,
+                        rutCosechador);
+            }
         }
+        System.out.println();
     }
     private void listapropietarios() {
         System.out.println("\nLISTADO DE PROPIETARIOS");
         System.out.println("-----------------------");
-        System.out.printf("%-14s %-28s %-30s %-30s %-22s %-12s%n", "Rut", "Nombre", "Dirección", "email", "Dirección comercial", "Nro. huertos");
+        System.out.printf("%-14s %-28s %-30s %-30s %-22s %-12s%n", "Rut", "Nombre", "Dirección",
+                "email", "Dirección comercial", "Nro. huertos");
 
         String[] vp = control.listPropietarios();
         if (vp.length == 0) {
             System.out.println("No existen propietarios registrados.");
         } else {
-            for (String s : vp) System.out.println(s);
+            for (String linea : vp) {
+                String[] partes =  linea.split(";");
+                if(partes.length < 6){
+                    continue;
+                }
+
+                String rut =  partes[0];
+                String nombre =  partes[1];
+                String direccion =  partes[2];
+                String email =  partes[3];
+                String dirComercial =  partes[4];
+                String nroHuerto =  partes[5];
+
+                System.out.printf("%-14s %-28s %-30s %-30s %-22s %-12s%n",
+                        rut,
+                        nombre,
+                        direccion,
+                        email,
+                        dirComercial,
+                        nroHuerto);
+            }
         }
         System.out.println();
     }
@@ -676,13 +820,40 @@ public class GestionHuertosUI {
         System.out.println("\nLISTADO DE SUPERVISORES");
         System.out.println("-----------------------");
 
-        System.out.printf("%-14s %-28s %-30s %-28s %-16s %-18s %-12s %-12s%n", "Rut", "Nombre", "Dirección", "email", "Profesión", "Nom.cuadrilla", "Kg pesados", "#Pjes.impagos");
+        System.out.printf("%-14s %-28s %-30s %-28s %-16s %-18s %-12s %-12s%n",
+                "Rut", "Nombre", "Dirección", "email", "Profesión",
+                "Nom.cuadrilla", "Kg pesados", "#Pjes.impagos");
 
         String[] vs = control.listSupervisores();
         if (vs.length == 0) {
             System.out.println("No existen supervisores registrados.");
         } else {
-            for (String s : vs) System.out.println(s);
+            for (String linea : vs) {
+                String[] partes = linea.split(";");
+
+                if(partes.length < 8){
+                    continue;
+                }
+
+                String rut =  partes[0];
+                String nombre = partes[1];
+                String direccion = partes[2];
+                String email = partes[3];
+                String profesion = partes[4];
+                String nCuadrillas = partes[5];
+                String kilos = partes[6];
+                String pesajesImpagos = partes[7];
+
+                System.out.printf("%-14s %-28s %-30s %-28s %-16s %-18s %-12s %-12s%n",
+                        rut,
+                        nombre,
+                        direccion,
+                        email,
+                        profesion,
+                        nCuadrillas,
+                        kilos,
+                        pesajesImpagos);
+            }
         }
         System.out.println();
     }
@@ -691,17 +862,42 @@ public class GestionHuertosUI {
         System.out.println("\nLISTADO DE COSECHADORES");
         System.out.println("-----------------------");
 
-        System.out.printf("%-14s %-28s %-30s %-30s %-16s %-16s %-16s %-16s%n", "Rut", "Nombre", "Dirección", "email", "Fecha Nac.", "Nro. Cuadrillas", "Monto impago $", "Monto pagado $");
+        System.out.printf("%-14s %-28s %-30s %-30s %-16s %-16s %-16s %-16s%n"
+                , "Rut", "Nombre", "Dirección", "email",
+                "Fecha Nac.", "Nro. Cuadrillas", "Monto impago $", "Monto pagado $");
 
         String[] vc = control.listCosechadores();
         if (vc.length == 0) {
             System.out.println("No existen cosechadores registrados.");
         } else {
-            for (String s : vc) System.out.println(s);
+            for (String linea : vc) {
+                String[] partes = linea.split(";");
+
+                if(partes.length < 8){
+                    continue;
+                }
+
+                String rut = partes[0];
+                String nombre = partes[1];
+                String direccion = partes[2];
+                String email = partes[3];
+                String fNac = partes[4];
+                String nCuadrillas = partes[5];
+                String montoImpago = partes[6];
+                String montoPagado = partes[7];
+
+                System.out.printf("%-14s %-28s %-30s %-30s %-16s %-16s %-16s %-16s%n",
+                        rut,
+                        nombre,
+                        direccion,
+                        email,
+                        fNac,
+                        nCuadrillas,
+                        montoImpago,
+                        montoPagado);
+
+            }
         }
         System.out.println();
     }
-
-
-
 }
