@@ -11,7 +11,7 @@ public class GestionHuertosUI {
     private final Scanner tcld = new Scanner(System.in);
     private final DateTimeFormatter F = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final ControlProduccion control = ControlProduccion.getInstance();
-    private final CreaCultivo ventana = new CreaCultivo();
+    private final CreaCultivo ventana =  new CreaCultivo();
 
     //Implementacion del singleton
     private static GestionHuertosUI instance;
@@ -32,7 +32,9 @@ public class GestionHuertosUI {
                 System.out.println("2. Menu Huertos");
                 System.out.println("3. Menú Planes de Cosecha");
                 System.out.println("4. Menú listados");
-                System.out.println("5. Salir");
+                System.out.println("5. Leer datos del sistema");
+                System.out.println("6. Guardar datos del sistema");
+                System.out.println("7. Salir");
                 System.out.print("Opcion:");
                 int opcion = tcld.nextInt();
                 tcld.nextLine();
@@ -54,6 +56,11 @@ public class GestionHuertosUI {
                     case 4:
                         menuListados();
                         break;
+                    case 5:
+                        leeDatosSistemas();
+                        break;
+                    case 6:
+                        guardarDatosSistemas();
                     default:
                         System.out.println("Opcion no valida,intente de nuevo");
                 }
@@ -89,9 +96,7 @@ public class GestionHuertosUI {
                 }
                 switch (opcionSubmenus) {
                     case 1:
-                        ventana.pack();
-                        ventana.setLocationRelativeTo(null);
-                        ventana.setVisible(true);
+                        creaCultivo();
                         break;
                     case 2:
                         creaHuerto();
@@ -231,8 +236,25 @@ public class GestionHuertosUI {
         }
     }
 
-    private void CreaPersona() {
+    private void leeDatosSistemas() {
+        try{
+            control.readSystemData();
+            System.out.println("Datos del sistema leidos correctamente");
+        } catch (GestionHuertosException e){
+            System.out.println("Error al leer datos del sistema" + e.getMessage());
+        }
+    }
 
+    private void guardarDatosSistemas() {
+        try{
+            control.saveSystemData();
+            System.out.println("Datos del sistema guardados correctamente");
+        } catch (GestionHuertosException e){
+            System.out.println("Error al guardar datos del sistema" + e.getMessage());
+        }
+    }
+
+    private void CreaPersona() {
         try {
             System.out.println("Creando una persona...");
             System.out.println("Rol persona (1=Propietario, 2=Supervisor, 3=Cosechador):");
@@ -278,24 +300,9 @@ public class GestionHuertosUI {
     }
 
     private void creaCultivo() {
-        try {
-            System.out.println("Creando un cultivo...");
-            System.out.println("Identificación: ");
-            int id = tcld.nextInt();
-            tcld.nextLine();
-            System.out.println("Especie: ");
-            String especie = tcld.nextLine().trim();
-            System.out.println("Variedad: ");
-            String variedad = tcld.nextLine().trim();
-            System.out.println("Rendimiento (Use coma para separador decimal): ");
-            float rendimiento = tcld.nextFloat();
-            tcld.nextLine();
-            control.createCultivo(id, especie, variedad, rendimiento);
-            System.out.println("Cultivo creado exitosamente");
-        } catch (GestionHuertosException e) {
-            System.out.println("Error al intentar crear el cultivo: " + e.getMessage());
-        }
-
+       ventana.pack();
+       ventana.setLocationRelativeTo(null);
+       ventana.setVisible(true);
     }
 
     private void creaHuerto() {
@@ -474,38 +481,77 @@ public class GestionHuertosUI {
 
     }
 
-    private void AgregarPesaje(){
-        try{
+    private void AgregarPesaje() {
+        try {
             System.out.println("Agregando pesaje a un cosechador...");
+            System.out.print("Rut Cosechador: ");
+            Rut rutCosechador = Rut.of(tcld.nextLine().trim());
+
+            String[] casillas = control.getCuadrillasDeCosechadoresDePlan(rutCosechador);
+
+            System.out.println("Casillas disponibles para registrar pesaje hoy:");
+            System.out.println("------------------------------------------------");
+            System.out.printf("%-10s %-20s %-20s%n",
+                    "Id casilla", "Nombre casilla", "Nombre plan");
+
+            for (String linea : casillas) {
+                String[] partes = linea.split(";");
+                String idCasilla = "";
+                String nombreCasilla = "";
+                String nombrePlan = "";
+
+                if (partes.length > 0) {
+                    idCasilla = partes[0].trim();
+                }
+                if (partes.length > 1) {
+                    nombreCasilla = partes[1].trim();
+                }
+                if (partes.length > 2) {
+                    nombrePlan = partes[2].trim();
+                }
+
+                System.out.printf("%-10s %-20s %-20s%n",
+                        idCasilla, nombreCasilla, nombrePlan);
+            }
+
             System.out.print("Id pesaje: ");
             int idPesaje = tcld.nextInt();
             tcld.nextLine();
-            System.out.print("Rut Cosechador: ");
-            Rut rutCosechador = Rut.of(tcld.nextLine().trim());
+
             System.out.print("Id plan: ");
             int idPlan = tcld.nextInt();
             tcld.nextLine();
+
             System.out.print("Id cuadrilla: ");
             int idCuadrilla = tcld.nextInt();
             tcld.nextLine();
+
             System.out.print("Cantidad de kilos: ");
             float cantidadKg = tcld.nextFloat();
             tcld.nextLine();
+
             System.out.println("Calidad: [1=Excelente, 2=Suficiente, 3=Deficiente]");
             System.out.print("Opcion: ");
             int opCalidad = tcld.nextInt();
             tcld.nextLine();
+
             if (opCalidad < 1 || opCalidad > Calidad.values().length) {
                 System.out.println("Opcion de calidad no valida");
                 return;
             }
             Calidad calidad = Calidad.values()[opCalidad - 1];
-            control.addPesaje(idPesaje,rutCosechador,idPlan,idCuadrilla,cantidadKg,calidad);
+
+            control.addPesaje(idPesaje, rutCosechador, idPlan, idCuadrilla, cantidadKg, calidad);
             System.out.println("Pesaje agregado exitosamente al cosechador");
-        }catch (GestionHuertosException e){
+
+        } catch (GestionHuertosException e) {
             System.out.println("Error al intentar agregar pesaje: " + e.getMessage());
+        } catch (InputMismatchException e) {
+            System.out.println("Error, dato numérico inválido");
+            tcld.nextLine();
         }
     }
+
 
 
     private void CambiarEstadoPlan() {
