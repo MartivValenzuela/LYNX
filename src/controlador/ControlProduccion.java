@@ -264,44 +264,58 @@ public class ControlProduccion {
         return nuevopago.getMonto();
     }
 
-    public String[] getCuadrillasDeCosechadoresDePlan(Rut rutCosechador)
-    throws GestionHuertosException{
-        Cosechador cos = findCosechadorByRut(rutCosechador).
-                orElseThrow(() -> new GestionHuertosException("No existe un cosechador con el rut indicado"));
+    public String[] getCuadrillasDeCosechadorDePlan(Rut rutCosechador) throws GestionHuertosException {
+
+        Optional<Cosechador> op = findCosechadorByRut(rutCosechador);
+        if (op.isEmpty()) {
+            throw new GestionHuertosException("No existe un cosechador con el rut indicado");
+        }
+
+        Cosechador cosechador = op.get();
+
+        if (cosechador.getAsignaciones() == null || cosechador.getAsignaciones().length == 0) {
+            throw new GestionHuertosException("El cosechador no tiene casillas asignadas para pesaje");
+        }
+
         LocalDate hoy = LocalDate.now();
-        List<String> resultado = new ArrayList<>();
+        ArrayList<String> resultado = new ArrayList<>();
 
-        for(CosechadorAsignado asignacion : cos.getAsignaciones()){
-            if (asignacion == null){
-                continue;
+        for (CosechadorAsignado asig : cosechador.getAsignaciones()) {
+
+            if (asig != null) {
+
+                Cuadrilla cuad = asig.getCuadrilla();
+                if (cuad != null) {
+
+                    PlanCosecha plan = cuad.getPlanCosecha();
+                    if (plan != null) {
+
+                        boolean planEjecutando = plan.getEstado() == EstadoPlan.EJECUTANDO;
+                        boolean dentroDeRango =
+                                (!hoy.isBefore(asig.getDesde())) &&
+                                        (!hoy.isAfter(asig.getHasta()));
+
+                        // Si ambas condiciones se cumplen → casilla válida
+                        if (planEjecutando && dentroDeRango) {
+
+                            String linea = cuad.getId() + ";" +
+                                    cuad.getNombre() + ";" +
+                                    plan.getId();
+
+                            resultado.add(linea);
+                        }
+                    }
+                }
             }
-
-            Cuadrilla cuadrilla = asignacion.getCuadrilla();
-            if(cuadrilla == null){
-                continue;
-            }
-
-            PlanCosecha plan = cuadrilla.getPlanCosecha();
-            if(plan == null){
-                continue;
-            }
-
-            if(hoy.isBefore(asignacion.getDesde()) || hoy.isAfter(asignacion.getHasta())){
-                continue;
-            }
-            int idCuad = cuadrilla.getId();
-            String nomCuad = cuadrilla.getNombre();
-            String nomPlan = plan.getNombre();
-
-            String linea = idCuad + ";" + nomCuad + ";" + nomPlan;
-            resultado.add(linea);
         }
 
-        if(resultado.isEmpty()){
-            throw new GestionHuertosException("El cosechador no tiene cuadrillas disponibles para pesaje");
+        if (resultado.isEmpty()) {
+            throw new GestionHuertosException("El cosechador no tiene casillas disponibles para pesaje");
         }
+
         return resultado.toArray(new String[0]);
     }
+
 
     public String[] listCultivos() {
         if(cultivos.isEmpty()){

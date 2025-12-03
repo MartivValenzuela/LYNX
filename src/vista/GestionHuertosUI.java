@@ -12,6 +12,7 @@ public class GestionHuertosUI {
     private final DateTimeFormatter F = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final ControlProduccion control = ControlProduccion.getInstance();
     private final CreaCultivo ventana =  new CreaCultivo();
+    private final addPesaje dialog = new addPesaje();
 
     //Implementacion del singleton
     private static GestionHuertosUI instance;
@@ -39,7 +40,7 @@ public class GestionHuertosUI {
                 int opcion = tcld.nextInt();
                 tcld.nextLine();
 
-                if (opcion == 5) {
+                if (opcion == 7) {
                     System.out.println("Saliendo del Programa...");
                     return;
                 }
@@ -107,6 +108,8 @@ public class GestionHuertosUI {
                     case 4:
                         CambiarEstadoCuartel();
                         break;
+                    case 5:
+                        return;
                     default:
                         System.out.println("La opcion no esta en el rango valido");
                 }
@@ -157,7 +160,6 @@ public class GestionHuertosUI {
                         break;
                     case 7:
                         return;
-
                     default:
                         System.out.println("La opcion no esta en el rango valido");
                 }
@@ -482,74 +484,9 @@ public class GestionHuertosUI {
     }
 
     private void AgregarPesaje() {
-        try {
-            System.out.println("Agregando pesaje a un cosechador...");
-            System.out.print("Rut Cosechador: ");
-            Rut rutCosechador = Rut.of(tcld.nextLine().trim());
-
-            String[] casillas = control.getCuadrillasDeCosechadoresDePlan(rutCosechador);
-
-            System.out.println("Casillas disponibles para registrar pesaje hoy:");
-            System.out.println("------------------------------------------------");
-            System.out.printf("%-10s %-20s %-20s%n",
-                    "Id casilla", "Nombre casilla", "Nombre plan");
-
-            for (String linea : casillas) {
-                String[] partes = linea.split(";");
-                String idCasilla = "";
-                String nombreCasilla = "";
-                String nombrePlan = "";
-
-                if (partes.length > 0) {
-                    idCasilla = partes[0].trim();
-                }
-                if (partes.length > 1) {
-                    nombreCasilla = partes[1].trim();
-                }
-                if (partes.length > 2) {
-                    nombrePlan = partes[2].trim();
-                }
-
-                System.out.printf("%-10s %-20s %-20s%n",
-                        idCasilla, nombreCasilla, nombrePlan);
-            }
-
-            System.out.print("Id pesaje: ");
-            int idPesaje = tcld.nextInt();
-            tcld.nextLine();
-
-            System.out.print("Id plan: ");
-            int idPlan = tcld.nextInt();
-            tcld.nextLine();
-
-            System.out.print("Id cuadrilla: ");
-            int idCuadrilla = tcld.nextInt();
-            tcld.nextLine();
-
-            System.out.print("Cantidad de kilos: ");
-            float cantidadKg = tcld.nextFloat();
-            tcld.nextLine();
-
-            System.out.println("Calidad: [1=Excelente, 2=Suficiente, 3=Deficiente]");
-            System.out.print("Opcion: ");
-            int opCalidad = tcld.nextInt();
-            tcld.nextLine();
-
-            if (opCalidad < 1 || opCalidad > Calidad.values().length) {
-                System.out.println("Opcion de calidad no valida");
-                return;
-            }
-            Calidad calidad = Calidad.values()[opCalidad - 1];
-
-            control.addPesaje(idPesaje, rutCosechador, idPlan, idCuadrilla, cantidadKg, calidad);
-            System.out.println("Pesaje agregado exitosamente al cosechador");
-
-        } catch (GestionHuertosException e) {
-            System.out.println("Error al intentar agregar pesaje: " + e.getMessage());
-        } catch (InputMismatchException e) {
-            System.out.println("Error, dato numérico inválido");
-            tcld.nextLine();
-        }
+        dialog.pack();
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
     }
 
 
