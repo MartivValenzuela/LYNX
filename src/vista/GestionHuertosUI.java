@@ -2,6 +2,7 @@ package vista;
 import controlador.ControlProduccion;
 import utilidades.*;
 import vista.GUI.CreaPersona;
+import vista.GUI.ListaCosechadoresGUI;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -210,7 +211,7 @@ public class GestionHuertosUI {
                         listasupervisores();
                         break;
                     case 3:
-                        listacosechadores();
+                        vista.GUI.ListaCosechadoresGUI.display();
                         break;
                     case 4:
                         listaCultivos();

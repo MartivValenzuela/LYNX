@@ -1,7 +1,7 @@
 package controlador;
 
 import utilidades.GestionHuertosException;
-import utilidades.Persona;
+import modelo.Persona;
 import java.io.*;
 import modelo.*;
 
