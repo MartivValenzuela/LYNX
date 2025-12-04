@@ -2,6 +2,7 @@ package vista;
 import controlador.ControlProduccion;
 import utilidades.*;
 
+import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.InputMismatchException;
@@ -11,8 +12,8 @@ public class GestionHuertosUI {
     private final Scanner tcld = new Scanner(System.in);
     private final DateTimeFormatter F = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final ControlProduccion control = ControlProduccion.getInstance();
-    private final CreaCultivo ventana =  new CreaCultivo();
-    private final addPesaje dialog = new addPesaje();
+    private CreaCultivo ventana;
+    private addPesaje dialog;
 
     //Implementacion del singleton
     private static GestionHuertosUI instance;
@@ -302,10 +303,19 @@ public class GestionHuertosUI {
     }
 
     private void creaCultivo() {
-       ventana.pack();
-       ventana.setLocationRelativeTo(null);
-       ventana.setVisible(true);
+        try {
+            if (ventana == null) {              // se crea solo la primera vez
+                ventana = new CreaCultivo();
+            }
+            ventana.pack();
+            ventana.setLocationRelativeTo(null);
+            ventana.setVisible(true);
+        } catch (Exception e) {
+            System.out.println("Error al abrir ventana CreaCultivo: " + e.getMessage());
+            e.printStackTrace();  // para ver el error real en la consola
+        }
     }
+
 
     private void creaHuerto() {
         try {
@@ -484,10 +494,19 @@ public class GestionHuertosUI {
     }
 
     private void AgregarPesaje() {
-        dialog.pack();
-        dialog.setLocationRelativeTo(null);
-        dialog.setVisible(true);
+        try {
+            if (dialog == null) {               // se crea solo la primera vez
+                dialog = new addPesaje();
+            }
+            dialog.pack();
+            dialog.setLocationRelativeTo(null);
+            dialog.setVisible(true);
+        } catch (Exception e) {
+            System.out.println("Error al abrir ventana addPesaje: " + e.getMessage());
+            e.printStackTrace();  // VER QUÉ ESTÁ FALLANDO
+        }
     }
+
 
 
 

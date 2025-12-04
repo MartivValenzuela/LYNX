@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class CreaCultivo extends JDialog {
+public class CreaCultivo extends JFrame {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -22,7 +22,8 @@ public class CreaCultivo extends JDialog {
 
     public CreaCultivo() {
         setContentPane(contentPane);
-        setModal(true);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         getRootPane().setDefaultButton(buttonOK);
 

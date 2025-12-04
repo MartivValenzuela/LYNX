@@ -9,7 +9,7 @@ public class Rut {
         this.dv = Character.toUpperCase(dv);
     }
 
-    //Metodo priavdo para verificar que el dv sea correcto
+    //Método privado para calcular DV
     private static char calcularDV(long numero) {
         long rut = numero;
         int suma = 0;
@@ -30,9 +30,9 @@ public class Rut {
         if (dvNum == 11) return '0';
         if (dvNum == 10) return 'K';
         return (char) (dvNum + '0');
-
     }
 
+    //PARA CREAR UN RUT DESDE STRING
     public static Rut of(String rutstr) throws GestionHuertosException {
         if (rutstr == null || rutstr.trim().isEmpty()) {
             throw new GestionHuertosException("El RUT no puede estar vacío");
@@ -44,8 +44,8 @@ public class Rut {
             );
         }
 
-        String rutlimpio = rutstr.replace(".", "").trim();
-        String[] partes = rutlimpio.split("-");
+        String rutLimpio = rutstr.replace(".", "").trim();
+        String[] partes = rutLimpio.split("-");
 
         if (partes.length != 2) {
             throw new GestionHuertosException("Formato de RUT incorrecto. Debe ser (numero)-(dv)");
@@ -62,13 +62,17 @@ public class Rut {
             char dvCalculado = calcularDV(numero);
 
             if (dvIngresado != dvCalculado) {
-                throw new GestionHuertosException("El dígito verificador es incorrecto. Para " + numero + " el DV correcto es " + dvCalculado + ", pero se ingreso " + dvIngresado);
+                throw new GestionHuertosException(
+                        "El dígito verificador es incorrecto. Para " + numero +
+                                " el DV correcto es " + dvCalculado +
+                                ", pero se ingresó " + dvIngresado
+                );
             }
 
             return new Rut(numero, dvIngresado);
 
         } catch (NumberFormatException e) {
-            throw new GestionHuertosException("El numero del RUT no es válido (solo debe contener dígitos)");
+            throw new GestionHuertosException("El número del RUT no es válido (solo dígitos)");
         }
     }
 
@@ -80,8 +84,30 @@ public class Rut {
         return dv;
     }
 
+    // 🔹 **Mostramos SIEMPRE el RUT con puntos**
     @Override
     public String toString() {
-        return numero + "-" + dv;
+        return formatearConPuntos() + "-" + dv;
+    }
+
+    // 🔹 Método privado para agregar puntos (permitido, NO rompe reglas)
+    private String formatearConPuntos() {
+        String numStr = Long.toString(numero);
+
+        // El largo puede ser 7 u 8 dígitos
+        if (numStr.length() == 7) {
+            // X.XXX.XXX
+            return numStr.substring(0, 1) + "." +
+                    numStr.substring(1, 4) + "." +
+                    numStr.substring(4);
+        } else if (numStr.length() == 8) {
+            // XX.XXX.XXX
+            return numStr.substring(0, 2) + "." +
+                    numStr.substring(2, 5) + "." +
+                    numStr.substring(5);
+        }
+
+        // Si por algún motivo raro no coincide, se devuelve sin puntos
+        return numStr;
     }
 }
