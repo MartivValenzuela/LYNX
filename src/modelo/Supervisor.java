@@ -1,8 +1,10 @@
 package modelo;
 
 import utilidades.Rut;
+import java.io.Serializable;
 
-public class Supervisor extends Persona {
+public class Supervisor extends Persona implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String profesion;
     private Cuadrilla cuadrilla;
 

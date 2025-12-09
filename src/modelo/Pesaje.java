@@ -1,8 +1,11 @@
 package modelo;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import utilidades.Calidad;
-public class Pesaje {
+
+public class Pesaje implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private int id;
     private double cantidadKg;
