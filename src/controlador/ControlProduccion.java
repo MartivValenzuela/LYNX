@@ -470,7 +470,7 @@ public class ControlProduccion {
                         }
                     }
 
-                    return  String.join("; " +
+                    /*return  String.join("; " +
                             s.getRut().toString(),
                             s.getNombre(),
                             s.getDireccion(),
@@ -480,7 +480,11 @@ public class ControlProduccion {
                             String.format("%s", kilosPesados),
                             String.format("%s", nroPesajesImpagos)
 
-                    );
+                    );*/
+
+                    //Arregle este error, no mostraba bien la lista :D.
+                    return String.join("; ",s.getRut().toString(),s.getNombre(),s.getDireccion(),s.getEmail(),s.getProfesion(),String.valueOf(cuadNom),String.format("%.1f",kilosPesados),String.valueOf(nroPesajesImpagos));
+
                 })
                 .toArray(String[]::new);
     }

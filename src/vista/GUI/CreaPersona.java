@@ -26,12 +26,12 @@ public class CreaPersona extends JFrame {
     private JButton BtAceptar;
     private  JButton BtCancelar;
     private JLabel lbDatoVariable;
-    private ControlProduccion control = ControlProduccion.getInstance();
+    //private ControlProduccion control = ControlProduccion.getInstance();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 
     public CreaPersona(ControlProduccion control) {
-        this.control = control;
+        //this.control = control;
         setTitle("Creación de persona");
         setContentPane(panelPrincipal); // <--- ESTO ES CRUCIAL: Carga el diseño visual
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -99,13 +99,17 @@ public class CreaPersona extends JFrame {
             String datoExtra = txtDatoVar.getText();
 
             if (BtProp.isSelected()){
-                control.createPropietario(rut,nom,email,dir,datoExtra);
+                ControlProduccion.getInstance().createPropietario(rut,nom,email,dir,datoExtra);
+                //control.createPropietario(rut,nom,email,dir,datoExtra);
 
             } else if (BtSup.isSelected()) {
-                control.createSupervisor(rut,nom,email,dir,datoExtra);
+                ControlProduccion.getInstance().createSupervisor(rut,nom,email,dir,datoExtra);
+                //control.createSupervisor(rut,nom,email,dir,datoExtra);
+
             } else if (BtCos.isSelected()) {
                 LocalDate fecha = LocalDate.parse(datoExtra,formatter);
-                control.createCosechador(rut,nom,email,dir,fecha);
+                ControlProduccion.getInstance().createCosechador(rut,nom,email,dir,fecha);
+                //control.createCosechador(rut,nom,email,dir,fecha);
             }
 
 
