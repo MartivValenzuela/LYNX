@@ -7,14 +7,25 @@ public class PagoPesaje extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JTextField textField1;
-    private JTextField textField2;
+    private JTextField idpago;
+    private JTextField rutcosechador;
     private JTable table1;
 
     public PagoPesaje() {
         setContentPane(contentPane);
         setModal(true);
+
         getRootPane().setDefaultButton(buttonOK);
+
+
+
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                onCancel();
+            }
+        });
+
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -44,9 +55,15 @@ public class PagoPesaje extends JDialog {
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
+
     private void onOK() {
         // add your code here
-
+        String idpago = this.idpago.getText().trim();
+        String rutcosechador = this.rutcosechador.getText().trim();
+        if (idpago.isEmpty() || rutcosechador.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Todos los campos deben estar rellenados", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         dispose();
     }
 
