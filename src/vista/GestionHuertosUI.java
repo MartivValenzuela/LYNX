@@ -47,7 +47,9 @@ public class GestionHuertosUI {
                 }
                 switch (opcion) {
                     case 1:
-                        CreaPersona();
+                        CreaPersona ventana = new CreaPersona(control);
+                        ventana.setVisible(true);
+                        //CreaPersona();
                         break;
                     case 2:
                         menuHuertos();
@@ -203,7 +205,7 @@ public class GestionHuertosUI {
                         listasupervisores();
                         break;
                     case 3:
-                        listacosechadores();
+                        ListaCosechadoresGUI.display();
                         break;
                     case 4:
                         listaCultivos();
