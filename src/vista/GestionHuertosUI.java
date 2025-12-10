@@ -494,17 +494,12 @@ public class GestionHuertosUI {
     }
 
     private void AgregarPesaje() {
-        try {
-            if (dialog == null) {               // se crea solo la primera vez
-                dialog = new addPesaje();
-            }
-            dialog.pack();
-            dialog.setLocationRelativeTo(null);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            System.out.println("Error al abrir ventana addPesaje: " + e.getMessage());
-            e.printStackTrace();  // VER QUÉ ESTÁ FALLANDO
+        if (dialog == null) {
+            dialog = new addPesaje();
         }
+        dialog.pack();
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
     }
 
 

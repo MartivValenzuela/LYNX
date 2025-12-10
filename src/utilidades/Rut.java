@@ -84,30 +84,25 @@ public class Rut {
         return dv;
     }
 
-    // 🔹 **Mostramos SIEMPRE el RUT con puntos**
     @Override
     public String toString() {
         return formatearConPuntos() + "-" + dv;
     }
 
-    // 🔹 Método privado para agregar puntos (permitido, NO rompe reglas)
     private String formatearConPuntos() {
         String numStr = Long.toString(numero);
 
-        // El largo puede ser 7 u 8 dígitos
+
         if (numStr.length() == 7) {
-            // X.XXX.XXX
             return numStr.substring(0, 1) + "." +
                     numStr.substring(1, 4) + "." +
                     numStr.substring(4);
         } else if (numStr.length() == 8) {
-            // XX.XXX.XXX
             return numStr.substring(0, 2) + "." +
                     numStr.substring(2, 5) + "." +
                     numStr.substring(5);
         }
 
-        // Si por algún motivo raro no coincide, se devuelve sin puntos
         return numStr;
     }
 }
