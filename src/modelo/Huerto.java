@@ -2,11 +2,12 @@ package modelo;
 
 import utilidades.EstadoFonologico;
 import utilidades.GestionHuertosException;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class Huerto {
+public class Huerto implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String nombre;
     private float superficie;
     private String ubicacion;

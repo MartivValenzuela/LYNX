@@ -649,7 +649,6 @@ public class ControlProduccion {
 
     //persistencia
     public void readSystemData() throws GestionHuertosException {
-        //limpiar todas las coleciones
         this.propietarios.clear();
         this.supervisores.clear();
         this.cosechadores.clear();
@@ -659,55 +658,45 @@ public class ControlProduccion {
         this.pesajes.clear();
         this.pagosPesajes.clear();
 
-        try {
-            Persona[] personasLeidas = io.readPersonas();
-
-            if(personasLeidas != null) {
-                for (Persona p : personasLeidas) {
-                    if (p instanceof Propietario) {
-                        Propietario prop = (Propietario) p;
-                        this.propietarios.add(prop);
-                    } else if (p instanceof Supervisor) {
-                        this.supervisores.add((Supervisor) p);
-                    } else if (p instanceof Cosechador) {
-                        this.cosechadores.add((Cosechador) p);
-                    }
+        // 1) Leer personas
+        Persona[] personasLeidas = io.readPersonas();
+        if (personasLeidas != null) {
+            for (Persona p : personasLeidas) {
+                if (p instanceof Propietario) {
+                    this.propietarios.add((Propietario) p);
+                } else if (p instanceof Supervisor) {
+                    this.supervisores.add((Supervisor) p);
+                } else if (p instanceof Cosechador) {
+                    this.cosechadores.add((Cosechador) p);
                 }
             }
-        } catch (GestionHuertosException e) {
-            if (!e.getMessage().contains("no encontrado")) throw e;
         }
 
-        try {
-            Cultivo[] cultivosLeidos = io.readCultivos();
-            if (cultivosLeidos != null) {
-                for(Cultivo c : cultivosLeidos) {
-                    if (c != null) {
-                        this.cultivos.add(c);
-                    }
+        // 2) Leer cultivos
+        Cultivo[] cultivosLeidos = io.readCultivos();
+        if (cultivosLeidos != null) {
+            for (Cultivo c : cultivosLeidos) {
+                if (c != null) {
+                    this.cultivos.add(c);
                 }
             }
-        } catch (GestionHuertosException e) {
-            if (!e.getMessage().contains("no encontrado")) throw e;
         }
 
-        try {
-            PlanCosecha[] planesLeidos = io.readPlanesCosecha();
-            if (planesLeidos != null) {
-                for(PlanCosecha p : planesLeidos) {
-                    if (p != null) {
-                        this.planes.add(p);
-                    }
+        // 3) Leer planes
+        PlanCosecha[] planesLeidos = io.readPlanesCosecha();
+        if (planesLeidos != null) {
+            for (PlanCosecha p : planesLeidos) {
+                if (p != null) {
+                    this.planes.add(p);
                 }
             }
-        } catch (GestionHuertosException e) {
-            if (!e.getMessage().contains("no encontrado")) throw e;
         }
 
+        // 4) Reconstruir huertos a partir de propietarios
         for (Propietario prop : this.propietarios) {
             if (prop.getHuertos() != null) {
                 for (Huerto h : prop.getHuertos()) {
-                    if(h != null) {
+                    if (h != null) {
                         h.setPropietario(prop);
                         if (!this.huertos.contains(h)) {
                             this.huertos.add(h);
@@ -717,6 +706,7 @@ public class ControlProduccion {
             }
         }
 
+        // 5) Reconstruir pesajes y pagos a partir de planes
         for (PlanCosecha plan : this.planes) {
             if (plan.getCuadrillas() != null) {
                 for (Cuadrilla cuad : plan.getCuadrillas()) {
@@ -724,12 +714,11 @@ public class ControlProduccion {
                         for (CosechadorAsignado asig : cuad.getAsignaciones()) {
                             if (asig != null && asig.getPesajes() != null) {
                                 for (Pesaje p : asig.getPesajes()) {
-                                    if(p != null) {
+                                    if (p != null) {
                                         this.pesajes.add(p);
-
-                                        if (p.getPagoPesaje() != null
-                                                && !this.pagosPesajes.contains(p.getPagoPesaje())) {
-                                                this.pagosPesajes.add(p.getPagoPesaje());
+                                        if (p.getPagoPesaje() != null &&
+                                                !this.pagosPesajes.contains(p.getPagoPesaje())) {
+                                            this.pagosPesajes.add(p.getPagoPesaje());
                                         }
                                     }
                                 }
@@ -740,6 +729,7 @@ public class ControlProduccion {
             }
         }
     }
+
 
     public void saveSystemData() throws GestionHuertosException {
         ArrayList<Persona> todasLasPersonas = new ArrayList<>();

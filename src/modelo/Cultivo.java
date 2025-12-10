@@ -1,7 +1,10 @@
 package modelo;
 
 import java.util.ArrayList;
-public class Cultivo {
+import java.io.Serializable;
+
+public class Cultivo implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int id;
     private String especie;
     private String variedad;
