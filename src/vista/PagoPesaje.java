@@ -1,5 +1,7 @@
 package vista;
 
+import controlador.ControlProduccion;
+
 import javax.swing.*;
 import java.awt.event.*;
 

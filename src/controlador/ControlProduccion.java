@@ -2,7 +2,12 @@ package controlador;
 
 import modelo.*;
 import persistencia.GestionHuertosIO;
-import utilidades.*;
+import utilidades.Calidad;
+import utilidades.EstadoFonologico;
+import utilidades.EstadoPlan;
+import utilidades.GestionHuertosException;
+import utilidades.Rut;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
