@@ -34,7 +34,6 @@
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <icon value="vista/imagenesrecursos/aceptar.png"/>
                   <text value="Aceptar"/>
                 </properties>
               </component>
@@ -43,7 +42,6 @@
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <icon value="vista/imagenesrecursos/cancelar.png"/>
                   <text value="Cancelar"/>
                 </properties>
               </component>
@@ -65,7 +63,6 @@
             </constraints>
             <properties>
               <font size="20"/>
-              <icon value="vista/imagenesrecursos/estadoplan.png"/>
               <text value="Cambio de estado plan"/>
             </properties>
           </component>
