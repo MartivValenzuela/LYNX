@@ -60,6 +60,14 @@ public class CambioEstadoPlan extends JDialog {
 
             }
         });
+        idplangui.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (ControlProduccion.change) {
+                    nombregui = new JLabel();
+                }
+            }
+        });
     }
 
 
