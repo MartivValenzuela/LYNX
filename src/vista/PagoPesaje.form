@@ -71,7 +71,6 @@
             </constraints>
             <properties>
               <font size="20"/>
-              <icon value="vista/imagenesrecursos/pagopesajes.png"/>
               <text value="Pago de pesajes pendientes"/>
             </properties>
           </component>
@@ -160,14 +159,19 @@
           </hspacer>
         </children>
       </grid>
-      <component id="3ace4" class="javax.swing.JTable" binding="table1" default-binding="true">
+      <scrollpane id="bd2f9">
         <constraints>
-          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="50"/>
-          </grid>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="1" use-parent-layout="false"/>
         </constraints>
         <properties/>
-      </component>
+        <border type="none"/>
+        <children>
+          <component id="3ace4" class="javax.swing.JTable" binding="table1" default-binding="true">
+            <constraints/>
+            <properties/>
+          </component>
+        </children>
+      </scrollpane>
     </children>
   </grid>
 </form>

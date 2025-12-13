@@ -14,6 +14,8 @@ public class CambioEstadoPlan extends JDialog {
     private JComboBox<String> comboBox1;
     private JTextField idplangui ;
     private JLabel nombregui;
+    private JLabel estadoactual;
+    private JLabel cumpmeta;
 
 
     public CambioEstadoPlan() {
@@ -65,10 +67,10 @@ public class CambioEstadoPlan extends JDialog {
             @Override
             public void focusLost(FocusEvent e) {
                 try {
-                    int idPlan = Integer.parseInt(idplangui.getText().trim());
-                    PlanCosecha plan = ControlProduccion.findPlanById(idPlan);
-                    nombregui.setText(plan.getNombre());
-
+                    int idPlan = Integer.parseInt(idplangui.getText());
+                    nombregui.setText("prueba");
+                    estadoactual.setText("prueba");
+                    cumpmeta.setText("prueba");
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null,
                             "El ID debe ser numérico",

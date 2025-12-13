@@ -53,8 +53,44 @@ public class PagoPesaje extends JDialog {
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-    }
+        idpago.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!Character.isDigit(c) && !Character.isSpaceChar(c)){
+                    e.consume();
+                }
 
+            }
+        });
+        idpago.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                try {
+                    int idPago = Integer.parseInt(idpago.getText());
+
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null,
+                            "El ID debe ser numérico",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null,
+                            ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+    }
+    private void onListarPagos(){
+        String[][] prueba = {{"w","w","w","w","w","w","w"}};
+        if (prueba.length>0){
+            String[] columnas ={"ID","Fecha","Calidad","Kilos","Precio Kg.","Monto","Pagado"};
+            listadoPagos.display(prueba,columnas);
+        }
+
+    }
 
     private void onOK() {
         // add your code here
@@ -74,9 +110,11 @@ public class PagoPesaje extends JDialog {
 
     public static void main(String[] args) {
         PagoPesaje dialog = new PagoPesaje();
+        ListarPagos
         dialog.pack();
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
         System.exit(0);
+
     }
 }
