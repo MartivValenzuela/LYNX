@@ -22,8 +22,9 @@ public class CreaCultivo extends JFrame {
 
     public CreaCultivo() {
         setContentPane(contentPane);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setResizable(false);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        pack();
+        setLocationRelativeTo(null);
 
         getRootPane().setDefaultButton(buttonOK);
 

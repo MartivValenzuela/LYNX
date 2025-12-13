@@ -8,8 +8,6 @@ import java.time.LocalDate;
 
 import controlador.ControlProduccion;
 import utilidades.Rut;
-// Importa tu controlador aquí
-// import controlador.ControladorProduccion;
 
 public class CreaPersona extends JFrame {
     private JPanel panelPrincipal;
@@ -26,19 +24,17 @@ public class CreaPersona extends JFrame {
     private JButton BtAceptar;
     private  JButton BtCancelar;
     private JLabel lbDatoVariable;
-    //private ControlProduccion control = ControlProduccion.getInstance();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 
-    public CreaPersona(ControlProduccion control) {
+    public CreaPersona() {
         //this.control = control;
         setTitle("Creación de persona");
-        setContentPane(panelPrincipal); // <--- ESTO ES CRUCIAL: Carga el diseño visual
+        setContentPane(panelPrincipal);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
 
-        //Esto es como un struct de botones donde solo puede haber 1 , si se presiona otro se cambia
         ButtonGroup grupo = new ButtonGroup();
         grupo.add(BtProp);
         grupo.add(BtCos);
@@ -86,12 +82,11 @@ public class CreaPersona extends JFrame {
         if (txRut.getText().isEmpty() || txNom.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this,
                     "Existen datos incorrectos o faltantes",
-                    "Error", JOptionPane.ERROR_MESSAGE); // [cite: 194]
+                    "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         try {
-            // AQUÍ LLAMAS A TU CONTROLADOR
             Rut rut = Rut.of(txRut.getText());
             String nom = txNom.getText();
             String email = txEmail.getText();
@@ -100,16 +95,13 @@ public class CreaPersona extends JFrame {
 
             if (BtProp.isSelected()){
                 ControlProduccion.getInstance().createPropietario(rut,nom,email,dir,datoExtra);
-                //control.createPropietario(rut,nom,email,dir,datoExtra);
 
             } else if (BtSup.isSelected()) {
                 ControlProduccion.getInstance().createSupervisor(rut,nom,email,dir,datoExtra);
-                //control.createSupervisor(rut,nom,email,dir,datoExtra);
 
             } else if (BtCos.isSelected()) {
                 LocalDate fecha = LocalDate.parse(datoExtra,formatter);
                 ControlProduccion.getInstance().createCosechador(rut,nom,email,dir,fecha);
-                //control.createCosechador(rut,nom,email,dir,fecha);
             }
 
 
