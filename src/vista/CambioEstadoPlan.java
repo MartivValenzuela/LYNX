@@ -1,6 +1,7 @@
 package vista;
 
 import controlador.ControlProduccion;
+import modelo.PlanCosecha;
 import utilidades.GestionHuertosException;
 
 import javax.swing.*;
@@ -62,9 +63,22 @@ public class CambioEstadoPlan extends JDialog {
         });
         idplangui.addFocusListener(new FocusAdapter() {
             @Override
-            public void focusGained(FocusEvent e) {
-                if (ControlProduccion.change) {
-                    nombregui = new JLabel();
+            public void focusLost(FocusEvent e) {
+                try {
+                    int idPlan = Integer.parseInt(idplangui.getText().trim());
+                    PlanCosecha plan = ControlProduccion.findPlanById(idPlan);
+                    nombregui.setText(plan.getNombre());
+
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null,
+                            "El ID debe ser numérico",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null,
+                            ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
