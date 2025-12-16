@@ -2,6 +2,7 @@ package vista;
 
 import controlador.ControlProduccion;
 import modelo.PlanCosecha;
+import utilidades.EstadoPlan;
 import utilidades.GestionHuertosException;
 
 import javax.swing.*;
@@ -11,7 +12,7 @@ public class CambioEstadoPlan extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JComboBox<String> comboBox1;
+    private JComboBox<EstadoPlan> comboBox1;
     private JTextField idplangui ;
     private JLabel nombregui;
     private JLabel estadoactual;
@@ -23,7 +24,10 @@ public class CambioEstadoPlan extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-
+        EstadoPlan[] estadosposibles = EstadoPlan.values();
+        for (EstadoPlan estadoPlan : estadosposibles){
+            comboBox1.addItem(estadoPlan);
+        }
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onOK();
@@ -90,21 +94,22 @@ public class CambioEstadoPlan extends JDialog {
 
 
     private void onOK() {
-
-
-        try {
-            String idplan = idplangui.getText();
-
-            if (idplan.isEmpty()){
-                JOptionPane.showMessageDialog(this, "El campo ID Plan está vacío", "Error", JOptionPane.ERROR_MESSAGE);
+        int variableelegida = comboBox1.getSelectedIndex();
+        String idplan = idplangui.getText();
+        if (!idplan.isEmpty()){
+            try {
+                int id = Integer.parseInt(idplan);
+                ControlProduccion.getInstance()changeEstadoPlan(id,EstadoPlan.values()[variableelegida]);
+                JOptionPane.showMessageDialog(this,"Se ha cambiado el estado correctamente");
+            }catch (NumberFormatException e){
+                JOptionPane.showMessageDialog(this, "ID inválido", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
-
-        }catch (NumberFormatException e){
-            JOptionPane.showMessageDialog(this, "ID inválido", "Error", JOptionPane.ERROR_MESSAGE);
+        }else {
+            JOptionPane.showMessageDialog(this, "El campo ID Plan está vacío", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
 
 
     }
