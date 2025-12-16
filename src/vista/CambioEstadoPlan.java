@@ -1,100 +1,142 @@
 package vista;
 
 import controlador.ControlProduccion;
+import utilidades.EstadoPlan;
 import utilidades.GestionHuertosException;
 
 import javax.swing.*;
 import java.awt.event.*;
 
-public class CambioEstadoPlan extends JDialog {
+public class CambioEstadoPlan extends JFrame {
+
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JComboBox<String> comboBox1;
-    private JTextField idplangui ;
-    private JLabel nombregui;
 
+    private JTextField textId;
+    private JLabel lbNombre;
+    private JLabel lbCumplimiento;
+    private JLabel lbEstado;
+    private JComboBox<String> comboBoxNvEstado;
+
+    private final ControlProduccion control = ControlProduccion.getInstance();
 
     public CambioEstadoPlan() {
         setContentPane(contentPane);
-        setModal(true);
+        setResizable(false);
         getRootPane().setDefaultButton(buttonOK);
 
+        lbNombre.setText("-");
+        lbCumplimiento.setText("-");
+        lbEstado.setText("-");
+        comboBoxNvEstado.removeAllItems();
 
-        buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
-
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        });
-
-        // call onCancel() when cross is clicked
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                onCancel();
-            }
-        });
-
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-
-
-
-        idplangui.addKeyListener(new KeyAdapter() {
+        textId.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                char c = e.getKeyChar();
-                if (!Character.isDigit(c) && !Character.isSpaceChar(c)){
-                    e.consume();
-                }
-
+                if (!Character.isDigit(e.getKeyChar())) e.consume();
             }
         });
+
+        // Buscar plan al salir del campo o Enter
+        textId.addActionListener(e -> cargarPlanDesdeListado());
+        textId.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                cargarPlanDesdeListado();
+            }
+        });
+
+        buttonOK.addActionListener(e -> onOK());
+        buttonCancel.addActionListener(e -> dispose());
+
+        pack();
+        setLocationRelativeTo(null);
     }
 
-
-
-
-    private void onOK() {
-
+    private void cargarPlanDesdeListado() {
+        String txt = textId.getText().trim();
+        if (txt.isEmpty()) return;
 
         try {
-            String idplan = idplangui.getText();
+            int idBuscado = Integer.parseInt(txt);
+            String[] planes = control.listPlanesCosecha();
 
-            if (idplan.isEmpty()){
-                JOptionPane.showMessageDialog(this, "El campo ID Plan está vacío", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
+            boolean encontrado = false;
+
+            for (String linea : planes) {
+                String[] p = linea.split(";");
+
+                int id = Integer.parseInt(p[0].trim());
+                if (id == idBuscado) {
+                    encontrado = true;
+
+                    String nombre = p[1].trim();
+                    String meta = p[4].trim();
+                    String estado = p[6].trim();
+
+                    lbNombre.setText(nombre);
+                    lbCumplimiento.setText(meta);
+                    lbEstado.setText(estado);
+
+                    comboBoxNvEstado.removeAllItems();
+                    for (EstadoPlan e : EstadoPlan.values()) {
+                        if (!e.name().equalsIgnoreCase(estado)) {
+                            comboBoxNvEstado.addItem(e.name());
+                        }
+                    }
+                    break;
+                }
             }
 
+            if (!encontrado) {
+                limpiar();
+                JOptionPane.showMessageDialog(this,
+                        "No existe un plan con ese ID",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
 
-        }catch (NumberFormatException e){
-            JOptionPane.showMessageDialog(this, "ID inválido", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+        } catch (Exception e) {
+            limpiar();
+            JOptionPane.showMessageDialog(this,
+                    "ID inválido",
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-
     }
 
-    private void onCancel() {
-        // add your code here if necessary
-        dispose();
+    private void onOK() {
+        try {
+            if (textId.getText().trim().isEmpty())
+                throw new GestionHuertosException("Debe ingresar ID del plan");
+
+            if (comboBoxNvEstado.getSelectedItem() == null)
+                throw new GestionHuertosException("Debe seleccionar un nuevo estado");
+
+            int id = Integer.parseInt(textId.getText().trim());
+            EstadoPlan nuevo = EstadoPlan.valueOf(
+                    comboBoxNvEstado.getSelectedItem().toString()
+            );
+
+            control.changeEstadoPlan(id, nuevo);
+
+            JOptionPane.showMessageDialog(this,
+                    "Estado del plan actualizado correctamente");
+            dispose();
+
+        } catch (GestionHuertosException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error inesperado",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
-    public static void main(String[] args) {
-        CambioEstadoPlan dialog = new CambioEstadoPlan();
-        dialog.pack();
-        dialog.setLocationRelativeTo(null);
-        dialog.setVisible(true);
-        System.exit(0);
+    private void limpiar() {
+        lbNombre.setText("-");
+        lbCumplimiento.setText("-");
+        lbEstado.setText("-");
+        comboBoxNvEstado.removeAllItems();
     }
 }

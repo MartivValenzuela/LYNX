@@ -12,7 +12,6 @@ public class GestionHuertosUI {
     private final Scanner tcld = new Scanner(System.in);
     private final DateTimeFormatter F = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final ControlProduccion control = ControlProduccion.getInstance();
-    private CreaCultivo ventana;
 
     //Implementacion del singleton
     private static GestionHuertosUI instance;
@@ -448,50 +447,14 @@ public class GestionHuertosUI {
         ventana.setVisible(true);
     }
 
-
-
-
     private void CambiarEstadoPlan() {
-        try {
-            System.out.println("Cambiando estado de un plan...");
-            System.out.print("Id Plan:");
-            int IdPlan = tcld.nextInt();
-            tcld.nextLine();
-            System.out.println("Nuevo Estado del plan: [1=Planificado, 2=Ejecutando, 3=Cerrado, 4=Cancelado]");
-            System.out.print("Opcion:");
-            int opEstado = tcld.nextInt();
-            tcld.nextLine();
-            if (opEstado < 1 || opEstado > EstadoPlan.values().length) {
-                System.out.println("Opción de estado no válida");
-                return;
-            }
-            EstadoPlan estado = EstadoPlan.values()[opEstado - 1];
-
-            control.changeEstadoPlan(IdPlan, estado);
-            System.out.println("Estado del plan cambiado exitosamente");
-
-        } catch (InputMismatchException e){
-            System.out.println("Error de caracter");
-            tcld.nextLine();
-        } catch (GestionHuertosException e) {
-            System.out.println("Error al intentar camiar el estado del Plan: " + e.getMessage());
-        }
+        CambioEstadoPlan ventana = new CambioEstadoPlan();
+        ventana.setVisible(true);
     }
 
-    private void PagarPesajes(){
-        try{
-            System.out.println("Pagando pesajes pendientes de un cosechador...");
-            System.out.print("Id pago pesaje: ");
-            int idPago = tcld.nextInt();
-            tcld.nextLine();
-            System.out.print("Rut cosechador: ");
-            Rut rutCosechador = Rut.of(tcld.nextLine().trim());
-
-            double monto = control.addPagoPesaje(idPago, rutCosechador);
-            System.out.printf("Monto pagado al cosechador: $%.1f\n", monto);
-        }catch (GestionHuertosException e){
-            System.out.println("Error al intentar pagar Pesajes: "+e.getMessage());
-        }
+    private void PagarPesajes() {
+        PagoPesaje ventana = new PagoPesaje();
+        ventana.setVisible(true);
     }
 
     private void listaCultivos () {
