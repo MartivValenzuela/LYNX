@@ -63,6 +63,7 @@
             </constraints>
             <properties>
               <font size="20"/>
+              <icon value="vista/Recursos/caja-de-devolucion.png"/>
               <text value="Cambio de estado plan"/>
             </properties>
           </component>

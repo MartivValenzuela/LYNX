@@ -71,6 +71,7 @@
             </constraints>
             <properties>
               <font size="20"/>
+              <icon value="vista/Recursos/pago.png"/>
               <text value="Pago de pesajes pendientes"/>
             </properties>
           </component>

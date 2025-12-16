@@ -1,6 +1,9 @@
 package vista;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.event.*;
 
 public class PagoPesaje extends JDialog {
@@ -11,13 +14,19 @@ public class PagoPesaje extends JDialog {
     private JTextField rutcosechador;
     private JTable table1;
 
-    public PagoPesaje() {
+    public PagoPesaje(String[][] prueba, String[] columnas) {
         setContentPane(contentPane);
         setModal(true);
-
+        getRootPane().setDefaultButton(buttonCancel);
         getRootPane().setDefaultButton(buttonOK);
 
-
+        TableModel tableModel = new DefaultTableModel(prueba,columnas);
+        table1.setModel(tableModel);
+        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+        rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
+        for (int i = 0; i < table1.getColumnCount(); i++) {
+            table1.getColumnModel().getColumn(i).setCellRenderer(rightRenderer);
+        }
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -87,9 +96,18 @@ public class PagoPesaje extends JDialog {
         String[][] prueba = {{"w","w","w","w","w","w","w"}};
         if (prueba.length>0){
             String[] columnas ={"ID","Fecha","Calidad","Kilos","Precio Kg.","Monto","Pagado"};
-            listadoPagos.display(prueba,columnas);
+            PagoPesaje.display(prueba,columnas);
+        }else {
+            JOptionPane.showMessageDialog(this,"Este cosechador no tiene pagos que recivir", "",JOptionPane.ERROR_MESSAGE);
         }
 
+    }
+
+    private static void display(String[][] prueba, String[] columnas) {
+        PagoPesaje dialog = new PagoPesaje(prueba,columnas);
+        dialog.pack();
+        dialog.setVisible(true);
+        dialog.setLocationRelativeTo(null);
     }
 
     private void onOK() {
@@ -106,15 +124,5 @@ public class PagoPesaje extends JDialog {
     private void onCancel() {
         // add your code here if necessary
         dispose();
-    }
-
-    public static void main(String[] args) {
-        PagoPesaje dialog = new PagoPesaje();
-        ListarPagos
-        dialog.pack();
-        dialog.setLocationRelativeTo(null);
-        dialog.setVisible(true);
-        System.exit(0);
-
     }
 }
