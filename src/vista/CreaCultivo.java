@@ -31,7 +31,7 @@ public class CreaCultivo extends JFrame {
         buttonOK.addActionListener(e -> onOK());
         buttonCancel.addActionListener(e -> onCancel());
 
-        //Esto sirve para cerrar con la X de la ventana
+
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -39,7 +39,6 @@ public class CreaCultivo extends JFrame {
             }
         });
 
-        //2Este para cerrar con el esc del teclado
         contentPane.registerKeyboardAction(
                 e -> onCancel(),
                 KeyStroke.getKeyStroke("ESCAPE"),

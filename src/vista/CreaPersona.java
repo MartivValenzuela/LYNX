@@ -62,7 +62,6 @@ public class CreaPersona extends JFrame {
         BtProp.addActionListener(cambioRol);
         BtCos.addActionListener(cambioRol);
         BtSup.addActionListener(cambioRol);
-        // Acción del botón Cancelar
         BtCancelar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

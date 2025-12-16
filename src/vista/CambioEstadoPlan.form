@@ -111,7 +111,7 @@
               <text value="Nuevo Estado"/>
             </properties>
           </component>
-          <component id="ddc35" class="javax.swing.JTextField" binding="textId">
+          <component id="ddc35" class="javax.swing.JTextField" binding="idplangui">
             <constraints>
               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -119,31 +119,31 @@
             </constraints>
             <properties/>
           </component>
-          <component id="9a9ab" class="javax.swing.JLabel" binding="lbNombre">
+          <component id="9a9ab" class="javax.swing.JLabel" binding="nombregui">
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Label"/>
+              <text value=""/>
             </properties>
           </component>
-          <component id="14812" class="javax.swing.JLabel" binding="lbCumplimiento">
+          <component id="14812" class="javax.swing.JLabel" binding="cumpmeta">
             <constraints>
               <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Label"/>
+              <text value=""/>
             </properties>
           </component>
-          <component id="2254f" class="javax.swing.JLabel" binding="lbEstado">
+          <component id="2254f" class="javax.swing.JLabel" binding="estadoactual">
             <constraints>
               <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Label"/>
+              <text value=""/>
             </properties>
           </component>
-          <component id="e18e0" class="javax.swing.JComboBox" binding="comboBoxNvEstado">
+          <component id="e18e0" class="javax.swing.JComboBox" binding="comboBox1">
             <constraints>
               <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
