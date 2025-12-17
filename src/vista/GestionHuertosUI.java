@@ -201,7 +201,7 @@ public class GestionHuertosUI {
                         listasupervisores();
                         break;
                     case 3:
-                        ListaCosechadoresGUI.display();
+                        listacosechadores();
                         break;
                     case 4:
                         listaCultivos();
@@ -750,45 +750,7 @@ public class GestionHuertosUI {
     }
 
     private void listacosechadores() {
-        System.out.println("\nLISTADO DE COSECHADORES");
-        System.out.println("-----------------------");
-
-        System.out.printf("%-14s %-28s %-30s %-30s %-16s %-16s %-16s %-16s%n"
-                , "Rut", "Nombre", "Dirección", "email",
-                "Fecha Nac.", "Nro. Cuadrillas", "Monto impago $", "Monto pagado $");
-
-        String[] vc = control.listCosechadores();
-        if (vc.length == 0) {
-            System.out.println("No existen cosechadores registrados.");
-        } else {
-            for (String linea : vc) {
-                String[] partes = linea.split(";");
-
-                if(partes.length < 8){
-                    continue;
-                }
-
-                String rut = partes[0];
-                String nombre = partes[1];
-                String direccion = partes[2];
-                String email = partes[3];
-                String fNac = partes[4];
-                String nCuadrillas = partes[5];
-                String montoImpago = partes[6];
-                String montoPagado = partes[7];
-
-                System.out.printf("%-14s %-28s %-30s %-30s %-16s %-16s %-16s %-16s%n",
-                        rut,
-                        nombre,
-                        direccion,
-                        email,
-                        fNac,
-                        nCuadrillas,
-                        montoImpago,
-                        montoPagado);
-
-            }
-        }
-        System.out.println();
+        ListaCosechadoresGUI ventana = new ListaCosechadoresGUI();
+        ventana.setVisible(true);
     }
 }

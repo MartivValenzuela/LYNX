@@ -7,23 +7,17 @@ import javax.swing.table.TableModel;
 import java.awt.event.*;
 import controlador.ControlProduccion;
 
-public class ListaCosechadoresGUI extends JDialog {
+public class ListaCosechadoresGUI extends JFrame {
     ControlProduccion control = ControlProduccion.getInstance();
     private JPanel contentPane;
     private JButton buttonCancel;
     private JTable TablaCosechadores;
 
-    public static void display(){
-        ListaCosechadoresGUI dialog = new ListaCosechadoresGUI();
-        dialog.pack();
-        dialog.setLocationRelativeTo(null);
-        dialog.setVisible(true);
-
-    }
-
     public ListaCosechadoresGUI() {
         setContentPane(contentPane);
-        setModal(true);
+        setResizable(false);
+        pack();
+        setLocationRelativeTo(null);
 
         TableModel tablemodel = new DefaultTableModel();
         TablaCosechadores.setModel(tablemodel);
