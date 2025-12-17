@@ -1,8 +1,8 @@
 package controlador;
 
 import modelo.*;
-import utilidades.*;
 import persistencia.GestionHuertosIO;
+import utilidades.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ControlProduccion {
 
@@ -23,6 +22,7 @@ public class ControlProduccion {
     private List<Pesaje> pesajes = new ArrayList<>();
     private List<PagoPesaje> pagosPesajes = new ArrayList<>();
     private DateTimeFormatter F = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final GestionHuertosIO io  = new GestionHuertosIO();
 
     public ControlProduccion() {
         try {
@@ -40,56 +40,104 @@ public class ControlProduccion {
     }
 
     public void readSystemData() throws GestionHuertosException {
-        GestionHuertosIO io = new GestionHuertosIO();
 
+        // limpiar colecciones
+        this.personas.clear();
+        this.cultivos.clear();
+        this.planes.clear();
+        this.huertos.clear();
+        this.pesajes.clear();
+        this.pagosPesajes.clear();
+
+        // 1) Personas
         try {
-            this.personas.clear();
-            this.cultivos.clear();
-            this.planes.clear();
-            this.huertos.clear();
-            this.pesajes.clear();
-            this.pagosPesajes.clear();
-
-            Persona[] personasArr = io.readPersonas();
-            if (personasArr != null) {
-                this.personas.addAll(Arrays.asList(personasArr));
+            Persona[] personasLeidas = io.readPersonas();
+            if (personasLeidas != null) {
+                for (Persona p : personasLeidas) {
+                    if (p != null) this.personas.add(p);
+                }
             }
+        } catch (GestionHuertosException e) {
+            if (!e.getMessage().contains("no encontrado")) throw e;
+        }
 
-            Cultivo[] cultivosArr = io.readCultivos();
-            if (cultivosArr != null) {
-                this.cultivos.addAll(Arrays.asList(cultivosArr));
+        // 2) Cultivos
+        try {
+            Cultivo[] cultivosLeidos = io.readCultivos();
+            if (cultivosLeidos != null) {
+                for (Cultivo c : cultivosLeidos) {
+                    if (c != null) this.cultivos.add(c);
+                }
             }
+        } catch (GestionHuertosException e) {
+            if (!e.getMessage().contains("no encontrado")) throw e;
+        }
 
-            PlanCosecha[] planesArr = io.readPlanesCosecha();
-            if (planesArr != null) {
-                this.planes.addAll(Arrays.asList(planesArr));
+        // 3) Planes
+        try {
+            PlanCosecha[] planesLeidos = io.readPlanesCosecha();
+            if (planesLeidos != null) {
+                for (PlanCosecha p : planesLeidos) {
+                    if (p != null) this.planes.add(p);
+                }
             }
+        } catch (GestionHuertosException e) {
+            if (!e.getMessage().contains("no encontrado")) throw e;
+        }
 
-            for (Persona p : personas) {
-                if (p instanceof Propietario) {
-                    Propietario prop = (Propietario) p;
-                    if (prop.getHuertos() != null) {
-                        this.huertos.addAll(Arrays.asList(prop.getHuertos()));
+        // 4) Reconstruir huertos desde las personas (solo propietarios tienen huertos)
+        for (Persona per : this.personas) {
+            if (per instanceof Propietario) {
+                Propietario prop = (Propietario) per;
+
+                if (prop.getHuertos() != null) {
+                    for (Huerto h : prop.getHuertos()) {
+                        if (h != null) {
+                            h.setPropietario(prop);
+                            if (!this.huertos.contains(h)) this.huertos.add(h);
+                        }
                     }
                 }
             }
+        }
 
-        } catch (GestionHuertosException e) {
-            throw e;
+        // 5) Reconstruir pesajes y pagos desde planes
+        for (PlanCosecha plan : this.planes) {
+            if (plan.getCuadrillas() != null) {
+                for (Cuadrilla cuad : plan.getCuadrillas()) {
+                    if (cuad != null && cuad.getAsignaciones() != null) {
+                        for (CosechadorAsignado asig : cuad.getAsignaciones()) {
+                            if (asig != null && asig.getPesajes() != null) {
+                                for (Pesaje p : asig.getPesajes()) {
+                                    if (p != null) {
+                                        this.pesajes.add(p);
+
+                                        if (p.getPagoPesaje() != null
+                                                && !this.pagosPesajes.contains(p.getPagoPesaje())) {
+                                            this.pagosPesajes.add(p.getPagoPesaje());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
+
 
     public void saveSystemData() throws GestionHuertosException {
-        GestionHuertosIO io = new GestionHuertosIO();
 
-        try {
-            io.savePersonas(personas.toArray(new Persona[0]));
-            io.saveCultivos(cultivos.toArray(new Cultivo[0]));
-            io.savePlanesCosecha(planes.toArray(new PlanCosecha[0]));
-        } catch (GestionHuertosException e) {
-            throw e;
-        }
+        Persona[] arrPersonas = this.personas.toArray(new Persona[0]);
+        Cultivo[] arrCultivos = this.cultivos.toArray(new Cultivo[0]);
+        PlanCosecha[] arrPlanes = this.planes.toArray(new PlanCosecha[0]);
+
+        io.savePersonas(arrPersonas);
+        io.saveCultivos(arrCultivos);
+        io.savePlanesCosecha(arrPlanes);
     }
+
 
     public void createPropietario(Rut rut, String nombre, String email, String dirParticular, String dirComercial)
             throws GestionHuertosException {
@@ -260,10 +308,11 @@ public class ControlProduccion {
             throw new GestionHuertosException("El Cosechador no tiene una asignaciona una cuadrilla con el id indicado en el plan con el id señalado");
         }
         CosechadorAsignado asignar = existeAsignacion.get();
-        LocalDate hoy = LocalDate.now();
+        LocalDate hoy = asignar.getDesde();
         if (hoy.isBefore(asignar.getDesde()) || hoy.isAfter(asignar.getHasta())) {
             throw new GestionHuertosException("La fecha no está en el rango de la asignación del cosechador a la cuadrilla");
         }
+
         Pesaje nuevo = new Pesaje(id,cantidadKg,calidad,hoy.atStartOfDay(),asignar);
         this.pesajes.add(nuevo);
     }

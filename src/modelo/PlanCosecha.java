@@ -127,7 +127,7 @@ public class PlanCosecha implements Serializable {
         return pct;
     }
     public void addCuadrilla (int idCuad, String nomCuad, Supervisor supervisor)
-        throws GestionHuertosException{
+            throws GestionHuertosException{
 
         boolean existeId = cuadrillas.stream()
                 .anyMatch(c -> c.getId() == idCuad);
@@ -146,12 +146,12 @@ public class PlanCosecha implements Serializable {
     }
 
     public void addCosechadorToCuadrilla(int idCuad, LocalDate fIni, LocalDate fFin, double meta, Cosechador cos)
-        throws GestionHuertosException {
+            throws GestionHuertosException {
 
         Cuadrilla encontrada = findCuadrillaById(idCuad)
-                        .orElseThrow(() ->
-                                new GestionHuertosException("No existe una cuadrilla con el ID indicado.")
-                                );
+                .orElseThrow(() ->
+                        new GestionHuertosException("No existe una cuadrilla con el ID indicado.")
+                );
 
         encontrada.addCosechador(fIni, fFin, meta, cos);
     }

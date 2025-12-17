@@ -1,6 +1,5 @@
 package persistencia;
 
-import modelo.Persona;
 import utilidades.GestionHuertosException;
 import java.io.*;
 import java.util.ArrayList;

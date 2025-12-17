@@ -2,7 +2,6 @@ package vista;
 import controlador.ControlProduccion;
 import utilidades.*;
 
-import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.InputMismatchException;

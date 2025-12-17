@@ -4,8 +4,6 @@ import controlador.ControlProduccion;
 import utilidades.GestionHuertosException;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 

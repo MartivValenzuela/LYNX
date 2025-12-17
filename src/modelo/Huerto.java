@@ -64,9 +64,9 @@ public class Huerto implements Serializable {
 
 
         float total = sup + (float) cuarteles
-                            .stream()
-                            .mapToDouble(Cuartel::getSuperficie)
-                            .sum();
+                .stream()
+                .mapToDouble(Cuartel::getSuperficie)
+                .sum();
 
         if(total > this.superficie){
             throw new GestionHuertosException("La superficie del cuartel excederá la superficie del huerto, al sumarle la\n" +
@@ -91,7 +91,7 @@ public class Huerto implements Serializable {
     }
 
     public void setEstadoCuartel(int id, EstadoFonologico estado)
-        throws GestionHuertosException {
+            throws GestionHuertosException {
         Optional<Cuartel> cuartel = getCuartelById(id);
         if(cuartel.isEmpty()){
             throw new GestionHuertosException("No existe en el huerto un cuartel con id indicado");

@@ -72,10 +72,10 @@ public class CosechadorAsignado implements Serializable {
                 .count();
     }
     public double getMontoPesajesImpagos(){
-       return (double) pesajes.stream()
-               .filter(p-> !p.isPagado())
-               .mapToDouble(Pesaje::getMonto)
-               .sum();
+        return (double) pesajes.stream()
+                .filter(p-> !p.isPagado())
+                .mapToDouble(Pesaje::getMonto)
+                .sum();
     }
     public int getNroPesajesPagados(){
         return (int) pesajes.stream()

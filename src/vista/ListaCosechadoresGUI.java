@@ -1,11 +1,12 @@
 package vista;
 
+import controlador.ControlProduccion;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.event.*;
-import controlador.ControlProduccion;
 
 public class ListaCosechadoresGUI extends JFrame {
     ControlProduccion control = ControlProduccion.getInstance();

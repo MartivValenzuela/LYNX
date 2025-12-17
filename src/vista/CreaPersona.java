@@ -26,6 +26,8 @@ public class CreaPersona extends JFrame {
     private JLabel lbDatoVariable;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    private final ControlProduccion control = ControlProduccion.getInstance();
+
 
     public CreaPersona() {
         //this.control = control;
@@ -93,14 +95,14 @@ public class CreaPersona extends JFrame {
             String datoExtra = txtDatoVar.getText();
 
             if (BtProp.isSelected()){
-                ControlProduccion.getInstance().createPropietario(rut,nom,email,dir,datoExtra);
+                control.createPropietario(rut,nom,email,dir,datoExtra);
 
             } else if (BtSup.isSelected()) {
-                ControlProduccion.getInstance().createSupervisor(rut,nom,email,dir,datoExtra);
+                control.createSupervisor(rut,nom,email,dir,datoExtra);
 
             } else if (BtCos.isSelected()) {
                 LocalDate fecha = LocalDate.parse(datoExtra,formatter);
-                ControlProduccion.getInstance().createCosechador(rut,nom,email,dir,fecha);
+                control.createCosechador(rut,nom,email,dir,fecha);
             }
 
 

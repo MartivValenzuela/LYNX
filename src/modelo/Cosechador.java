@@ -38,7 +38,7 @@ public class Cosechador extends Persona implements Serializable {
         return asignaciones
                 .stream()
                 .filter(cos -> cos.getCuadrilla().getId() == idCud
-                            && cos.getCuadrilla().getPlanCosecha().getId() == idPlan)
+                        && cos.getCuadrilla().getPlanCosecha().getId() == idPlan)
                 .findFirst();
     }
     public CosechadorAsignado[] getAsignaciones(){
