@@ -27,6 +27,9 @@ public class ControlProduccion {
     public ControlProduccion() {
         try {
             readDataFromTextFile("archivoGestion.txt");
+            System.out.println(">> Datos cargados correctamente desde archivoGestion.txt");
+        } catch(GestionHuertosException e){
+            System.out.println(">> Error al cargar datos de archivoGestion.txt" + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
