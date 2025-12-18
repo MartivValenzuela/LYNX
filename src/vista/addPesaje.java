@@ -22,9 +22,10 @@ public class addPesaje extends JFrame {
 
     public addPesaje() {
         setContentPane(contentPane);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
         setResizable(false);
+        pack();
+        setLocationRelativeTo(null);
+        getRootPane().setDefaultButton(btnAceptar);
 
         cargarListas();
 
