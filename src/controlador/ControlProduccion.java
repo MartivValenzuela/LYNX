@@ -53,46 +53,33 @@ public class ControlProduccion {
         this.pagosPesajes.clear();
 
         // 1) Personas
-        try {
-            Persona[] personasLeidas = io.readPersonas();
-            if (personasLeidas != null) {
-                for (Persona p : personasLeidas) {
-                    if (p != null) this.personas.add(p);
-                }
+        Persona[] personasLeidas = io.readPersonas();
+        if (personasLeidas != null) {
+            for (Persona p : personasLeidas) {
+                if (p != null) this.personas.add(p);
             }
-        } catch (GestionHuertosException e) {
-            if (!e.getMessage().contains("no encontrado")) throw e;
         }
 
         // 2) Cultivos
-        try {
-            Cultivo[] cultivosLeidos = io.readCultivos();
-            if (cultivosLeidos != null) {
-                for (Cultivo c : cultivosLeidos) {
-                    if (c != null) this.cultivos.add(c);
-                }
+        Cultivo[] cultivosLeidos = io.readCultivos();
+        if (cultivosLeidos != null) {
+            for (Cultivo c : cultivosLeidos) {
+                if (c != null) this.cultivos.add(c);
             }
-        } catch (GestionHuertosException e) {
-            if (!e.getMessage().contains("no encontrado")) throw e;
         }
 
         // 3) Planes
-        try {
-            PlanCosecha[] planesLeidos = io.readPlanesCosecha();
-            if (planesLeidos != null) {
-                for (PlanCosecha p : planesLeidos) {
-                    if (p != null) this.planes.add(p);
-                }
+        PlanCosecha[] planesLeidos = io.readPlanesCosecha();
+        if (planesLeidos != null) {
+            for (PlanCosecha p : planesLeidos) {
+                if (p != null) this.planes.add(p);
             }
-        } catch (GestionHuertosException e) {
-            if (!e.getMessage().contains("no encontrado")) throw e;
         }
 
-        // 4) Reconstruir huertos desde las personas (solo propietarios tienen huertos)
+        // 4) Reconstruir huertos desde propietarios
         for (Persona per : this.personas) {
             if (per instanceof Propietario) {
                 Propietario prop = (Propietario) per;
-
                 if (prop.getHuertos() != null) {
                     for (Huerto h : prop.getHuertos()) {
                         if (h != null) {
@@ -114,7 +101,6 @@ public class ControlProduccion {
                                 for (Pesaje p : asig.getPesajes()) {
                                     if (p != null) {
                                         this.pesajes.add(p);
-
                                         if (p.getPagoPesaje() != null
                                                 && !this.pagosPesajes.contains(p.getPagoPesaje())) {
                                             this.pagosPesajes.add(p.getPagoPesaje());
