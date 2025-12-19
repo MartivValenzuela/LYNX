@@ -60,6 +60,7 @@ public class GestionHuertosUI {
                         break;
                     case 6:
                         guardarDatosSistemas();
+                        break;
                     default:
                         System.out.println("Opcion no valida,intente de nuevo");
                 }
